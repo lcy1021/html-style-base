@@ -45,10 +45,15 @@ body.open .fab{opacity:0;pointer-events:none;transform:translateX(20px)}
 @keyframes fill{to{width:100%}}
 .auto kbd{color:#9a95a8}
 body.open .auto{right:calc(var(--dw) + 16px)}
-body.embed .hud,body.embed .hotzone,body.embed .fab{display:none!important}
-body.embed .auto{right:16px}
-body.embed.open .auto{right:calc(var(--dw) + 16px)}
-body.embed .drawer{border-radius:0}
+/* 嵌在首页弹层里：主体和详情是两块并排、等高的卡片，顶部操作交给外层 */
+html.embed,body.embed{background:transparent}
+body.embed .hud,body.embed .hotzone,body.embed .fab,body.embed .auto,body.embed #pin{display:none!important}
+body.embed #stage{border-radius:14px;box-shadow:0 40px 100px -20px rgba(0,0,0,.85),0 0 0 1px rgba(255,255,255,.12)}
+body.embed .drawer{border-radius:14px;border:0;box-shadow:0 40px 100px -20px rgba(0,0,0,.85),0 0 0 1px rgba(255,255,255,.12);transform:translateX(calc(100% + 24px))}
+body.embed.open .drawer{transform:none}
+body.embed .blank{border-radius:14px;background:#0c0b12;box-shadow:0 0 0 1px rgba(255,255,255,.12);transition:right .45s var(--ease)}
+body.embed.open .blank{right:calc(var(--dw) + 16px)}
+body.embed .toast{bottom:76px}
 body.pinned .hud{right:var(--dw)}
 .hud{transition:transform .35s var(--ease),right .45s var(--ease)}
 #stage{transition:width .45s var(--ease),opacity .38s}
@@ -160,7 +165,7 @@ body.open .toast{left:calc((100% - var(--dw)) / 2)}
   <div class="db" id="body"></div>
 </aside>
 
-<div class="toast" id="toast"><span><kbd>←</kbd><kbd>→</kbd> 体验样例</span><span><kbd>I</kbd> 查看详情</span><span><kbd>A</kbd> 暂停 / 继续</span><span><kbd>[</kbd><kbd>]</kbd> 换一条</span></div>
+<div class="toast" id="toast"><span><kbd>←</kbd><kbd>→</kbd> 体验样例</span><span><kbd>I</kbd> 查看详情</span><span><kbd>A</kbd> 自动 / 手动</span><span><kbd>[</kbd><kbd>]</kbd> 换一条</span></div>
 <div class="copied" id="copied">已复制</div>
 
 <script src="data/patterns.js"></script>
@@ -171,7 +176,7 @@ body.open .toast{left:calc((100% - var(--dw)) / 2)}
   const P = (window.PATTERNS || []).map((p, i) => ({...p, no: String(i + 1).padStart(2, '0')}));
   const EMBED = new URLSearchParams(location.search).has('embed');
   const HOST = (() => { try { return EMBED && parent !== window && parent.HSB ? parent.HSB : null; } catch (e) { return null; } })();
-  if (EMBED) document.body.classList.add('embed');
+  if (EMBED) { document.body.classList.add('embed'); document.documentElement.classList.add('embed'); }
   const id = decodeURIComponent(location.hash.slice(1)) || new URLSearchParams(location.search).get('id') || (P.find(p => p.demo) || {}).id;
   const i0 = Math.max(0, P.findIndex(p => p.id === id)), p = P[i0];
   const $ = s => document.getElementById(s), B = document.body;
@@ -236,7 +241,8 @@ body.open .toast{left:calc((100% - var(--dw)) / 2)}
   function layout() {               // 固定后：样例区域直接变窄，让样例按新宽度重新排版（不是等比缩放）
     const fr = $('stage'); if (!fr) return;
     fr.style.transform = '';
-    fr.style.width = B.classList.contains('pinned') ? `calc(100vw - ${$('drawer').offsetWidth}px)` : '';
+    const narrow = EMBED ? B.classList.contains('open') : B.classList.contains('pinned');   // 弹层里：详情打开就并排
+    fr.style.width = narrow ? `calc(100vw - ${$('drawer').offsetWidth + (EMBED ? 16 : 0)}px)` : '';
   }
   addEventListener('resize', layout);
 
@@ -291,7 +297,7 @@ body.open .toast{left:calc((100% - var(--dw)) / 2)}
         d.addEventListener('pointerdown', manual, true); d.addEventListener('wheel', manual, {capture: true, passive: true});
         d.addEventListener('mousemove', e => { if (e.clientY < 14) hud(true); });
         drawSteps(); markStep(W.DEMO ? W.DEMO.get() : 0, false);
-        fr.focus(); if (N > 1) { $('auto').hidden = false; startAuto(); }
+        fr.focus(); if (N > 1) { $('auto').hidden = false; setMode(savedMode()); if (HOST && HOST.mode) HOST.mode(savedMode()); }
       } catch (e) { /* 跨域时只能看，不能同步 */ }
     };
   } else {
@@ -313,11 +319,18 @@ body.open .toast{left:calc((100% - var(--dw)) / 2)}
       aT = setTimeout(() => { W.DEMO.set(0); fr.style.opacity = ''; arm(STEP); }, 400);
     } else { W.DEMO.set(k + 1); arm(W.DEMO.get() >= N - 1 ? HOLD : STEP); }
   }
-  function paint() { $('autoIc').textContent = auto ? '❚❚' : '▶'; $('autoTx').textContent = auto ? '自动播放' : '已暂停'; if (!auto) $('auto').classList.remove('on'); }
+  function paint() { $('autoIc').textContent = auto ? '❚❚' : '▶'; $('autoTx').textContent = auto ? '自动播放' : (userPaused ? '手动浏览' : '已暂停'); if (!auto) $('auto').classList.remove('on'); }
   function startAuto() { if (reduce) { auto = false; paint(); return; } auto = true; paint(); arm(STEP); }
   function stopAuto() { auto = false; clearTimeout(aT); fr.style.opacity = ''; paint(); }
-  function toggleAuto() { clearTimeout(idleT); auto ? stopAuto() : startAuto(); userPaused = !auto; }
   let userPaused = false;
+  const MODE_KEY = 'hsb-mode';
+  const savedMode = () => { try { return localStorage.getItem(MODE_KEY) === 'manual' ? 'manual' : 'auto'; } catch (e) { return 'auto'; } };
+  function setMode(m, save) {          // auto = 自动循环；manual = 用滚轮 / 方向键自己一步步看，不会自己恢复
+    clearTimeout(idleT);
+    if (m === 'manual') { userPaused = true; stopAuto(); } else { userPaused = false; startAuto(); }
+    if (save) { try { localStorage.setItem(MODE_KEY, m); } catch (e) {} if (HOST && HOST.mode) HOST.mode(m); }
+  }
+  function toggleAuto() { setMode(auto ? 'manual' : 'auto', true); }
   function manual() {               // 手动操作：先暂停；停手一段时间、且没打开说明时再继续
     if (!$('auto') || $('auto').hidden) return;
     stopAuto(); clearTimeout(idleT);
@@ -327,7 +340,7 @@ body.open .toast{left:calc((100% - var(--dw)) / 2)}
 
   /* ---------- 嵌在首页弹层里时，给外层调用 ---------- */
   window.VIEW = {
-    toggle: () => open(), isOpen: () => B.classList.contains('open'),
+    toggle: () => open(), isOpen: () => B.classList.contains('open'), setMode: m => setMode(m, true), hasSteps: () => N > 1,
     key: e => { if (keys(e)) return true; if (W && W.DEMO && ['ArrowRight', 'ArrowLeft', ' ', 'ArrowDown', 'ArrowUp'].includes(e.key)) { manual(); W.DEMO.set(W.DEMO.get() + (['ArrowLeft', 'ArrowUp'].includes(e.key) ? -1 : 1)); return true; } return false; },
   };
   if (HOST) HOST.meta(p.id);
