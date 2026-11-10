@@ -1,25 +1,97 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>假设积木塔</title><link rel="stylesheet" href="demo.css">
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>V · 假设积木塔｜0 到 1，哪条假设错了方向就会翻</title>
 <style>
-.tw{position:absolute;left:50%;bottom:90px;width:520px;margin-left:-360px;height:360px}
-.bk{all:unset;cursor:pointer;position:absolute;height:52px;border-radius:6px;display:grid;place-items:center;font-size:13px;color:#1d2129;transition:transform .8s cubic-bezier(.5,0,.7,.4),opacity .8s,box-shadow .3s;box-shadow:inset 0 -4px rgba(0,0,0,.15)}
-.bk:hover{box-shadow:inset 0 -4px rgba(0,0,0,.15),0 0 0 3px var(--fg)}
-.bk.fall{transform:translateY(160px) rotate(var(--fr));opacity:.15}
-.bk.pick{box-shadow:0 0 0 3px var(--red)}
-.side{position:absolute;right:34px;top:140px;width:28%;font-size:15px;line-height:1.8;color:var(--mut)}.side b{color:var(--fg);display:block;font-size:18px;font-weight:500}
-</style></head>
-<body data-steps="3" data-caps="方案建立在几层假设上（积木可以直接点）|抽掉底层假设：上面跟着倒|按“倒得多”排序：先验证最底下的">
-<div class="stage"><p class="eb">示例 · 去业务化</p><h1>先验证哪个假设？<em>看它倒了会带走多少。</em></h1></div>
-<div class="tw" id="tw"></div>
-<div class="side" id="sd"><b>点任意一块</b>看依赖它的假设会不会跟着倒。</div>
-<p class="note">内容为示意 · 假设 A–E 为教学示意</p>
-<script src="demo.js"></script>
+:root{--bg:#f5f3ee;--ink:#1a1a1a;--mut:#8a857c;--line:#e4e0d6;--r:#e8590c;--l1:#ffd8a8;--l2:#a5d8ff;--l3:#b2f2bb;--l4:#d0bfff;--l5:#ffc9c9}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;min-height:100vh;overflow-x:hidden}
+.hd{padding:4vh 5vw 0}
+.hd small{font-size:12px;color:var(--mut);letter-spacing:.15em}
+.hd h1{font-size:clamp(26px,3.2vw,44px);line-height:1.25;margin-top:8px}
+.main{display:grid;grid-template-columns:1fr 360px;gap:3vw;padding:2vh 5vw 5vh}
+.stage{position:relative;height:540px;border-bottom:4px solid var(--ink)}
+.lv{position:absolute;left:0;font-size:12px;color:var(--mut);transform:translateY(-50%);width:90px;line-height:1.4}
+.lv b{display:block;color:var(--ink);font-size:13px}
+.blk{position:absolute;height:74px;border:2px solid var(--ink);border-radius:8px;padding:8px 12px;font-size:13px;line-height:1.45;cursor:pointer;background:var(--c);
+  transition:transform 1.1s cubic-bezier(.5,0,.75,0),opacity .8s .5s,box-shadow .2s;box-shadow:3px 3px 0 var(--ink);display:flex;flex-direction:column;justify-content:center}
+.blk.unv{background:repeating-linear-gradient(135deg,var(--c) 0 10px,#fff 10px 20px)}
+.blk small{font-size:11px;color:#0009}
+.blk:hover{box-shadow:5px 5px 0 var(--ink)}
+.blk.pick{outline:3px solid var(--r);outline-offset:3px}
+.blk.fall{transform:translate(var(--fx),620px) rotate(var(--fr));opacity:0}
+.blk.dep{animation:wob .5s infinite}
+@keyframes wob{25%{transform:rotate(-1.5deg)}75%{transform:rotate(1.5deg)}}
+.side{display:flex;flex-direction:column;gap:12px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px}
+.card h3{font-size:15px;margin-bottom:10px}
+.card p{font-size:13px;color:var(--mut);line-height:1.7}
+.big{font-size:48px;font-weight:900;color:var(--r);line-height:1}
+.rank li{list-style:none;display:grid;grid-template-columns:24px 1fr auto;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid #f0ede6;font-size:13px;cursor:pointer}
+.rank li i{font-style:normal;font-weight:800;color:var(--mut)}
+.rank li b{font-size:12px;color:var(--r)}
+.rank li .bar{grid-column:2/4;height:5px;border-radius:3px;background:#f0ede6;overflow:hidden}
+.rank li .bar span{display:block;height:100%;background:var(--r);width:0;transition:width 1s}
+.btns{display:flex;gap:8px}
+.btns button{flex:1;height:40px;border-radius:10px;border:1.5px solid var(--ink);background:#fff;cursor:pointer;font-size:14px}
+.btns button.p{background:var(--ink);color:#fff}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--mut);margin-top:8px}
+.legend i{display:inline-block;width:22px;height:12px;border:1.5px solid var(--ink);border-radius:3px;vertical-align:-2px;margin-right:4px}
+@media(max-width:1000px){.main{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="hd"><small>第 2 段 · 背景篇 · 从零开始，先找最该解决的问题</small><h1>0 到 1 全是假设。<br>点一块积木：如果它是错的，会塌掉多少？</h1></div>
+<div class="main">
+  <div class="stage" id="stage"></div>
+  <div class="side">
+    <div class="card"><h3 id="ct">点击任意一块积木</h3><div class="big" id="cn">—</div><p id="cd">看看它错了，上面有多少判断会跟着倒。</p></div>
+    <div class="card"><h3>假设清单 · 按“倒下的块数”排出验证顺序</h3><ul class="rank" id="rank"></ul></div>
+    <div class="btns"><button id="reset">复原</button><button class="p" id="worst">找出最危险的那块</button></div>
+    <div class="legend"><span><i style="background:#ffd8a8"></i>已验证</span><span><i style="background:repeating-linear-gradient(135deg,#ffd8a8 0 5px,#fff 5px 10px)"></i>还没验证</span></div>
+  </div>
+</div>
 <script>
-// [id, 文字, x, 层, 宽, 颜色, 依赖]
-const B=[['A','用户每月都要做这件事',0,0,520,'#ffb547',[]],['B','由一个人完成',0,1,250,'#5ad0b3',['A']],['C','数据已经在系统里',270,1,250,'#b9a8ff',['A']],['D','愿意换掉现有做法',60,2,200,'#4ea1ff',['B']],['E','能接受自动生成',280,2,200,'#ff9bb3',['C']]];
-tw.innerHTML=B.map(([id,t,x,l,w,c],i)=>`<button class="bk" data-id="${id}" style="left:${x}px;bottom:${l*62}px;width:${w}px;background:${c};--fr:${(i%2?1:-1)*(8+i*3)}deg">${id} · ${t}</button>`).join('');
-const dep=id=>{const out=new Set([id]);let ch=1;while(ch){ch=0;B.forEach(b=>{if(!out.has(b[0])&&b[6].some(d=>out.has(d))){out.add(b[0]);ch=1}})}return out};
-function pull(id){const d=dep(id);document.querySelectorAll('.bk').forEach(e=>{e.classList.toggle('fall',d.has(e.dataset.id)&&e.dataset.id!==id);e.classList.toggle('pick',e.dataset.id===id)});sd.innerHTML=`<b>抽掉 ${id}</b>一起倒下 ${d.size-1} 块。`}
-const reset=()=>document.querySelectorAll('.bk').forEach(e=>e.classList.remove('fall','pick'));
-document.querySelectorAll('.bk').forEach(e=>e.onclick=()=>pull(e.dataset.id));
-window.onStep=k=>{reset();if(k===0)sd.innerHTML='<b>点任意一块</b>看依赖它的假设会不会跟着倒。';if(k===1)pull('A');if(k===2)sd.innerHTML='<b>验证顺序</b>'+B.map(b=>[b[0],dep(b[0]).size-1]).sort((a,b)=>b[1]-a[1]).map(([i,n])=>`${i}（带走 ${n}）`).join(' → ');};
-</script></body></html>
+// 示例：一个 0 到 1 的“AI 分析助手”
+const L=[['角色链','谁用、谁买、谁拍板','--l1'],['任务链','从哪开始、到哪结束','--l2'],['载体','什么端、什么入口','--l3'],['核心能力','哪几步必须由我们解决','--l4'],['边界','明确不做什么','--l5']];
+const B=[
+ {id:'a',lv:0,x:12,w:30,t:'主要用户是区域经理',v:1},
+ {id:'b',lv:0,x:44,w:26,t:'购买决策人是 IT 负责人',v:0},
+ {id:'c',lv:0,x:72,w:26,t:'使用者会信任 AI 给的数字',v:0},
+ {id:'d',lv:1,x:12,w:42,t:'用户先在看板里发现异常，再追问原因',v:0,on:['a','c']},
+ {id:'e',lv:1,x:56,w:42,t:'每周固定做一次经营复盘',v:1,on:['a']},
+ {id:'f',lv:2,x:12,w:34,t:'入口嵌在看板里',v:0,on:['d']},
+ {id:'g',lv:2,x:48,w:24,t:'需要移动端',v:0,on:['e']},
+ {id:'h',lv:2,x:74,w:24,t:'必须私有化部署',v:1,on:['b']},
+ {id:'i',lv:3,x:12,w:40,t:'自然语言追问 + 归因解释',v:0,on:['d','f','c']},
+ {id:'j',lv:3,x:54,w:30,t:'自动生成周报',v:0,on:['e']},
+ {id:'k',lv:4,x:20,w:60,t:'不做数据准备，只做“问”和“解释”',v:0,on:['i']}
+];
+const stage=document.getElementById('stage'),H=540,ROW=96;
+L.forEach((l,i)=>{const d=document.createElement('div');d.className='lv';d.style.top=(H-ROW*i-48)+'px';d.innerHTML=`<b>${l[0]}</b>${l[1]}`;stage.appendChild(d)});
+B.forEach(b=>{const d=document.createElement('div');d.className='blk'+(b.v?'':' unv');d.style.cssText=`left:calc(100px + (100% - 100px)*${b.x/100});width:calc((100% - 100px)*${b.w/100});top:${H-ROW*b.lv-86}px;--c:var(${L[b.lv][2]})`;
+  d.innerHTML=`${b.t}<small>${b.v?'✓ 已验证':'? 还没验证'}</small>`;d.onclick=()=>topple(b.id);d.onmouseenter=()=>preview(b.id,true);d.onmouseleave=()=>preview(b.id,false);stage.appendChild(d);b.el=d});
+const by=id=>B.find(b=>b.id===id);
+function deps(id){const out=new Set();let changed=true;out.add(id);while(changed){changed=false;B.forEach(b=>{if(!out.has(b.id)&&b.on&&b.on.some(x=>out.has(x))){out.add(b.id);changed=true}})}out.delete(id);return out}
+function preview(id,on){if(busy)return;deps(id).forEach(x=>by(x).el.classList.toggle('dep',on))}
+let busy=false;
+function reset(){busy=false;B.forEach(b=>{b.el.classList.remove('fall','pick','dep');b.el.style.transitionDelay='0s'});document.getElementById('ct').textContent='点击任意一块积木';document.getElementById('cn').textContent='—';document.getElementById('cd').textContent='看看它错了，上面有多少判断会跟着倒。'}
+function topple(id){reset();busy=true;const b=by(id),D=deps(id);b.el.classList.add('pick');
+
+  [...D,id].map(by).sort((p,q)=>q.lv-p.lv).forEach((x,k)=>{x.el.style.setProperty('--fx',(Math.random()*160-80)+'px');x.el.style.setProperty('--fr',(Math.random()*70-35)+'deg');x.el.style.transitionDelay=(.3+k*.12)+'s';x.el.classList.add('fall')});
+  document.getElementById('ct').textContent=`如果“${b.t}”是错的`;document.getElementById('cn').textContent=`${D.size} 块`;
+  document.getElementById('cd').textContent=D.size>=4?'整个方向都会翻。它应该排在验证清单的最前面。':D.size?'会影响一部分设计，可以在开发前确认。':'影响很小，可以边做边验证。';}
+document.getElementById('reset').onclick=reset;
+const ranked=B.map(b=>({b,n:deps(b.id).size})).filter(x=>!x.b.v).sort((p,q)=>q.n-p.n);
+const max=ranked[0].n;
+document.getElementById('rank').innerHTML=ranked.slice(0,6).map((x,i)=>`<li data-id="${x.b.id}"><i>${i+1}</i><span>${x.b.t}</span><b>倒 ${x.n} 块</b><div class="bar"><span data-w="${x.n/max*100}%"></span></div></li>`).join('');
+setTimeout(()=>document.querySelectorAll('.rank .bar span').forEach(s=>s.style.width=s.dataset.w),400);
+document.querySelectorAll('.rank li').forEach(li=>li.onclick=()=>topple(li.dataset.id));
+document.getElementById('worst').onclick=()=>topple(ranked[0].b.id);
+</script>
+<script>window.STEPS={n:()=>Math.min(ranked.length,4)+1,go:k=>{window.__bt=k;k?topple(ranked[k-1].b.id):reset()},get:()=>window.__bt||0,caps:()=>['完整的假设塔',...ranked.slice(0,4).map(x=>'抽掉：'+x.b.t)]}</script>
+<script src="scroll.js"></script>
+</body>
+</html>

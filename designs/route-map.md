@@ -4,7 +4,7 @@
 
 **想说明：** 端到端流程、多角色交接  
 **分类：** 样式  
-**Theme：** 深色  
+**Theme：** 浅色  
 **样例：** `demos/route-map.html`  
 
 下列数值从本库样例在 1280 × 720 视口、最后一步时的实际渲染中量出（`getComputedStyle`），不是原始参考网站的取值。改成自己的案例时，按内容替换颜色和文字，保留层级比例。
@@ -18,14 +18,14 @@
 
 | Name | Value | Token | Role |
 |---|---|---|---|
-| Canvas | `#0C0B12` | `--bg` | 背景 / 面 |
+| Canvas | `#F4F3EF` | `--bg` | 背景 / 面 |
 | Surface 1 | `#FFFFFF / 5%` | — | 面 / 区块 |
-| Text 1 | `#F3F1FF` | `--fg` | 文字 |
-| Accent · 橙 | `#FFB547` | `--amber` | 文字 |
-| Accent · 紫 | `#B9A8FF` | `--violet` | 文字 |
-| Accent · 红 | `#FF6B5A` | `--red` | 文字 |
-| Accent · 青 | `#5AD0B3` | `--teal` | 文字 |
-| Text 2 | `#9A95A8` | `--mut` | 文字 |
+| Text 1 | `#1D2129` | `--fg` | 文字 |
+| Accent · 橙 | `#B86E00` | `--amber` | 文字 |
+| Accent · 紫 | `#6A55D6` | `--violet` | 文字 |
+| Accent · 红 | `#D9402E` | `--red` | 文字 |
+| Accent · 青 | `#12876B` | `--teal` | 文字 |
+| Text 2 | `#6B7280` | `--mut` | 文字 |
 | Line 1 | `#FFFFFF / 12%` | — | 描边 |
 
 ## Tokens — Typography
@@ -89,7 +89,7 @@
 
 ## Agent Prompt Guide
 
-**颜色速查：** `#0C0B12`（背景 / 面），`#FFFFFF / 5%`（面 / 区块），`#F3F1FF`（文字），`#FFB547`（文字），`#B9A8FF`（文字），`#FF6B5A`（文字）
+**颜色速查：** `#F4F3EF`（背景 / 面），`#FFFFFF / 5%`（面 / 区块），`#1D2129`（文字），`#B86E00`（文字），`#6A55D6`（文字），`#D9402E`（文字）
 
 ```text
 做一页「线路图」形式的 HTML 演示：端到端流程、多角色交接。
@@ -110,14 +110,14 @@
 
 ```css
 :root{
-  --canvas:#0C0B12;
+  --canvas:#F4F3EF;
   --surface-1:rgba(255,255,255,0.05);
-  --text-1:#F3F1FF;
-  --text-2:#FFB547;
-  --text-3:#B9A8FF;
-  --text-4:#FF6B5A;
-  --text-5:#5AD0B3;
-  --text-6:#9A95A8;
+  --text-1:#1D2129;
+  --text-2:#B86E00;
+  --text-3:#6A55D6;
+  --text-4:#D9402E;
+  --text-5:#12876B;
+  --text-6:#6B7280;
   --line-1:rgba(255,255,255,0.12);
   --radius:12px;
   --ease:cubic-bezier(.3,.8,.2,1);

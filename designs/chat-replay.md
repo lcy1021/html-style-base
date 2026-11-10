@@ -1,10 +1,10 @@
 # 对话回放 — Style Reference
 
-> 群聊逐条回放，关键句高亮，右侧同步记下笔记和改写后的诉求。
+> 群聊式回放：消息逐条打出，可暂停、调速、跳到关键节点，把一个需求从模糊到说清的过程还原出来。
 
 **想说明：** 需求怎样在对话里被问清楚  
 **分类：** 样式  
-**Theme：** 深色  
+**Theme：** 浅色  
 **样例：** `demos/chat-replay.html`  
 
 下列数值从本库样例在 1280 × 720 视口、最后一步时的实际渲染中量出（`getComputedStyle`），不是原始参考网站的取值。改成自己的案例时，按内容替换颜色和文字，保留层级比例。
@@ -18,31 +18,33 @@
 
 | Name | Value | Token | Role |
 |---|---|---|---|
-| Canvas | `#0C0B12` | `--bg` | 背景 / 面 |
-| Surface 1 | `#F2F3F5` | — | 面 / 区块 |
-| Accent · 橙 | `#FFB547 / 8%` | `--amber` | 面 / 区块 |
-| Accent · 紫 | `#5B4BFF` | — | 面 / 区块 |
+| Canvas | `#ECEEF1` | `--bg` | 背景 / 面 |
+| Surface 1 | `#F7F8FA` | — | 面 / 区块 |
 | Surface 2 | `#FFFFFF` | — | 面 / 区块 |
-| Accent · 橙 | `#F77234` | — | 面 / 区块 |
-| Text 1 | `#F3F1FF` | `--fg` | 文字 |
-| Text 2 | `#1D2129` | — | 文字 |
-| Accent · 橙 | `#FFB547` | `--amber` | 文字 |
-| Accent · 紫 | `#B9A8FF` | `--violet` | 文字 |
+| Surface 3 | `#E8EAEE` | — | 面 / 区块 |
+| Surface 4 | `#1D2129` | — | 面 / 区块 |
+| Surface 5 | `#86909C` | `--mut` | 面 / 区块 |
+| Text 1 | `#000000` | — | 文字 |
+| Line 1 | `#E5E6EB` | — | 描边 |
 
 ## Tokens — Typography
 
-- **字体栈：** `-apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif`
+- **字体栈：** `-apple-system, "PingFang SC", "Microsoft YaHei", sans-serif`
 - **说明：** 中文优先系统字体（PingFang SC / 微软雅黑），不引外部字体，离线也能显示。
 
 ### Type Scale
 
 | Size | Weight | Line height | Letter spacing | 用在 | 示例 |
 |---|---|---|---|---|---|
-| 30px | 400 | 39px | -0.9px | `h1, em` | 需求怎么在对话里 |
-| 14px | 400 | 22.4px | normal | `p, div.on` | 客户要导出时按部门拆文件。 |
-| 12px | 400 | normal | normal | `i` | 产 |
-| 11px | 400 | normal | 1.54px | `p.eb` | 示范 · 不是会议原话 |
-| 11px | 400 | 17.6px | normal | `small` | 笔记 · 关键条件 |
+| 24px | 700 | 32.4px | normal | `h1` | “两个看板的销售额对不上”——一 |
+| 15px | 700 | normal | normal | `b` | 【需求】销售额口径对齐 |
+| 13px | 400 | 23.4px | normal | `p, div.empty` | 按时间顺序回放项目群的真实对话。 |
+| 13px | 600 | normal | normal | `span` | Day 1 · 抛出问题 |
+| 13px | 400 | normal | normal | `span, div.av, button.pri` | Day 3 · 用户访谈 |
+| 12px | 400 | normal | normal | `span` | 5 人 |
+| 11px | 400 | normal | 1.65px | `small` | CASE · 需求澄清 · 示例 |
+| 11px | 400 | normal | normal | `i` | PM |
+| 11px | 500 | normal | 1.65px | `h4` | 设计师笔记 · 自动从关键节点提 |
 
 ## Tokens — Spacing & Shapes
 
@@ -50,31 +52,30 @@
 
 | Value | 次数 |
 |---|---|
-| 50% | 4 |
-| 10px | 4 |
-| 14px | 1 |
+| 50% | 8 |
+| 8px | 7 |
+| 99px | 1 |
+| 4px | 1 |
+| 2px | 1 |
+| 10px | 1 |
 
 ### Shadows
 
 | Value | 次数 |
 |---|---|
-| `rgb(255, 181, 71) 0px 0px 0px 2px` | 1 |
+| `rgba(0, 0, 0, 0.05) 0px 2px 8px 0px` | 1 |
+| `rgba(0, 0, 0, 0.04) 0px 1px 2px 0px` | 1 |
 
 ### Layout
 
 - 舞台：`position:fixed; inset:0 0 56px; padding:28px 34px`，标题区在左上。
 - 底部步进控制条高 56px：← / 步数 / 本步说明 / 重播 / 下一步。
 - 主体元素（最后一步）：
-  - `div.stage` — 1280×664 @ (0, 0)，block
-  - `div.chat` — 666×524 @ (34, 120)，flex，底色 `#F2F3F5`，圆角 14px
-  - `div.notes` — 435×152 @ (811, 130)，block
+  - `div.app` — 1280×720 @ (0, 0)，grid
 
 ## 步骤脚本
 
-1. 群聊逐条回放
-2. 追问：拆完之后要做什么
-3. 关键句出现，右侧同步记笔记
-4. 结论：真正的诉求
+1. 单步
 
 ## Do's and Don'ts
 
@@ -91,14 +92,14 @@
 
 ## Agent Prompt Guide
 
-**颜色速查：** `#0C0B12`（背景 / 面），`#F2F3F5`（面 / 区块），`#FFB547 / 8%`（面 / 区块），`#5B4BFF`（面 / 区块），`#FFFFFF`（面 / 区块），`#F77234`（面 / 区块）
+**颜色速查：** `#ECEEF1`（背景 / 面），`#F7F8FA`（面 / 区块），`#FFFFFF`（面 / 区块），`#E8EAEE`（面 / 区块），`#1D2129`（面 / 区块），`#86909C`（面 / 区块）
 
 ```text
 做一页「对话回放」形式的 HTML 演示：需求怎样在对话里被问清楚。
 适用：讲追问方法；沟通推进的示范。
 做法：只放推动理解的几句；关键句高亮，笔记同步出现；页面标明“示范，不是会议原话”。
 避免：把示范对话当成真实记录；对话太长，听众跟不上。
-步进：共 4 步，← → / 空格 / 滚轮推进，底部控制条显示每步说明。内容用示意并在角落标“内容为示意”。
+步进：共 1 步，← → / 空格 / 滚轮推进，底部控制条显示每步说明。内容用示意并在角落标“内容为示意”。
 ```
 
 ## 相关条目
@@ -111,16 +112,14 @@
 
 ```css
 :root{
-  --canvas:#0C0B12;
-  --surface-1:#F2F3F5;
-  --surface-2:rgba(255,181,71,0.08);
-  --surface-3:#5B4BFF;
-  --surface-4:#FFFFFF;
-  --surface-5:#F77234;
-  --text-1:#F3F1FF;
-  --text-2:#1D2129;
-  --text-3:#FFB547;
-  --text-4:#B9A8FF;
+  --canvas:#ECEEF1;
+  --surface-1:#F7F8FA;
+  --surface-2:#FFFFFF;
+  --surface-3:#E8EAEE;
+  --surface-4:#1D2129;
+  --surface-5:#86909C;
+  --text-1:#000000;
+  --line-1:#E5E6EB;
   --radius:50%;
   --ease:cubic-bezier(.3,.8,.2,1);
 }

@@ -1,24 +1,130 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>需求生长图</title><link rel="stylesheet" href="demo.css">
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>方案 N · 需求生长图｜“做一个 AI 分析助手”是怎么被拆清楚的</title>
 <style>
-svg{position:absolute;left:34px;right:34px;top:120px;width:calc(100% - 68px);height:calc(100% - 200px)}
-.br{fill:none;stroke:rgba(185,168,255,.6);stroke-width:2;stroke-dasharray:400;stroke-dashoffset:400;transition:stroke-dashoffset .9s var(--ease),stroke .4s}
-body.s1 .br{stroke-dashoffset:0}
-.nd rect{fill:#1d1a28;stroke:rgba(185,168,255,.5);rx:10;transition:.4s}.nd text{fill:var(--fg);font-size:14px;text-anchor:middle;dominant-baseline:middle}
-.nd{opacity:0;transition:opacity .5s .4s}body.s1 .nd{opacity:1}.nd.root{opacity:1}
-.nd .mk{font-size:11px;opacity:0;transition:.3s}
-body.s2 .cut rect{stroke:var(--red);fill:rgba(255,107,90,.08)}body.s2 .cut text.t{text-decoration:line-through;fill:var(--mut)}body.s2 .cut .mk{opacity:1;fill:var(--red)}
-body.s3 .later rect{stroke:var(--mut);stroke-dasharray:4 4}body.s3 .later .mk{opacity:1;fill:var(--mut)}
-body.s4 .mvp rect{stroke:var(--teal);fill:rgba(90,208,179,.12)}body.s4 .mvp .mk{opacity:1;fill:var(--teal)}
-</style></head>
-<body data-steps="5" data-caps="从一个诉求出发|想法一路长出分支|砍掉：不服务这个任务的|延后：有价值但不是现在|剩下的就是 MVP">
-<div class="stage"><p class="eb">示例 · 去业务化</p><h1>先让想法长出来，<em>再决定剪掉哪些。</em></h1></div>
-<svg viewBox="0 0 1000 420" preserveAspectRatio="xMidYMid meet" id="sv"></svg>
-<p class="note">内容为示意</p>
-<script src="demo.js"></script>
+:root{--bg:#fbf7f0;--ink:#2b2622;--mut:#968b7e;--u:#f08fb0;--s:#6fb8ec;--f:#86c95a;--c:#f2b632}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;min-height:100vh;overflow-x:hidden}
+.wrap{display:grid;grid-template-columns:330px 1fr;min-height:100vh}
+.side{padding:5vh 30px 24px 4vw;display:flex;flex-direction:column}
+.side small{font-size:12px;color:var(--mut);letter-spacing:.15em}
+.side h1{font-size:30px;line-height:1.3;margin:12px 0}
+.side>p{font-size:14px;color:var(--mut);line-height:1.8}
+.steps{margin-top:26px;position:relative}
+.steps:before{content:"";position:absolute;left:15px;top:16px;bottom:16px;width:2px;background:#e8dfd2}
+.sp{display:flex;gap:14px;padding:10px 0;cursor:pointer;position:relative}
+.sp i{width:32px;height:32px;border-radius:50%;background:var(--bg);border:2px solid #e0d5c5;display:flex;align-items:center;justify-content:center;font-style:normal;font-weight:700;font-size:13px;color:var(--mut);flex:none;transition:all .3s;z-index:1}
+.sp b{display:block;font-size:15px;margin-top:5px}
+.sp span{font-size:12px;color:var(--mut);display:block;max-height:0;overflow:hidden;transition:max-height .4s;line-height:1.7}
+.sp.on i{background:var(--ink);border-color:var(--ink);color:#fff;transform:scale(1.1)}
+.sp.on span{max-height:120px;margin-top:4px}
+.sp.done i{background:#fff;border-color:var(--ink);color:var(--ink)}
+.nav{display:flex;gap:10px;margin-top:20px}
+.nav button{flex:1;height:42px;border-radius:21px;border:2px solid var(--ink);background:#fff;font-size:14px;cursor:pointer;font-weight:600}
+.nav button.p{background:var(--ink);color:#fff}
+.mvp{margin-top:auto;background:#fff;border-radius:18px;padding:18px;box-shadow:0 10px 30px -14px #6b553340;opacity:0;transform:translateY(20px);transition:all .6s cubic-bezier(.2,.8,.2,1)}
+.mvp.on{opacity:1;transform:none}
+.mvp h4{font-size:14px;margin-bottom:8px}
+.mvp ul{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}.mvp li{font-size:12px;line-height:1.9;list-style:none}
+.mvp li:before{content:"✓ ";color:var(--f);font-weight:700}
+.board{position:relative;overflow:hidden}
+.board svg{position:absolute;inset:0;width:100%;height:100%}
+.br{fill:none;stroke-width:3;stroke-linecap:round;stroke-dasharray:var(--l);stroke-dashoffset:var(--l);transition:stroke-dashoffset .9s cubic-bezier(.6,0,.2,1),opacity .5s}
+.br.on{stroke-dashoffset:0}
+.br.cut{opacity:.15}
+.br.later{stroke-dasharray:4 6!important;opacity:.5}
+.br.glow{stroke-width:5;filter:drop-shadow(0 0 6px currentColor)}
+.nd{position:absolute;transform:translate(-50%,-50%) scale(0);transition:transform .55s cubic-bezier(.3,1.6,.5,1),opacity .4s,filter .4s;background:#fff;border-radius:16px;padding:10px 14px;font-size:13px;line-height:1.5;text-align:center;box-shadow:0 6px 18px -8px #6b553366;border:2px solid var(--col);max-width:170px;cursor:pointer;white-space:normal}
+.nd.on{transform:translate(-50%,-50%) scale(1)}
+.nd.root{background:var(--ink);color:#fff;border:none;font-size:16px;font-weight:700;padding:16px 22px;border-radius:24px;max-width:240px}
+.nd.cat{background:var(--col);color:#fff;font-weight:700;font-size:15px;border:none;border-radius:99px;padding:10px 20px}
+.nd .q{display:block;font-size:11px;color:var(--mut);margin-top:3px}
+.nd.cut{opacity:.35;filter:grayscale(1)}
+.nd.cut .t{text-decoration:line-through}
+.nd .st{position:absolute;top:-12px;right:-10px;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;color:#fff;transform:scale(0) rotate(-10deg);transition:transform .4s cubic-bezier(.3,1.8,.5,1)}
+.nd.cut .st,.nd.later .st,.nd.mvpn .st{transform:scale(1) rotate(-6deg)}
+.nd.cut .st{background:#d9534f}.nd.later .st{background:#9a8f80}.nd.mvpn .st{background:#2b2622}
+.nd.later{border-style:dashed;opacity:.65}
+.nd.mvpn{box-shadow:0 0 0 4px #fff,0 0 0 6px var(--col),0 10px 30px -6px var(--col)}
+.leg{position:absolute;right:24px;bottom:20px;display:flex;gap:14px;font-size:12px;color:var(--mut)}
+.leg span:before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--c2);margin-right:5px;vertical-align:-1px}
+@media(max-width:1000px){.wrap{grid-template-columns:1fr}.board{height:80vh}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <aside class="side">
+    <small>CASE · 需求分析 · 示例内容</small>
+    <h1>“做一个 AI 分析助手”<br>是怎么被拆清楚的</h1>
+    <p>一句话需求，经过 4 步：发散、追问、收敛、定义 MVP。点击步骤或节点，看这张图一点点长出来，再被修剪成型。</p>
+    <div class="steps" id="steps"></div>
+    <div class="nav"><button id="prev">上一步</button><button class="p" id="next">下一步</button></div>
+    <div class="mvp" id="mvp"><h4>📌 MVP 范围（v1.0）</h4><ul id="mvpl"></ul></div>
+  </aside>
+  <main class="board" id="board"><svg id="svg"></svg>
+    <div class="leg"><span style="--c2:var(--u)">用户</span><span style="--c2:var(--s)">场景</span><span style="--c2:var(--f)">功能</span><span style="--c2:var(--c)">约束</span></div></main>
+</div>
 <script>
-const R=[500,40,'让各部门拿到自己的报表'],N=[[150,180,'按部门拆分','mvp'],[380,180,'自动命名','mvp'],[620,180,'定时发送','later'],[850,180,'在线批注','cut'],[150,330,'打包下载','mvp'],[380,330,'自定义模板','later'],[620,330,'邮件提醒','later'],[850,330,'AI 摘要','cut']];
-const mk={mvp:'MVP',later:'延后',cut:'砍掉'};
-sv.innerHTML=N.map(([x,y],i)=>{const [px,py]=y>200?[N[i-4][0],N[i-4][1]+20]:[R[0],R[1]+20];return `<path class="br" d="M${px} ${py} C ${px} ${(py+y)/2}, ${x} ${(py+y)/2}, ${x} ${y-20}"/>`}).join('')
-+`<g class="nd root"><rect x="${R[0]-130}" y="${R[1]-20}" width="260" height="40"/><text class="t" x="${R[0]}" y="${R[1]}">${R[2]}</text></g>`
-+N.map(([x,y,t,c])=>`<g class="nd ${c}"><rect x="${x-80}" y="${y-20}" width="160" height="40"/><text class="t" x="${x}" y="${y}">${t}</text><text class="mk" x="${x}" y="${y+34}">${mk[c]}</text></g>`).join('');
-</script></body></html>
+// 坐标为百分比
+const N=[
+ {id:'r',p:null,x:50,y:50,t:'老板：做一个 AI 分析助手',k:'root'},
+ {id:'u',p:'r',x:27,y:27,t:'给谁用？',k:'cat',c:'u'},
+ {id:'s',p:'r',x:73,y:27,t:'什么时候用？',k:'cat',c:'s'},
+ {id:'f',p:'r',x:73,y:73,t:'能做什么？',k:'cat',c:'f'},
+ {id:'c',p:'r',x:27,y:73,t:'不能违反什么？',k:'cat',c:'c'},
+ {id:'u1',p:'u',x:10,y:13,t:'区域经理',q:'访谈 6 人 · 最高频',st:'mvp'},
+ {id:'u2',p:'u',x:31,y:11,t:'数据分析师',q:'已有自助分析工具',st:'later'},
+ {id:'u3',p:'u',x:9,y:37,t:'集团高管',q:'需求零散，难以验证',st:'cut'},
+ {id:'s1',p:'s',x:70,y:11,t:'晨会前快速看数',q:'每周固定发生',st:'mvp'},
+ {id:'s2',p:'s',x:91,y:15,t:'追问异常原因',q:'“为什么跌了？”',st:'mvp'},
+ {id:'s3',p:'s',x:91,y:38,t:'自动生成周报',q:'已有报表订阅',st:'cut'},
+ {id:'f1',p:'f',x:91,y:62,t:'自然语言问数',q:'核心能力',st:'mvp'},
+ {id:'f2',p:'f',x:90,y:84,t:'归因解释',q:'回答“为什么”',st:'mvp'},
+ {id:'f3',p:'f',x:70,y:88,t:'图表自动推荐',q:'锦上添花',st:'later'},
+ {id:'c1',p:'c',x:9,y:63,t:'继承数据权限',q:'红线，不可妥协',st:'mvp'},
+ {id:'c2',p:'c',x:10,y:86,t:'回答可追溯口径',q:'否则没人敢信',st:'mvp'},
+ {id:'c3',p:'c',x:30,y:88,t:'支持 20 种语言',q:'当前客户都在国内',st:'cut'}
+];
+const COL={u:'var(--u)',s:'var(--s)',f:'var(--f)',c:'var(--c)'};
+const STEPS=[
+ {b:'原始需求',d:'只有一句话。此时任何方案都是猜测。'},
+ {b:'发散：四个追问维度',d:'用户、场景、功能、约束——先确定要问哪几类问题，而不是急着回答。'},
+ {b:'追问：每个维度展开',d:'结合 6 场访谈和使用数据，把每个维度具体化为可验证的选项。'},
+ {b:'收敛：砍掉与延后',d:'标记“砍掉”和“延后”。砍掉的理由要写下来，避免日后反复讨论。'},
+ {b:'定义 MVP',d:'剩下的节点连成一条路径：给谁、在什么时候、用什么能力、守住什么底线。'}
+];
+const board=document.getElementById('board'),svg=document.getElementById('svg');
+N.forEach(n=>{n.col=n.c?COL[n.c]:(n.p?COL[N.find(m=>m.id===n.p).c]:'#000');
+  const d=document.createElement('div');d.className='nd '+(n.k||'');d.style.left=n.x+'%';d.style.top=n.y+'%';d.style.setProperty('--col',n.col);
+  d.innerHTML=`<span class="t">${n.t}</span>${n.q?`<span class="q">${n.q}</span>`:''}${n.st?`<span class="st">${n.st==='mvp'?'MVP':n.st==='later'?'延后':'砍掉'}</span>`:''}`;
+  d.onclick=()=>{if(n.k==='root')go(Math.max(cur,1));else if(n.k==='cat')go(Math.max(cur,2))};board.appendChild(d);n.el=d;});
+function paths(){const W=board.clientWidth,H=board.clientHeight;svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  svg.innerHTML=N.filter(n=>n.p).map(n=>{const p=N.find(m=>m.id===n.p);const x1=p.x/100*W,y1=p.y/100*H,x2=n.x/100*W,y2=n.y/100*H;
+    return `<path class="br" data-id="${n.id}" stroke="${n.col}" style="color:${n.col}" d="M${x1},${y1} C${(x1+x2)/2},${y1} ${(x1+x2)/2},${y2} ${x2},${y2}"/>`}).join('');
+  svg.querySelectorAll('path').forEach(p=>{const l=p.getTotalLength();p.style.setProperty('--l',l);N.find(n=>n.id===p.dataset.id).br=p});}
+const stepsEl=document.getElementById('steps');
+STEPS.forEach((s,i)=>{const d=document.createElement('div');d.className='sp';d.innerHTML=`<i>${i}</i><div><b>${s.b}</b><span>${s.d}</span></div>`;d.onclick=()=>go(i);stepsEl.appendChild(d)});
+let cur=-1;
+function go(i){i=Math.max(0,Math.min(4,i));cur=i;
+  [...stepsEl.children].forEach((d,k)=>{d.classList.toggle('on',k===i);d.classList.toggle('done',k<i)});
+  N.forEach((n,k)=>{const lvl=n.k==='root'?0:n.k==='cat'?1:2;const vis=i>=lvl;
+    setTimeout(()=>{n.el.classList.toggle('on',vis);if(n.br)n.br.classList.toggle('on',vis)},vis?(lvl===2?(k-5)*90:lvl*200):0);
+    n.el.classList.toggle('cut',i>=3&&n.st==='cut');n.el.classList.toggle('later',i>=3&&n.st==='later');n.el.classList.toggle('mvpn',i>=4&&n.st==='mvp');
+    if(n.br){n.br.classList.toggle('cut',i>=3&&n.st==='cut');n.br.classList.toggle('later',i>=3&&n.st==='later');
+      const glow=i>=4&&(n.st==='mvp'||(n.k==='cat'));n.br.classList.toggle('glow',glow);}});
+  document.getElementById('mvp').classList.toggle('on',i>=4);
+  document.getElementById('next').textContent=i>=4?'重新开始':'下一步';}
+document.getElementById('mvpl').innerHTML=N.filter(n=>n.st==='mvp').map(n=>`<li>${n.t}</li>`).join('');
+document.getElementById('next').onclick=()=>go(cur>=4?0:cur+1);
+document.getElementById('prev').onclick=()=>go(cur-1);
+addEventListener('keydown',e=>{if(e.key==='ArrowRight')go(cur+1);if(e.key==='ArrowLeft')go(cur-1)});
+addEventListener('resize',()=>{paths();const c=cur;cur=-1;go(c)});
+paths();go(0);
+</script>
+<script>window.STEPS={n:()=>5,go:k=>go(k),get:()=>Math.max(0,cur),caps:()=>STEPS.map(s=>s.b)}</script>
+<script src="scroll.js"></script>
+</body>
+</html>

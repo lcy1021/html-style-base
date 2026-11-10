@@ -1,22 +1,123 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>漫画分镜</title><link rel="stylesheet" href="demo.css">
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>方案 L · 漫画分镜｜区域经理小陈的周一早上</title>
 <style>
-.strip{position:absolute;left:34px;right:34px;top:120px;bottom:80px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.pn{background:#fff;color:#1d2129;border:3px solid #1d2129;border-radius:6px;padding:14px;display:flex;flex-direction:column;justify-content:space-between;opacity:0;transform:scale(.85) rotate(var(--r));transition:.45s cubic-bezier(.2,1.5,.4,1)}
-.pn.on{opacity:1;transform:rotate(var(--r))}
-.pn .sc{flex:1;display:grid;place-items:center;font-size:48px}
-.pn .bub{background:#fff;border:2px solid #1d2129;border-radius:14px;padding:8px 10px;font-size:13px;line-height:1.5;position:relative}
-.pn small{font-size:11px;color:#86909c;margin-bottom:6px}
-.pn.twist{background:#1d2129;color:#fff}.pn.twist .bub{background:var(--amber);color:#1d2129;border-color:var(--amber)}
-.pn.twist small{color:var(--amber)}
-</style></head>
-<body data-steps="4" data-caps="第一格：人物和处境|第二格：遇到卡点|第三格：将就的做法|第四格：结局翻转——真正的问题">
-<div class="stage"><p class="eb">示例 · 去业务化</p><h1>用四格漫画，<em>讲一个用户的周五傍晚。</em></h1></div>
-<div class="strip">
- <div class="pn" data-s="0" style="--r:-1deg"><small>17:30</small><div class="sc">🧑‍💼</div><div class="bub">今天要把报表发给 12 个部门。</div></div>
- <div class="pn" data-s="1" style="--r:1deg"><small>17:45</small><div class="sc">📁</div><div class="bub">拆出来 12 个文件，名字全一样……</div></div>
- <div class="pn" data-s="2" style="--r:-.5deg"><small>18:30</small><div class="sc">⌨️</div><div class="bub">只好一个个打开、改名、再发。</div></div>
- <div class="pn twist" data-s="3" style="--r:1.2deg"><small>真正的问题</small><div class="sc">💡</div><div class="bub">她要的不是“拆分”，是每个部门一眼认得出的文件。</div></div>
+:root{--paper:#fff8e7;--ink:#141414;--y:#ffe14d;--r:#ff4d4d;--b:#4d7cff;--g:#3ccf7a}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+  background-image:radial-gradient(#00000012 1.2px,transparent 1.4px);background-size:9px 9px}
+.cover{min-height:92vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:6vh 6vw;position:relative}
+.cover .ep{background:var(--ink);color:var(--y);font-weight:900;padding:6px 16px;transform:rotate(-2deg);font-size:14px;letter-spacing:.2em}
+.cover h1{font-size:clamp(46px,8vw,120px);font-weight:900;line-height:1.05;margin:22px 0;-webkit-text-stroke:2px var(--ink);color:var(--y);text-shadow:6px 6px 0 var(--ink);letter-spacing:-.02em}
+.cover p{font-size:18px;max-width:600px;line-height:1.8;font-weight:500}
+.burst{position:absolute;width:150px;height:150px;background:var(--r);color:#fff;font-weight:900;font-size:20px;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.2;
+  clip-path:polygon(50% 0,61% 22%,85% 10%,78% 35%,100% 45%,79% 58%,92% 82%,66% 76%,55% 100%,44% 78%,18% 92%,24% 66%,0 55%,20% 42%,8% 18%,34% 24%);animation:wob 2.5s ease-in-out infinite}
+@keyframes wob{50%{transform:rotate(8deg) scale(1.08)}}
+.cast{display:flex;gap:16px;margin-top:30px;flex-wrap:wrap;justify-content:center}
+.cast div{border:3px solid var(--ink);background:#fff;padding:10px 16px;box-shadow:4px 4px 0 var(--ink);font-size:13px;text-align:left}
+.cast b{font-size:28px;display:block}
+.page{max-width:1180px;margin:0 auto;padding:4vh 4vw 6vh}
+.act{font-weight:900;font-size:28px;margin:30px 0 16px;display:flex;align-items:center;gap:14px}
+.act span{background:var(--ink);color:#fff;padding:2px 12px;font-size:14px;transform:rotate(-3deg)}
+.strip{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
+.pn{border:4px solid var(--ink);background:#fff;position:relative;min-height:260px;overflow:hidden;padding:14px;
+  opacity:0;transform:scale(.9) rotate(var(--r,0deg));transition:opacity .5s,transform .6s cubic-bezier(.3,1.6,.5,1)}
+.pn.in{opacity:1;transform:rotate(var(--r,0deg))}
+.w2{grid-column:span 2}.w3{grid-column:span 3}.w4{grid-column:span 4}.w6{grid-column:span 6}
+.pn .cap{position:absolute;left:-4px;top:-4px;background:var(--y);border:3px solid var(--ink);padding:3px 10px;font-size:12px;font-weight:700;z-index:2}
+.pn .scene{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:16px}
+.face{font-size:80px;line-height:1;filter:drop-shadow(3px 3px 0 #0002)}
+.ht{position:absolute;inset:0;background-image:radial-gradient(var(--c,#4d7cff55) 2px,transparent 2.5px);background-size:10px 10px;opacity:.6}
+.speed{position:absolute;inset:0;background:repeating-conic-gradient(from 0deg at 50% 60%,#0000 0 5deg,#00000010 5deg 7deg)}
+.bub{position:absolute;background:#fff;border:3px solid var(--ink);border-radius:20px;padding:10px 14px;font-size:14px;line-height:1.5;font-weight:600;max-width:78%;z-index:2}
+.bub:after{content:"";position:absolute;bottom:-14px;left:var(--tx,30px);border:8px solid transparent;border-top:12px solid var(--ink)}
+.bub.th{border-radius:50%;padding:14px 18px;font-weight:500;font-style:italic}
+.bub.th:after{border:0;width:12px;height:12px;border:3px solid var(--ink);border-radius:50%;background:#fff;bottom:-20px}
+.sfx{position:absolute;font-weight:900;font-size:34px;color:var(--r);-webkit-text-stroke:1px var(--ink);text-shadow:2px 2px 0 var(--ink);transform:rotate(-12deg);z-index:2}
+.scr{position:absolute;left:12%;right:12%;top:22%;bottom:28%;border:3px solid var(--ink);border-radius:8px;background:#f4f6ff;padding:8px;display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.scr i{background:#c9d3f2;border-radius:3px}
+.scr.clean{grid-template-columns:repeat(3,1fr);grid-template-rows:auto 1fr;gap:6px}
+.scr.clean i{background:var(--b)}
+.scr.clean i.k{height:40px}
+.scr.clean i.c{grid-column:span 3;background:#c9d3f2}
+.clock{position:absolute;right:14px;top:14px;border:3px solid var(--ink);border-radius:50%;width:56px;height:56px;background:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px}
+/* 结局切换 */
+.switch{display:flex;justify-content:center;gap:0;margin:40px 0 20px}
+.switch button{border:4px solid var(--ink);background:#fff;padding:12px 26px;font-weight:900;font-size:16px;cursor:pointer;margin-left:-4px;transition:all .2s}
+.switch button.on{background:var(--ink);color:var(--y)}
+.ends{position:relative;perspective:1600px}
+.end{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;transition:transform .8s cubic-bezier(.3,.8,.2,1),opacity .5s;backface-visibility:hidden}
+.end.b{position:absolute;inset:0;transform:rotateY(180deg)}
+.ends.flip .end.a{transform:rotateY(-180deg)}
+.ends.flip .end.b{transform:rotateY(0)}
+.ends:not(.flip) .end.b,.ends.flip .end.a{opacity:0;pointer-events:none}
+.end .pn{opacity:1;transform:rotate(var(--r,0deg))}
+.moral{margin:50px auto 0;max-width:900px;border:4px solid var(--ink);background:var(--y);box-shadow:8px 8px 0 var(--ink);padding:28px 32px}
+.moral h2{font-size:28px;font-weight:900;margin-bottom:10px}
+.moral ul{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px}
+.moral li{background:#fff;border:3px solid var(--ink);padding:14px;font-size:14px;line-height:1.7}
+.moral li b{display:block;font-size:22px}
+footer{text-align:center;padding:40px;font-size:12px;color:#777}
+@media(max-width:900px){.strip,.end{grid-template-columns:1fr 1fr}.w3,.w4,.w6{grid-column:span 2}.moral ul{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<section class="cover">
+  <div class="burst" style="left:8vw;top:14vh">用户<br>故事!</div>
+  <div class="ep">EPISODE 01 · 示例内容</div>
+  <h1>周一早上<br>九点十五分</h1>
+  <p>用户画像只写“区域经理，关注业绩”太单薄了。我们把访谈内容画成了一则漫画——看看小陈到底卡在了哪里。</p>
+  <div class="cast"><div>👩‍💼<b>小陈</b>区域经理 · 管 12 家门店<br>每周一 9:30 开晨会</div><div>👨‍💻<b>老周</b>数据分析师<br>每周被问 30+ 次“帮我看下数”</div></div>
+</section>
+<div class="page">
+  <div class="act"><span>第一幕</span>现在的周一</div>
+  <div class="strip">
+    <div class="pn w2" style="--r:-1deg"><div class="cap">9:15 · 地铁上</div><div class="ht" style="--c:#4d7cff44"></div><div class="clock">9:15</div>
+      <div class="bub" style="left:14px;top:46px">晨会要讲上周业绩，先看一眼数据…</div><div class="scene"><div class="face">🙂</div></div></div>
+    <div class="pn w4" style="--r:.6deg"><div class="cap">打开驾驶舱</div><div class="scr"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="sfx" style="right:30px;top:30px">24 个图?!</div><div class="bub th" style="left:20px;bottom:18px;--tx:60px">我们区的数据……在哪？</div></div>
+    <div class="pn w3" style="--r:.8deg"><div class="cap">9:22 · 手指放大缩小</div><div class="speed"></div>
+      <div class="bub" style="right:16px;top:40px;--tx:120px">图表在手机上挤成一团，根本看不清</div><div class="scene"><div class="face">😣</div></div><div class="sfx" style="left:20px;bottom:30px;font-size:28px">捏捏捏</div></div>
+    <div class="pn w3" style="--r:-1deg"><div class="cap">9:26 · 求助</div><div class="ht" style="--c:#ff4d4d44"></div>
+      <div class="bub" style="left:14px;top:40px">@老周 帮我截一下华东上周的销售额！急！</div><div class="scene"><div class="face">😰</div><div class="face" style="font-size:50px;margin-left:30px">📱</div></div></div>
+    <div class="pn w6" style="--r:.3deg;min-height:200px"><div class="cap">9:31 · 晨会</div><div class="speed"></div>
+      <div class="bub" style="left:40px;top:50px;--tx:40px">“数据……老周还没发过来，我先口头说一下大概？”</div><div class="scene" style="justify-content:flex-end;padding-right:60px"><div class="face">😓</div></div>
+      <div class="sfx" style="right:200px;top:30px">尴尬…</div></div>
+  </div>
+
+  <div class="act" style="margin-top:50px"><span>第二幕</span>如果……</div>
+  <div class="switch"><button class="on" data-e="a">旧版结局</button><button data-e="b">新版结局</button></div>
+  <div class="ends" id="ends">
+    <div class="end a">
+      <div class="pn w3" style="--r:-.6deg;min-height:220px"><div class="cap">每周如此</div><div class="ht" style="--c:#00000022"></div>
+        <div class="bub" style="left:14px;top:40px">小陈：每周一都要找人截图……</div><div class="scene"><div class="face">😮‍💨</div></div></div>
+      <div class="pn w3" style="--r:.8deg;min-height:220px"><div class="cap">与此同时</div>
+        <div class="bub" style="right:14px;top:40px;--tx:150px">老周：这周第 31 次“帮我看下数”了</div><div class="scene"><div class="face">🫠</div></div></div>
+    </div>
+    <div class="end b">
+      <div class="pn w2" style="--r:-.6deg;min-height:220px"><div class="cap">9:15 · 地铁上</div><div class="scr clean" style="top:18%;bottom:30%"><i class="k"></i><i class="k"></i><i class="k"></i><i class="c"></i></div>
+        <div class="sfx" style="right:12px;bottom:14px;color:var(--g);font-size:26px">叮!</div></div>
+      <div class="pn w2" style="--r:.8deg;min-height:220px"><div class="cap">角色默认视图</div><div class="ht" style="--c:#3ccf7a44"></div>
+        <div class="bub" style="left:14px;top:40px">一打开就是我们区的 3 个核心指标！</div><div class="scene"><div class="face">😄</div></div></div>
+      <div class="pn w2" style="--r:-.4deg;min-height:220px"><div class="cap">9:31 · 晨会</div><div class="speed"></div>
+        <div class="bub" style="right:14px;top:40px;--tx:120px">“上周华东销售额 4,820 万，环比 +12.6%”</div><div class="scene"><div class="face">😎</div></div></div>
+    </div>
+  </div>
+  <div class="moral">
+    <h2>这则漫画里藏着 3 个设计需求</h2>
+    <ul><li><b>入口</b>打开就要看到“我的区域”——角色默认视图</li><li><b>移动</b>通勤场景是主要使用时段——移动端摘要视图</li><li><b>自助</b>求助分析师是最后手段——减少对“人肉截图”的依赖</li></ul>
+  </div>
 </div>
-<p class="note">内容为示意</p>
-<script src="demo.js"></script>
-</body></html>
+<footer>方案 L · 漫画分镜 — 把用户访谈画成分镜故事，结局可以在旧版和新版之间翻转对比。</footer>
+<script>
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){const sib=[...e.target.parentNode.children].indexOf(e.target);setTimeout(()=>e.target.classList.add('in'),sib*160);io.unobserve(e.target)}}),{threshold:.25});
+document.querySelectorAll('.strip .pn').forEach(p=>io.observe(p));
+const ends=document.getElementById('ends');
+document.querySelectorAll('.switch button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.switch button').forEach(x=>x.classList.toggle('on',x===b));ends.classList.toggle('flip',b.dataset.e==='b')});
+</script>
+<script src="scroll.js"></script>
+</body>
+</html>

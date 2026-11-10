@@ -4,7 +4,7 @@
 
 **想说明：** 让听众先知道是什么案例，再看方案  
 **分类：** 样式  
-**Theme：** 深色  
+**Theme：** 浅色  
 **样例：** `demos/case-intro.html`  
 
 下列数值从本库样例在 1280 × 720 视口、最后一步时的实际渲染中量出（`getComputedStyle`），不是原始参考网站的取值。改成自己的案例时，按内容替换颜色和文字，保留层级比例。
@@ -18,17 +18,16 @@
 
 | Name | Value | Token | Role |
 |---|---|---|---|
-| Canvas | `#0C0B12` | `--bg` | 背景 / 面 |
+| Canvas | `#F4F3EF` | `--bg` | 背景 / 面 |
 | Surface 1 | `#FFFFFF` | — | 面 / 区块 |
 | Surface 2 | `#FFFFFF / 5%` | — | 面 / 区块 |
-| Accent · 橙 | `#FFB547` | `--amber` | 面 / 区块 |
+| Accent · 橙 | `#B86E00` | `--amber` | 面 / 区块 |
 | Surface 3 | `#F4F1FF` | — | 面 / 区块 |
-| Text 1 | `#F3F1FF` | `--fg` | 文字 |
-| Text 2 | `#1D2129` | — | 文字 |
-| Text 3 | `#9A95A8` | `--mut` | 文字 |
+| Text 1 | `#1D2129` | `--fg` | 文字 |
+| Text 2 | `#6B7280` | `--mut` | 文字 |
 | Accent · 橙 | `#2A1A00` | — | 文字 |
-| Accent · 紫 | `#B9A8FF` | `--violet` | 文字 |
-| Accent · 紫 | `#B9A8FF / 30%` | `--violet` | 描边 |
+| Accent · 紫 | `#6A55D6` | `--violet` | 文字 |
+| Accent · 紫 | `#B9A8FF / 30%` | — | 描边 |
 | Line 1 | `#E5E6EB` | — | 描边 |
 | Accent · 紫 | `#5B3FD6` | — | 描边 |
 
@@ -97,7 +96,7 @@
 
 ## Agent Prompt Guide
 
-**颜色速查：** `#0C0B12`（背景 / 面），`#FFFFFF`（面 / 区块），`#FFFFFF / 5%`（面 / 区块），`#FFB547`（面 / 区块），`#F4F1FF`（面 / 区块），`#F3F1FF`（文字）
+**颜色速查：** `#F4F3EF`（背景 / 面），`#FFFFFF`（面 / 区块），`#FFFFFF / 5%`（面 / 区块），`#B86E00`（面 / 区块），`#F4F1FF`（面 / 区块），`#1D2129`（文字）
 
 ```text
 做一页「三拍递进的案例开场」形式的 HTML 演示：让听众先知道是什么案例，再看方案。
@@ -113,16 +112,15 @@
 
 ```css
 :root{
-  --canvas:#0C0B12;
+  --canvas:#F4F3EF;
   --surface-1:#FFFFFF;
   --surface-2:rgba(255,255,255,0.05);
-  --surface-3:#FFB547;
+  --surface-3:#B86E00;
   --surface-4:#F4F1FF;
-  --text-1:#F3F1FF;
-  --text-2:#1D2129;
-  --text-3:#9A95A8;
-  --text-4:#2A1A00;
-  --text-5:#B9A8FF;
+  --text-1:#1D2129;
+  --text-2:#6B7280;
+  --text-3:#2A1A00;
+  --text-4:#6A55D6;
   --line-1:rgba(185,168,255,0.3);
   --line-2:#E5E6EB;
   --line-3:#5B3FD6;

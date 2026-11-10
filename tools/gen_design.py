@@ -8,7 +8,7 @@ ROOT = Path(sys.argv[1]).resolve()
 P = json.loads(subprocess.check_output(['node', '-e', "global.window={};require(process.argv[1]);console.log(JSON.stringify(window.PATTERNS))", str(ROOT/'data/patterns.js')]))
 
 JS = r"""() => {
- const N = window.DEMO ? DEMO.N : 1; if (window.DEMO) DEMO.set(N-1);
+ const N = window.DEMO ? DEMO.N : 1; const orig = window.STEPS || (window.DEMO && DEMO.scroll); if (window.DEMO && !orig) DEMO.set(N-1);
  return new Promise(res => setTimeout(() => {
   const vis = e => { const r = e.getBoundingClientRect(), cs = getComputedStyle(e); return r.width>0 && r.height>0 && cs.visibility!=='hidden' && +cs.opacity>0.05 && r.bottom>0 && r.top<innerHeight; };
   const els = [...document.querySelectorAll('body *')].filter(e => !['SCRIPT','STYLE','LINK','svg','path','g','line','circle','rect','text'].includes(e.tagName) && vis(e));
@@ -202,9 +202,9 @@ with sync_playwright() as pw:
         if p.get('demo') and 'coverStep' in p: step.setdefault(p['demo'], p['coverStep'])
     for demo in sorted({p['demo'] for p in P if p.get('demo')}):
         cp.goto((ROOT/demo).as_uri()); cp.wait_for_timeout(500)
-        cp.evaluate("(s)=>{ if(window.DEMO){ const end = s===null ? DEMO.N-1 : s; let i=0; if(end===0) return DEMO.set(0); const t=setInterval(()=>{ DEMO.set(++i); if(i>=end) clearInterval(t) },120) } }", step.get(demo))
+        cp.evaluate("(s)=>{ if(window.DEMO){ const orig = window.STEPS || DEMO.scroll; const end = s===null ? (orig ? 0 : DEMO.N-1) : s; let i=0; if(end===0) return DEMO.set(0); const t=setInterval(()=>{ DEMO.set(++i); if(i>=end) clearInterval(t) },120) } }", step.get(demo))
         cp.wait_for_timeout(2200)
-        cp.add_style_tag(content='.ctrl{display:none!important}.stage{bottom:0!important}')
+        if cp.evaluate("!!document.querySelector('script[src=\"demo.js\"]')"): cp.add_style_tag(content='.ctrl{display:none!important}.stage{bottom:0!important}')
         cp.wait_for_timeout(200)
         cp.screenshot(path=str(cov/(Path(demo).stem + '.jpg')), type='jpeg', quality=78)
     b.close()

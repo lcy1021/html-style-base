@@ -4,7 +4,7 @@
 
 **想说明：** 有人物、处境、转折的案例  
 **分类：** 参考  
-**Theme：** 深色  
+**Theme：** 浅色  
 **原始参考：** <https://www.sbs.com.au/theboat/>  
 **样例：** `demos/comic.html`  
 
@@ -18,29 +18,27 @@
 
 | Name | Value | Token | Role |
 |---|---|---|---|
-| Canvas | `#0C0B12` | `--bg` | 背景 / 面 |
+| Canvas | `#FFF8E7` | — | 背景 / 面 |
 | Surface 1 | `#FFFFFF` | — | 面 / 区块 |
-| Surface 2 | `#1D2129` | — | 面 / 区块 |
-| Accent · 橙 | `#FFB547` | `--amber` | 面 / 区块 |
-| Text 1 | `#F3F1FF` | `--fg` | 文字 |
-| Text 2 | `#86909C` | — | 文字 |
-| Accent · 紫 | `#B9A8FF` | `--violet` | 文字 |
-| Text 3 | `#9A95A8` | `--mut` | 文字 |
+| Accent · 红 | `#FF4D4D` | — | 面 / 区块 |
+| Surface 2 | `#141414` | — | 面 / 区块 |
+| Accent · 黄 | `#FFE14D` | — | 文字 |
 
 ## Tokens — Typography
 
-- **字体栈：** `-apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif`
+- **字体栈：** `-apple-system, "PingFang SC", "Microsoft YaHei", sans-serif`
 - **说明：** 中文优先系统字体（PingFang SC / 微软雅黑），不引外部字体，离线也能显示。
 
 ### Type Scale
 
 | Size | Weight | Line height | Letter spacing | 用在 | 示例 |
 |---|---|---|---|---|---|
-| 48px | 400 | normal | normal | `div.sc` | 🧑‍💼 |
-| 30px | 400 | 39px | -0.9px | `h1, em` | 用四格漫画， |
-| 13px | 400 | 19.5px | normal | `div.bub` | 今天要把报表发给 12 个部门。 |
-| 11px | 400 | normal | 1.54px | `p.eb` | 示例 · 去业务化 |
-| 11px | 400 | normal | normal | `small, p.note` | 17:30 |
+| 102.4px | 900 | 107.52px | -2.048px | `h1` | 周一早上九点十五分 |
+| 28px | 700 | normal | normal | `b` | 小陈 |
+| 20px | 900 | 24px | normal | `div.burst` | 用户故事! |
+| 18px | 500 | 32.4px | normal | `p` | 用户画像只写“区域经理，关注业绩 |
+| 14px | 900 | normal | 2.8px | `div.ep` | EPISODE 01 · 示例内 |
+| 13px | 400 | normal | normal | `div` | 👩‍💼区域经理 · 管 12 |
 
 ## Tokens — Spacing & Shapes
 
@@ -48,28 +46,28 @@
 
 | Value | 次数 |
 |---|---|
-| 6px | 4 |
-| 14px | 4 |
+| 0 | — |
 
 ### Shadows
 
-不用阴影，靠底色和描边分层。
+| Value | 次数 |
+|---|---|
+| `rgb(20, 20, 20) 4px 4px 0px 0px` | 2 |
 
 ### Layout
 
 - 舞台：`position:fixed; inset:0 0 56px; padding:28px 34px`，标题区在左上。
 - 底部步进控制条高 56px：← / 步数 / 本步说明 / 重播 / 下一步。
 - 主体元素（最后一步）：
-  - `div.stage` — 1280×664 @ (0, 0)，block
-  - `div.strip` — 1212×520 @ (34, 120)，grid
-  - `p.note` — 55×16 @ (1205, 640)，block
+  - `section.cover` — 1280×662 @ (0, 0)，flex
+  - `div.page` — 1180×1621 @ (50, 662)，block
 
 ## 步骤脚本
 
-1. 第一格：人物和处境
-2. 第二格：遇到卡点
-3. 第三格：将就的做法
-4. 第四格：结局翻转——真正的问题
+1. 周一早上 九点十五分
+2. 第一幕 现在的周一
+3. 第二幕 如果……
+4. 这则漫画里藏着 3 个设计需求
 
 ## Do's and Don'ts
 
@@ -86,7 +84,7 @@
 
 ## Agent Prompt Guide
 
-**颜色速查：** `#0C0B12`（背景 / 面），`#FFFFFF`（面 / 区块），`#1D2129`（面 / 区块），`#FFB547`（面 / 区块），`#F3F1FF`（文字），`#86909C`（文字）
+**颜色速查：** `#FFF8E7`（背景 / 面），`#FFFFFF`（面 / 区块），`#FF4D4D`（面 / 区块），`#141414`（面 / 区块），`#FFE14D`（文字）
 
 ```text
 做一页「The Boat · 故事性案例」形式的 HTML 演示：有人物、处境、转折的案例。
@@ -106,15 +104,11 @@
 
 ```css
 :root{
-  --canvas:#0C0B12;
+  --canvas:#FFF8E7;
   --surface-1:#FFFFFF;
-  --surface-2:#1D2129;
-  --surface-3:#FFB547;
-  --text-1:#F3F1FF;
-  --text-2:#86909C;
-  --text-3:#B9A8FF;
-  --text-4:#9A95A8;
-  --radius:6px;
+  --surface-2:#FF4D4D;
+  --surface-3:#141414;
+  --text-1:#FFE14D;
   --ease:cubic-bezier(.3,.8,.2,1);
 }
 ```

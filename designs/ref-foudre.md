@@ -19,12 +19,12 @@
 
 | Name | Value | Token | Role |
 |---|---|---|---|
-| Canvas | `#FCE5DF` | `--bg` | 背景 / 面 |
+| Canvas | `#F4F3EF` | `--bg` | 背景 / 面 |
 | Accent · 绿 | `#1F4D3A` | — | 面 / 区块 |
 | Accent · 品红 | `#DB3C8A` | — | 面 / 区块 |
-| Text 1 | `#6B5D58` | `--mut` | 文字 |
+| Text 1 | `#6B7280` | `--mut` | 文字 |
 | Text 2 | `#FFF8F6` | — | 文字 |
-| Text 3 | `#1F2A24` | `--fg` | 文字 |
+| Text 3 | `#1D2129` | `--fg` | 文字 |
 
 ## Tokens — Typography
 
@@ -91,7 +91,7 @@
 
 ## Agent Prompt Guide
 
-**颜色速查：** `#FCE5DF`（背景 / 面），`#1F4D3A`（面 / 区块），`#DB3C8A`（面 / 区块），`#6B5D58`（文字），`#FFF8F6`（文字），`#1F2A24`（文字）
+**颜色速查：** `#F4F3EF`（背景 / 面），`#1F4D3A`（面 / 区块），`#DB3C8A`（面 / 区块），`#6B7280`（文字），`#FFF8F6`（文字），`#1D2129`（文字）
 
 ```text
 做一页「Agence Foudre · 叠卡递进」形式的 HTML 演示：有先后关系的步骤和认知修正。
@@ -111,12 +111,12 @@
 
 ```css
 :root{
-  --canvas:#FCE5DF;
+  --canvas:#F4F3EF;
   --surface-1:#1F4D3A;
   --surface-2:#DB3C8A;
-  --text-1:#6B5D58;
+  --text-1:#6B7280;
   --text-2:#FFF8F6;
-  --text-3:#1F2A24;
+  --text-3:#1D2129;
   --radius:24px;
   --ease:cubic-bezier(.3,.8,.2,1);
 }

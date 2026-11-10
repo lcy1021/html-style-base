@@ -1,28 +1,142 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>诊断仪</title><link rel="stylesheet" href="demo.css">
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Y · 四信号诊断仪｜做到什么程度算够</title>
 <style>
-.sg{position:absolute;left:34px;top:130px;width:42%}
-.sg label{display:block;margin-bottom:18px;font-size:14px}.sg label span{display:flex;justify-content:space-between;color:var(--mut);margin-bottom:6px}.sg label span b{color:var(--fg);font-weight:500}
-.sg input{width:100%;accent-color:var(--amber)}
-.gauge{position:absolute;right:8%;top:150px;width:380px;height:220px}
-.gauge svg{width:100%;height:100%;overflow:visible}
-.arc{fill:none;stroke-width:22}
-.nd{transition:transform .8s cubic-bezier(.3,1.4,.5,1);transform-origin:190px 190px}
-.out{position:absolute;right:8%;top:390px;width:380px;text-align:center;font-size:18px}.out small{display:block;color:var(--mut);font-size:13px;margin-top:6px}
-</style></head>
-<body data-steps="3" data-caps="四个信号，各自拖动|信号都不明：继续分析|信号都清楚：可以推进">
-<div class="stage"><p class="eb">示例 · 去业务化</p><h1>分析到什么程度算够，<em>看几个信号。</em></h1></div>
-<div class="sg" id="sg"></div>
-<div class="gauge"><svg viewBox="0 0 380 210"><path class="arc" d="M30 190 A160 160 0 0 1 110 51" stroke="#ff6b5a"/><path class="arc" d="M110 51 A160 160 0 0 1 270 51" stroke="#ffb547"/><path class="arc" d="M270 51 A160 160 0 0 1 350 190" stroke="#5ad0b3"/><g class="nd" id="nd"><line x1="190" y1="190" x2="190" y2="50" stroke="#f3f1ff" stroke-width="4" stroke-linecap="round"/><circle cx="190" cy="190" r="10" fill="#f3f1ff"/></g></svg></div>
-<div class="out" id="ot"></div>
-<p class="note">内容为示意 · 刻度只帮助讨论，不替代判断</p>
-<script src="demo.js"></script>
+:root{--bg:#f5f3ee;--ink:#1a1a1a;--mut:#8a857c;--line:#e4e0d6;--g:#2b8a3e;--y:#e67700;--r:#e03131;--b:#1971c2}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+.hd{padding:4vh 5vw 0}
+.hd small{font-size:12px;color:var(--mut);letter-spacing:.15em}
+.hd h1{font-size:clamp(26px,3.2vw,44px);line-height:1.25;margin-top:8px}
+.sec{margin:3vh 5vw 0}
+.sec h2{font-size:clamp(20px,2.2vw,28px)}
+.sec>p{color:var(--mut);font-size:14px;margin:4px 0 16px}
+.diag{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2vw;background:#fff;border:1px solid var(--line);border-radius:22px;padding:26px}
+.pre{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.pre button{height:36px;padding:0 14px;border-radius:99px;border:1.5px solid var(--ink);background:#fff;cursor:pointer;font-size:13px}
+.pre button.on{background:var(--ink);color:#fff}
+.sl{margin:16px 0}
+.sl .l{display:flex;justify-content:space-between;font-size:14px;font-weight:600}
+.sl .l span{font-weight:400;color:var(--mut);font-size:12px}
+.sl p{font-size:12px;color:var(--mut);margin:2px 0 8px}
+input[type=range]{width:100%;accent-color:#1a1a1a}
+svg{width:100%;height:auto;overflow:visible}
+.gauge{text-align:center}
+.gauge .v{font-size:30px;font-weight:900;margin-top:-10px;transition:color .4s}
+.gauge .d{font-size:14px;color:#555;line-height:1.7;margin-top:8px;min-height:72px}
+.needle{transition:transform .8s cubic-bezier(.3,1.5,.5,1);transform-origin:150px 150px}
+.q{margin-top:14px;padding:14px;border-radius:12px;background:#fff8e6;font-size:14px;line-height:1.7;border-left:4px solid var(--y)}
+/* 够了长什么样 */
+.enough{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.en{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;cursor:pointer;transition:all .3s;perspective:800px;min-height:190px;position:relative}
+.en .f,.en .bk{transition:opacity .4s,transform .4s}
+.en .bk{position:absolute;inset:16px;opacity:0;transform:translateY(10px)}
+.en.flip .f{opacity:0;transform:translateY(-10px)}
+.en.flip .bk{opacity:1;transform:none}
+.en.flip{background:var(--ink);color:#fff}
+.en small{font-size:11px;color:var(--mut)}
+.en b{display:block;font-size:16px;margin-top:6px}
+.en .bk p{font-size:14px;line-height:1.7}
+.en .bk em{display:block;font-style:normal;font-size:12px;color:#ffd43b;margin-top:10px}
+/* 筛子 */
+.sieve{position:relative;height:430px;background:#fff;border:1px solid var(--line);border-radius:22px;overflow:hidden}
+.mesh{position:absolute;left:8%;right:8%;top:200px;height:14px;background:repeating-linear-gradient(90deg,var(--ink) 0 3px,transparent 3px 22px);border-top:3px solid var(--ink);border-bottom:3px solid var(--ink)}
+.mesh span{position:absolute;right:0;top:-26px;font-size:12px;color:var(--mut)}
+.tray{position:absolute;left:8%;right:8%;bottom:16px;height:110px;border:2px dashed #c9c4b8;border-radius:14px}
+.tray span{position:absolute;left:14px;top:-11px;background:#fff;padding:0 8px;font-size:12px;color:var(--mut)}
+.u{position:absolute;padding:8px 14px;border-radius:99px;background:#fff;border:1.5px solid var(--ink);font-size:13px;white-space:nowrap;transition:left 1s cubic-bezier(.5,0,.5,1),top 1s cubic-bezier(.6,0,.9,.6),background .4s,color .4s,transform .4s}
+.u.key{background:var(--r);color:#fff;border-color:var(--r);transform:scale(1.12);box-shadow:0 8px 20px -6px #e0313188}
+.u.low{font-size:11px;opacity:.75}
+.go{position:absolute;right:24px;top:20px;height:40px;padding:0 18px;border-radius:12px;border:0;background:var(--ink);color:#fff;cursor:pointer;font-size:14px;z-index:3}
+.lead{position:absolute;left:24px;top:22px;font-size:14px;color:var(--mut);max-width:420px;line-height:1.6;z-index:3}
+.lead b{color:var(--ink)}
+/* 一句话 */
+.sent{background:var(--ink);color:#fff;border-radius:22px;padding:30px 34px;font-size:clamp(18px,1.9vw,26px);line-height:2}
+.slot{display:inline-block;border-bottom:2px solid #ffd43b;color:#ffd43b;padding:0 4px;min-width:60px;transition:all .3s}
+.slot.ty{background:#ffd43b22}
+.cs{display:flex;gap:8px;margin-bottom:14px}
+.cs button{height:34px;padding:0 14px;border-radius:99px;border:1.5px solid var(--ink);background:#fff;cursor:pointer;font-size:13px}
+.cs button.on{background:var(--ink);color:#fff}
+.end{font-size:14px;color:#ffffffaa;margin-top:14px;line-height:1.7;font-size:14px}
+footer{height:8vh}
+@media(max-width:1100px){.diag,.enough{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="hd"><small>第 3 段 · 不同背景下，什么是好的分析</small><h1>做到什么程度算够？<br>看四个信号，而不是看时间够不够。</h1></div>
+<section class="sec">
+  <div class="pre" id="pre"><button data-p="0">改一个按钮文案</button><button data-p="1">字段排序</button><button data-p="2">删除表后的快捷重配</button><button data-p="3">指标树（大客户）</button></div>
+  <div class="diag">
+    <div id="sliders"></div>
+    <div><svg viewBox="0 0 300 300" id="radar"></svg></div>
+    <div class="gauge"><svg viewBox="0 0 300 170"><path d="M30,150 A120,120 0 0 1 270,150" fill="none" stroke="#ebfbee" stroke-width="26"/>
+      <path d="M30,150 A120,120 0 0 1 110,37" fill="none" stroke="#b2f2bb" stroke-width="26"/><path d="M110,37 A120,120 0 0 1 190,37" fill="none" stroke="#ffe8cc" stroke-width="26"/><path d="M190,37 A120,120 0 0 1 270,150" fill="none" stroke="#ffc9c9" stroke-width="26"/>
+      <text x="40" y="168" font-size="12" fill="#2b8a3e">先推进</text><text x="150" y="16" font-size="12" fill="#e67700" text-anchor="middle">轻量确认</text><text x="260" y="168" font-size="12" fill="#e03131" text-anchor="end">继续深入</text>
+      <g class="needle" id="needle"><line x1="150" y1="150" x2="150" y2="50" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round"/><circle cx="150" cy="150" r="9" fill="#1a1a1a"/></g></svg>
+      <div class="v" id="gv"></div><div class="d" id="gd"></div></div>
+  </div>
+  <div class="q">一个判断问题：<b>现在缺的信息，会不会改变我们马上要做的重要决定？</b>会，就先补；不会，就记下未知项，先推进，约好什么时候回头看。</div>
+</section>
+<section class="sec" style="margin-top:7vh"><h2>不同场景下，“够了”长什么样</h2><p>点击卡片翻面</p>
+  <div class="enough" id="enough"></div></section>
+<section class="sec" style="margin-top:7vh"><h2>急的时候怎么办</h2><p>要问的问题不变，变的是用什么来回答。</p>
+  <div class="sieve" id="sieve"><div class="lead">手上有一堆未知。<b>只挑一个会改变决定的</b>去确认，其他的写进需求单，标“待确认”。</div>
+    <button class="go" id="shake">筛一下</button><div class="mesh"><span>会不会改变当前决定？</span></div><div class="tray"><span>需求单 · 待确认</span></div></div></section>
+<section class="sec" style="margin-top:7vh"><h2>好的分析，浓缩成一句话</h2><p>不求完整，只要团队知道：我们在解决什么、还不知道什么、接下来谁去确认。</p>
+  <div class="cs" id="cs"><button data-c="0" class="on">字段排序</button><button data-c="1">移动端报表</button></div>
+  <div class="sent" id="sent"></div></section>
+<footer></footer>
 <script>
-const S=['知道这件事服务谁','知道做完怎么算完成','补信息还会改变方案吗（越低越好）','改错的代价'];
-sg.innerHTML=S.map((t,i)=>`<label><span>${t}<b id="v${i}">50</b></span><input type="range" min="0" max="100" value="50" data-i="${i}"></label>`).join('');
-const ins=[...sg.querySelectorAll('input')];
-function upd(){const v=ins.map(i=>+i.value);v.forEach((x,i)=>document.getElementById('v'+i).textContent=x);
- const sc=(v[0]+v[1]+(100-v[2])+(100-v[3]))/4;nd.style.transform=`rotate(${(sc-50)*1.6}deg)`;
- ot.innerHTML=sc<38?'继续补信息<small>还有关键未知，先问清楚</small>':sc<64?'带着假设推进<small>写下哪些还没验证</small>':'可以推进<small>再分析，收获也不大了</small>';}
-ins.forEach(i=>i.oninput=upd);
-window.onStep=k=>{const P=[[50,50,50,50],[20,30,80,70],[85,80,15,30]][k];ins.forEach((x,i)=>x.value=P[i]);upd();};
-</script></body></html>
+const SIG=[['影响范围','只影响局部操作，还是多个角色和核心流程？'],['投入成本','设计、研发和后续维护需要多少投入？'],['调整难度','上线后发现不对，是否容易修改或回退？'],['关键不确定性','缺的信息会不会改变方向或范围？']];
+const PRE=[[10,10,5,10],[40,30,20,55],[55,45,70,60],[90,85,80,90]];
+const sl=document.getElementById('sliders');
+SIG.forEach((s,i)=>{sl.insertAdjacentHTML('beforeend',`<div class="sl"><div class="l">${s[0]}<span id="v${i}"></span></div><p>${s[1]}</p><input type="range" min="0" max="100" value="50" id="s${i}"></div>`)});
+const ins=SIG.map((_,i)=>document.getElementById('s'+i));ins.forEach(x=>x.oninput=()=>{document.querySelectorAll('#pre button').forEach(b=>b.classList.remove('on'));draw()});
+const radar=document.getElementById('radar');
+function pt(i,v){const a=-Math.PI/2+i*Math.PI/2,r=v/100*110;return[150+Math.cos(a)*r,150+Math.sin(a)*r]}
+radar.innerHTML=[25,50,75,100].map(v=>`<polygon points="${[0,1,2,3].map(i=>pt(i,v).join(',')).join(' ')}" fill="none" stroke="#e4e0d6"/>`).join('')+
+ SIG.map((s,i)=>{const p=pt(i,i%2?116:124);return `<text x="${p[0]}" y="${p[1]+4}" font-size="12" text-anchor="${i===1?'start':i===3?'end':'middle'}" fill="#8a857c">${s[0]}</text>`}).join('')+
+ `<polygon id="poly" fill="#1a1a1a22" stroke="#1a1a1a" stroke-width="2.5" stroke-linejoin="round"/>`;
+let cur=[50,50,50,50];
+function draw(){const tgt=ins.map(x=>+x.value);const st=performance.now(),from=[...cur];
+  (function a(n){const p=Math.min((n-st)/500,1),e=1-Math.pow(1-p,3);cur=from.map((f,i)=>f+(tgt[i]-f)*e);
+    document.getElementById('poly').setAttribute('points',cur.map((v,i)=>pt(i,v).join(',')).join(' '));if(p<1)requestAnimationFrame(a)})(st);
+  tgt.forEach((v,i)=>document.getElementById('v'+i).textContent=v<34?'低':v<67?'中':'高');
+  const score=tgt[0]*.25+tgt[1]*.2+tgt[2]*.25+tgt[3]*.3;
+  document.getElementById('needle').style.transform=`rotate(${-90+score/100*180}deg)`;
+  const [t,c,d]=score<35?['先推进','#2b8a3e','快速确认谁会看到、有没有歧义，就可以往前推。']:score<62?['轻量确认','#e67700','挑一个会改变决定的未知去确认，其他的记下来。']:['继续深入','#e03131','继续问它代表哪类客户、哪些能力通用，有没有更小、更便宜的验证方式。'];
+  const gv=document.getElementById('gv');gv.textContent=t;gv.style.color=c;document.getElementById('gd').textContent=d;}
+document.querySelectorAll('#pre button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#pre button').forEach(x=>x.classList.toggle('on',x===b));PRE[+b.dataset.p].forEach((v,i)=>ins[i].value=v);draw()});
+document.querySelector('#pre button[data-p="1"]').click();
+// 够了
+const EN=[['客户的声音','能把这条诉求讲成一个有人物、有场景的故事','一份简短记录'],['大客户','说得清哪些通用、哪些是他特有的，至少问过第二个客户','通用 vs 特有对比 + 验证计划'],['0 到 1','说得清先验证哪个场景，明确不做什么','假设清单、验证顺序、边界'],['被动：产品给了方案','说得清方案建立在哪条假设上，以及怎么验证它','风险和依据 + 可讨论的下一步'],['主动：设计侧优化','找到至少一个真实受影响的用户，排好分阶段','证据 + 分阶段计划']];
+document.getElementById('enough').innerHTML=EN.map(e=>`<div class="en"><div class="f"><small>场景</small><b>${e[0]}</b><p style="font-size:12px;color:#8a857c;margin-top:40px">分析到哪里就够了？ ↻</p></div><div class="bk"><p>${e[1]}</p><em>重点产出：${e[2]}</em></div></div>`).join('');
+document.querySelectorAll('.en').forEach(e=>e.onclick=()=>e.classList.toggle('flip'));
+// 筛子
+const U=[['客户具体用的是哪个版本？',0],['他们多久上传一次？',0],['上传后的顺序，到底按什么规则错？',1],['有没有其他客户也这样？',0],['列名会不会有重复？',0],['是否需要支持撤销？',0],['手机端要不要支持？',0]];
+const sieve=document.getElementById('sieve');
+U.forEach((u,i)=>{const d=document.createElement('div');d.className='u';d.textContent=u[0];sieve.appendChild(d);u.el=d});
+function scatter(){const W=sieve.clientWidth;U.forEach((u,i)=>{u.el.classList.remove('key','low');u.el.style.transition='none';u.el.style.left=(W*.1+(i%4)*W*.2+(i>3?W*.08:0))+'px';u.el.style.top=(80+(i>3?55:0)+(i%2)*8)+'px'});}
+let shaken=false;
+document.getElementById('shake').onclick=()=>{if(shaken){scatter();shaken=false;document.getElementById('shake').textContent='筛一下';return}
+  shaken=true;document.getElementById('shake').textContent='重来';const W=sieve.clientWidth;let k=0;
+  U.forEach((u,i)=>{u.el.style.transition='';if(u[1]){u.el.style.left=(W/2-130)+'px';u.el.style.top='158px';setTimeout(()=>u.el.classList.add('key'),900)}
+    else{const j=k++;setTimeout(()=>{u.el.style.left=(W*.1+(j%3)*W*.27)+'px';u.el.style.top=(315+Math.floor(j/3)*36)+'px';u.el.classList.add('low')},200+j*120)}});};
+scatter();addEventListener('resize',()=>{if(!shaken)scatter()});
+// 一句话
+const CASES=[{who:'业务人员',scene:'每次上传 100 多列的表',prob:'列顺序和底表对不上，要手动拖回去',fact:'有工单截图和一段操作录屏',unk:'顺序到底按什么规则错',next:'约 CS 拿到客户底表复现一次',owner:'我',when:'周四'},
+ {who:'区域管理层',scene:'开会前在手机上看数据',prob:'完整报表在手机上很难读',fact:'3 个客户提过，原话是“开会前看一眼”',unk:'他们具体看哪几个指标',next:'找两个客户确认，同时请研发评估“指标摘要卡”',owner:'我和产品',when:'开发前两天内'}];
+function fill(c){const C=CASES[c];const tpl=`对于【who】在【scene】遇到的【prob】，目前已知【fact】，还需要确认【unk】。<br>基于现在的信息，建议【next】，由【owner】在【when】前补充或验证。`;
+  const s=document.getElementById('sent');s.innerHTML=tpl.replace(/【(\w+)】/g,(m,k)=>`<span class="slot" data-k="${k}"></span>`)+'<div class="end">这份记录不求完整。现场建议用第 2 段讲过的一个案例把它填满，不另外编新例子。</div>';
+  const slots=[...s.querySelectorAll('.slot')];let i=0;
+  (function next(){if(i>=slots.length)return;const el=slots[i++],txt=C[el.dataset.k];el.classList.add('ty');let j=0;
+    const t=setInterval(()=>{el.textContent=txt.slice(0,++j);if(j>=txt.length){clearInterval(t);el.classList.remove('ty');setTimeout(next,150)}},45)})();}
+document.querySelectorAll('#cs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#cs button').forEach(x=>x.classList.toggle('on',x===b));fill(+b.dataset.c)});
+new IntersectionObserver((es,o)=>{if(es[0].isIntersecting){o.disconnect();fill(0)}},{threshold:.4}).observe(document.getElementById('sent'));
+</script>
+<script src="scroll.js"></script>
+</body>
+</html>

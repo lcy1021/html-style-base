@@ -4,7 +4,7 @@
 
 **想说明：** 先打散，再归类  
 **分类：** 样式  
-**Theme：** 深色  
+**Theme：** 浅色  
 **样例：** `demos/voice-wall.html`  
 
 下列数值从本库样例在 1280 × 720 视口、最后一步时的实际渲染中量出（`getComputedStyle`），不是原始参考网站的取值。改成自己的案例时，按内容替换颜色和文字，保留层级比例。
@@ -18,30 +18,30 @@
 
 | Name | Value | Token | Role |
 |---|---|---|---|
-| Canvas | `#0C0B12` | `--bg` | 背景 / 面 |
+| Canvas | `#F5F3EE` | `--bg` | 背景 / 面 |
 | Surface 1 | `#FFFFFF` | — | 面 / 区块 |
-| Text 1 | `#1D2129` | — | 文字 |
-| Text 2 | `#86909C` | — | 文字 |
-| Text 3 | `#9A95A8` | `--mut` | 文字 |
-| Text 4 | `#F3F1FF` | `--fg` | 文字 |
-| Accent · 橙 | `#FFB547` | `--amber` | 文字 |
-| Accent · 紫 | `#B9A8FF` | `--violet` | 文字 |
+| Surface 2 | `#1A1A1A` | — | 面 / 区块 |
+| Text 1 | `#8A857C` | `--mut` | 文字 |
+| Accent · 橙 | `#E4E0D6` | — | 描边 |
 
 ## Tokens — Typography
 
-- **字体栈：** `-apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif`
+- **字体栈：** `-apple-system, "PingFang SC", "Microsoft YaHei", sans-serif`
 - **说明：** 中文优先系统字体（PingFang SC / 微软雅黑），不引外部字体，离线也能显示。
 
 ### Type Scale
 
 | Size | Weight | Line height | Letter spacing | 用在 | 示例 |
 |---|---|---|---|---|---|
-| 30px | 400 | 39px | -0.9px | `h1, em` | 先听见所有声音， |
-| 13px | 400 | normal | 1.04px | `div.col` | 找得到 |
-| 13px | 400 | 19.5px | normal | `div.v` | 搜不到上周的文件 |
-| 11px | 400 | normal | 1.54px | `p.eb` | 示例 · 去业务化 |
-| 11px | 400 | 16.5px | normal | `i` | 声音 1 |
-| 11px | 400 | normal | normal | `p.note` | 内容为示意 · 归类依据是“想完 |
+| 40.96px | 700 | 51.2px | normal | `h1` | 这些话，大家应该都很熟。 |
+| 14px | 400 | 22.4px | normal | `div.q` | 客户说导入的时候老是出错，能不能 |
+| 14px | 700 | normal | normal | `button.on` | 打散 |
+| 14px | 400 | normal | normal | `button` | 按来源 |
+| 12px | 400 | normal | 1.8px | `small` | 第 0 段 · 开场 · 屏幕  |
+| 12px | 400 | 20.4px | normal | `div.tip` | ：先停在「打散」，让大家看 10 |
+| 12px | 700 | 20.4px | normal | `b` | 讲法 |
+| 12px | 400 | normal | normal | `span` | 经过 CS / 销售转述 |
+| 11px | 400 | 17.6px | normal | `small` | — CS 转述 |
 
 ## Tokens — Spacing & Shapes
 
@@ -49,27 +49,31 @@
 
 | Value | 次数 |
 |---|---|
-| 10px | 8 |
+| 16px | 13 |
+| 9px | 3 |
+| 14px | 1 |
 
 ### Shadows
 
 | Value | 次数 |
 |---|---|
-| `rgba(0, 0, 0, 0.3) 0px 6px 16px 0px` | 8 |
+| `rgba(0, 0, 0, 0.267) 0px 6px 18px -10px` | 13 |
 
 ### Layout
 
 - 舞台：`position:fixed; inset:0 0 56px; padding:28px 34px`，标题区在左上。
 - 底部步进控制条高 56px：← / 步数 / 本步说明 / 重播 / 下一步。
 - 主体元素（最后一步）：
-  - `div.stage` — 1280×664 @ (0, 0)，block
-  - `div#wl.wall` — 1212×524 @ (34, 120)，block
-  - `p.note` — 239×16 @ (1021, 640)，block
+  - `div.hd` — 491×79 @ (64, 29)，block
+  - `div#tip.tip` — 280×41 @ (936, 29)，block
+  - `div#wall.wall` — 1280×720 @ (0, 0)，block
+  - `div.dock` — 266×56 @ (507, 635)，flex，底色 `#1A1A1A`，圆角 14px
 
 ## 步骤脚本
 
-1. 先把听到的声音打散铺开
-2. 再按“背后想完成的事”归成几列
+1. 打散
+2. 按来源归列
+3. 按被动 / 主动归列
 
 ## Do's and Don'ts
 
@@ -85,14 +89,14 @@
 
 ## Agent Prompt Guide
 
-**颜色速查：** `#0C0B12`（背景 / 面），`#FFFFFF`（面 / 区块），`#1D2129`（文字），`#86909C`（文字），`#9A95A8`（文字），`#F3F1FF`（文字）
+**颜色速查：** `#F5F3EE`（背景 / 面），`#FFFFFF`（面 / 区块），`#1A1A1A`（面 / 区块），`#8A857C`（文字），`#E4E0D6`（描边）
 
 ```text
 做一页「声音墙」形式的 HTML 演示：先打散，再归类。
 适用：调研反馈汇总；从零散诉求里找主题。
 做法：归类依据是想完成的事；每张卡写原话或贴近原话；归类后每列可再展开。
 避免：按来源分列，会和“入口不是互斥分类”冲突。
-步进：共 2 步，← → / 空格 / 滚轮推进，底部控制条显示每步说明。内容用示意并在角落标“内容为示意”。
+步进：共 3 步，← → / 空格 / 滚轮推进，底部控制条显示每步说明。内容用示意并在角落标“内容为示意”。
 ```
 
 ## 相关条目
@@ -105,15 +109,12 @@
 
 ```css
 :root{
-  --canvas:#0C0B12;
+  --canvas:#F5F3EE;
   --surface-1:#FFFFFF;
-  --text-1:#1D2129;
-  --text-2:#86909C;
-  --text-3:#9A95A8;
-  --text-4:#F3F1FF;
-  --text-5:#FFB547;
-  --text-6:#B9A8FF;
-  --radius:10px;
+  --surface-2:#1A1A1A;
+  --text-1:#8A857C;
+  --line-1:#E4E0D6;
+  --radius:16px;
   --ease:cubic-bezier(.3,.8,.2,1);
 }
 ```

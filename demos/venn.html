@@ -1,24 +1,99 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>叠加对比</title><link rel="stylesheet" href="demo.css">
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>U · 叠加对比｜一个大客户提的需求，别人有没有</title>
 <style>
-.vn{position:absolute;left:34px;top:110px;width:58%;bottom:76px}
-.ci{position:absolute;width:44%;aspect-ratio:1;border-radius:50%;border:2px solid;opacity:0;transform:scale(.6);transition:.7s var(--ease);display:flex;justify-content:center;padding-top:12px;font-size:13px}
-.ci.on{opacity:1;transform:none}
-.c1{left:12%;top:0;border-color:var(--teal);background:rgba(90,208,179,.08)}.c2{left:40%;top:0;border-color:var(--violet);background:rgba(185,168,255,.08)}.c3{left:26%;top:28%;border-color:var(--amber);background:rgba(255,181,71,.08);align-items:flex-end;padding-bottom:14px}
-.it{position:absolute;font-size:12px;padding:3px 8px;border-radius:6px;background:rgba(255,255,255,.12);transition:left .8s var(--ease),top .8s var(--ease),opacity .4s;white-space:nowrap}
-.side{position:absolute;right:34px;top:140px;width:30%;font-size:15px;line-height:1.8;color:var(--mut)}.side b{color:var(--fg);display:block;font-size:18px;font-weight:500;margin-bottom:6px}
-</style></head>
-<body data-steps="4" data-caps="第一个样本的条件|加入第二个样本，共同条件自动落进重叠区|加入第三个样本|三者都有的，才是共性">
-<div class="stage"><p class="eb">示例 · 去业务化</p><h1>几个样本放在一起，<em>共性自己会浮出来。</em></h1></div>
-<div class="vn" id="vn"><div class="ci c1" data-s="0">样本甲</div><div class="ci c2" data-s="1">样本乙</div><div class="ci c3" data-s="2">样本丙</div></div>
-<div class="side" id="sd"></div>
-<p class="note">内容为示意 · 条目可换成任务 / 数据结构 / 组织流程</p>
-<script src="demo.js"></script>
+:root{--bg:#f5f3ee;--ink:#1a1a1a;--mut:#8a857c;--line:#e4e0d6;--a:#9c36b5;--b:#1971c2;--c:#2b8a3e}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;min-height:100vh}
+.hd{padding:4vh 5vw 0}
+.hd small{font-size:12px;color:var(--mut);letter-spacing:.15em}
+.hd h1{font-size:clamp(26px,3.2vw,44px);line-height:1.25;margin-top:8px}
+.main{display:grid;grid-template-columns:1fr 340px;gap:3vw;padding:2vh 5vw 5vh}
+.stage{position:relative;height:560px}
+.circ{position:absolute;border-radius:50%;transition:all 1s cubic-bezier(.65,0,.25,1);mix-blend-mode:multiply;display:flex;justify-content:center}
+.circ span{position:absolute;font-weight:800;font-size:15px;white-space:nowrap;transition:all 1s}
+.circ.ghost{background:transparent!important;border:2.5px dashed #b9b2a4;mix-blend-mode:normal}
+.circ.off{opacity:0;transform:scale(.6)}
+.it{position:absolute;transform:translate(-50%,-50%);background:#fff;border:1.5px solid var(--ink);border-radius:99px;padding:6px 12px;font-size:13px;white-space:nowrap;transition:left 1s cubic-bezier(.65,0,.25,1),top 1s cubic-bezier(.65,0,.25,1),background .5s,color .5s;z-index:3;box-shadow:0 4px 10px -6px #0004}
+.it.core{background:var(--ink);color:#fff}
+.it em{font-style:normal;font-size:10px;margin-left:6px;padding:1px 6px;border-radius:99px;background:#f1e8f7;color:var(--a);opacity:0;transition:opacity .5s}
+.it.core em{background:#ffffff22;color:#fff}
+.kano .it em{opacity:1}
+.zl{position:absolute;font-size:12px;color:var(--mut);transform:translate(-50%,-50%);opacity:0;transition:opacity .6s;text-align:center;z-index:2;font-weight:600}
+.zl.on{opacity:1}
+.side{display:flex;flex-direction:column;gap:12px}
+.step{background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;cursor:pointer;transition:all .3s}
+.step b{display:block;font-size:15px}
+.step span{font-size:13px;color:var(--mut);line-height:1.6;display:block;margin-top:4px}
+.step.on{border-color:var(--ink);box-shadow:4px 4px 0 var(--ink)}
+.step.done{opacity:.55}
+.rule{margin-top:auto;font-size:18px;font-weight:800;line-height:1.5;border-left:4px solid var(--a);padding-left:14px}
+.rule small{display:block;font-size:12px;color:var(--mut);font-weight:400;margin-top:6px}
+@media(max-width:1000px){.main{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="hd"><small>第 2 段 · 背景篇 · 卖给了大客户</small><h1>先问他特殊在哪，<br>再问别人有没有。</h1></div>
+<div class="main">
+  <div class="stage" id="stage">
+    <div class="circ" id="cA" style="background:#9c36b533"><span>大客户 A</span></div>
+    <div class="circ" id="cB" style="background:#1971c233"><span>客户 B</span></div>
+    <div class="circ" id="cC" style="background:#2b8a3e33"><span>客户 C</span></div>
+    <div class="circ ghost" id="cD"><span style="color:#8a857c">没提需求的客户们</span></div>
+    <div class="zl" id="zABC">所有人都需要<br>→ 通用能力</div>
+    <div class="zl" id="zA">只有 A 需要<br>→ 可配置 / 先不做</div>
+  </div>
+  <div class="side" id="side"></div>
+</div>
 <script>
-// [文字, 所属样本集合]
-const I=[['按月汇总',[0,1,2]],['多级审批',[0,1]],['跨部门共享',[0,2]],['字段很多',[1,2]],['只看总数',[0]],['有外部协作',[1]],['数据量大',[2]]];
-const pos={'0':[14,20],'1':[66,20],'2':[40,78],'0,1':[41,10],'0,2':[25,48],'1,2':[55,48],'0,1,2':[41,36]};
-vn.insertAdjacentHTML('beforeend',I.map(([t])=>`<div class="it">${t}</div>`).join(''));
-const its=[...vn.querySelectorAll('.it')];
-const S=['只有一个样本时，看不出哪些是共性。','两个都有的条件，自动落进重叠区。','第三个样本加入后，重叠区又被筛了一次。','<b>三个都有：按月汇总</b>只在一个样本里出现的，先别当成普遍需求。'];
-window.onStep=k=>{const used={};its.forEach((e,i)=>{const own=I[i][1].filter(x=>x<=Math.min(k,2));if(!own.length){e.style.opacity=0;return}e.style.opacity=1;const key=own.join(','),p=pos[key],n=used[key]=(used[key]||0)+1;e.style.left=p[0]+'%';e.style.top=(p[1]+(n-1)*7)+'%';e.style.color=k>=3&&I[i][1].length===3?'var(--amber)':'';});sd.innerHTML=S[k].startsWith('<b>')?S[k]:'<b>'+['样本甲','+ 样本乙','+ 样本丙'][Math.min(k,2)]+'</b>'+S[k];};
-</script></body></html>
+// 示例：某大客户的“指标树”诉求（[待补] 替换成可公开的真实条目）
+const IT=[['多层级拆解','ABC','基础'],['目标值逐级下发','ABC','基础'],['自定义拆解公式','AB','期望'],['按组织架构拆','AC','期望'],['专属审批流','A','特有'],['行业专属口径','A','特有']];
+const STEPS=[
+ {b:'① 一个大客户提了 6 条诉求',s:'产品想按它来设计，但这个功能将来要给所有客户用。'},
+ {b:'② 找第二个客户：客户 B',s:'找相同、找不同。重叠的部分开始出现。'},
+ {b:'③ 再找一个：客户 C',s:'三个圆的交集，就是所有人都需要的基础能力。'},
+ {b:'④ 按客户分层加权，不数人头',s:'圆的大小代表这一层客户对当前阶段的重要程度。'},
+ {b:'⑤ 用 KANO 判断性质',s:'基础能力必须做好；期望型做成可配置；特有的，先问清代价。'},
+ {b:'⑥ 别忘了沉默的客户',s:'没提不等于不需要，也可能是他们绕过去了。'}
+];
+const stage=document.getElementById('stage'),side=document.getElementById('side');
+IT.forEach(t=>{const d=document.createElement('div');d.className='it';d.innerHTML=`${t[0]}<em>${t[2]}</em>`;stage.appendChild(d);t.el=d});
+STEPS.forEach((s,i)=>{const d=document.createElement('div');d.className='step';d.innerHTML=`<b>${s.b}</b><span>${s.s}</span>`;d.onclick=()=>go(i);side.appendChild(d)});
+side.insertAdjacentHTML('beforeend','<div class="rule">一个客户提的需求，先问“他特殊在哪”，再问“别人有没有”。<small>没说出口的需求藏在：其他客户的沉默里。</small></div>');
+const $=id=>document.getElementById(id);
+function circ(el,x,y,r,on=true){Object.assign(el.style,{left:(x-r)+'px',top:(y-r)+'px',width:2*r+'px',height:2*r+'px'});el.classList.toggle('off',!on)}
+let cur=0;
+function go(i){cur=i;const W=stage.clientWidth,H=stage.clientHeight,cx=W/2,cy=H/2+10;
+  [...side.querySelectorAll('.step')].forEach((d,k)=>{d.classList.toggle('on',k===i);d.classList.toggle('done',k<i)});
+  const wA=i>=3?1.12:1,wB=i>=3?.82:1,wC=i>=3?1:1;
+  const R=Math.min(W,H)*.27;
+  // 圆位置
+  if(i===0){circ($('cA'),cx,cy,R*1.25);circ($('cB'),cx+R*2,cy,R,false);circ($('cC'),cx,cy+R*2,R,false)}
+  else if(i===1){circ($('cA'),cx-R*.55,cy,R*wA);circ($('cB'),cx+R*.55,cy,R*wB);circ($('cC'),cx,cy+R*1.8,R,false)}
+  else{circ($('cA'),cx-R*.6,cy-R*.35,R*wA);circ($('cB'),cx+R*.6,cy-R*.35,R*wB);circ($('cC'),cx,cy+R*.6,R*wC)}
+  circ($('cD'),cx,cy,R*2.05,i>=5);
+  $('cA').querySelector('span').style.top=i===0?'14%':'-24px';$('cB').querySelector('span').style.top='-24px';$('cC').querySelector('span').style.cssText='bottom:-26px';
+  $('cD').querySelector('span').style.top='-26px';
+  // 条目位置
+  const P={A:[cx-R*1.05,cy-R*.6],AB:[cx,cy-R*.8],AC:[cx-R*.6,cy+R*.45],ABC:[cx,cy-R*.05]};
+  const cnt={};
+  IT.forEach((t,k)=>{let key=t[1];const has=s=>s.split('').every(ch=>ch==='A'||(ch==='B'&&i>=1)||(ch==='C'&&i>=2));
+    if(i===0)key='A0';else{key=[...key].filter(ch=>ch==='A'||(ch==='B'&&i>=1)||(ch==='C'&&i>=2)).join('');if(i===1&&key==='AC')key='A';if(i===1&&key==='AB')key='AB1';if(i===1&&key==='A')key='A1'}
+    if(i===1&&t[1]==='ABC')key='AB1';
+    const base={A0:[cx,cy-R*.55],A1:[cx-R*1.05,cy-R*.4],AB1:[cx,cy-R*.6]}[key]||P[key]||P.A;
+    const n=cnt[key]=(cnt[key]||0)+1;const off=key==='A0'?(n-1)*40:(n-1)*38;
+    t.el.style.left=base[0]+'px';t.el.style.top=(base[1]+off)+'px';
+    t.el.classList.toggle('core',i>=2&&t[1]==='ABC');});
+  $('zABC').classList.toggle('on',i>=2&&i<5);$('zABC').style.left=cx+'px';$('zABC').style.top=(cy+R*.75)+'px';
+  $('zA').classList.toggle('on',i>=2&&i<5);$('zA').style.left=(cx-R*1.25)+'px';$('zA').style.top=(cy-R*1.05)+'px';
+  stage.classList.toggle('kano',i>=4);}
+addEventListener('keydown',e=>{if(e.key==='ArrowRight')go(Math.min(5,cur+1));if(e.key==='ArrowLeft')go(Math.max(0,cur-1))});
+addEventListener('resize',()=>go(cur));go(0);
+</script>
+<script>window.STEPS={n:()=>6,go:k=>go(k),get:()=>cur,caps:()=>STEPS.map(s=>s.b)}</script>
+<script src="scroll.js"></script>
+</body>
+</html>

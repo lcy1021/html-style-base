@@ -1,24 +1,153 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>对话回放</title><link rel="stylesheet" href="demo.css">
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>方案 G · 对话回放｜一个“销售额对不上”的需求是怎么被聊清楚的</title>
 <style>
-.chat{position:absolute;left:34px;top:120px;width:52%;bottom:76px;background:#f2f3f5;color:#1d2129;border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px;overflow:hidden}
-.m{max-width:78%;display:flex;gap:8px;align-items:flex-start}
-.m i{width:30px;height:30px;border-radius:50%;flex:none;font-style:normal;font-size:12px;display:grid;place-items:center;color:#fff}
-.m p{background:#fff;padding:9px 12px;border-radius:10px;font-size:14px;line-height:1.6}
-.m.me{align-self:flex-end;flex-direction:row-reverse}.m.me p{background:#5b4bff;color:#fff}
-.m.key p{box-shadow:0 0 0 2px var(--amber)}
-.m{opacity:0;transform:translateY(12px);transition:.4s var(--ease)}.m.on{opacity:1;transform:none}
-.notes{position:absolute;right:34px;top:130px;width:34%}
-.notes div{padding:12px 14px;border-left:3px solid var(--amber);background:rgba(255,181,71,.08);margin-bottom:12px;font-size:14px;line-height:1.6;opacity:0;transform:translateX(16px);transition:.5s}
-.notes div.on{opacity:1;transform:none}.notes small{color:var(--amber);display:block;font-size:11px}
-</style></head>
-<body data-steps="4" data-caps="群聊逐条回放|追问：拆完之后要做什么|关键句出现，右侧同步记笔记|结论：真正的诉求">
-<div class="stage"><p class="eb">示范 · 不是会议原话</p><h1>需求怎么在对话里<em>被问清楚。</em></h1></div>
-<div class="chat">
- <div class="m" data-s="0"><i style="background:#f77234">产</i><p>客户要导出时按部门拆文件。</p></div>
- <div class="m me" data-s="1"><i style="background:#5b4bff">设</i><p>拆完之后，这些文件给谁、要做什么？</p></div>
- <div class="m key" data-s="2"><i style="background:#f77234">产</i><p>发给各部门负责人核对，他们只认文件名。</p></div>
- <div class="m me" data-s="3"><i style="background:#5b4bff">设</i><p>那命名规则要跟拆分一起设计。</p></div>
+:root{--bg:#eceef1;--panel:#fff;--ink:#1d2129;--mut:#86909c;--me:#165dff;--line:#e5e6eb;--key:#ff7d00}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;height:100vh;overflow:hidden}
+.app{display:grid;grid-template-columns:280px 1fr 340px;height:100vh;max-width:1440px;margin:0 auto}
+.side{padding:28px 22px;border-right:1px solid var(--line)}
+.side small{font-size:11px;color:var(--mut);letter-spacing:.15em}
+.side h1{font-size:24px;line-height:1.35;margin:10px 0 14px}
+.side p{font-size:13px;color:var(--mut);line-height:1.8}
+.chap{margin-top:26px}
+.chap div{padding:10px 12px;border-radius:8px;font-size:13px;color:var(--mut);display:flex;justify-content:space-between;cursor:pointer;transition:all .3s}
+.chap div.on{background:#fff;color:var(--ink);font-weight:600;box-shadow:0 2px 8px #0000000d}
+.chap div.done{color:var(--ink)}
+.chat{display:flex;flex-direction:column;background:#f7f8fa;min-width:0}
+.ch-head{height:60px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 22px;gap:12px}
+.ch-head b{font-size:15px}.ch-head span{font-size:12px;color:var(--mut)}
+.avs{display:flex;margin-left:auto}
+.avs i{width:28px;height:28px;border-radius:50%;border:2px solid #fff;margin-left:-8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-style:normal;color:#fff}
+.stream{flex:1;overflow-y:auto;padding:24px 28px 40px;scroll-behavior:smooth}
+.msg{display:flex;gap:10px;margin:14px 0;animation:in .45s cubic-bezier(.2,.8,.2,1)}
+@keyframes in{from{opacity:0;transform:translateY(14px) scale(.98)}}
+.msg .av{width:36px;height:36px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px}
+.msg .who{font-size:12px;color:var(--mut);margin-bottom:4px}
+.bub{background:#fff;padding:10px 14px;border-radius:4px 12px 12px 12px;font-size:14px;line-height:1.7;max-width:520px;box-shadow:0 1px 2px #0000000a;position:relative}
+.msg.me{flex-direction:row-reverse}
+.msg.me .who{text-align:right}
+.msg.me .bub{background:var(--me);color:#fff;border-radius:12px 4px 12px 12px}
+.msg.key .bub{box-shadow:0 0 0 2px var(--key)}
+.msg.key .bub:after{content:"★ 关键节点";position:absolute;top:-10px;right:10px;background:var(--key);color:#fff;font-size:10px;padding:1px 7px;border-radius:99px}
+.sys{text-align:center;margin:22px 0;animation:in .4s}
+.sys span{font-size:12px;color:var(--mut);background:#e8eaee;padding:4px 12px;border-radius:99px}
+.typing{display:flex;gap:4px;padding:14px}
+.typing i{width:6px;height:6px;border-radius:50%;background:#bbb;animation:b 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes b{30%{transform:translateY(-5px);background:#888}}
+.card{width:420px;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;font-size:12px}
+.card .t{padding:10px 12px;border-bottom:1px solid var(--line);font-weight:600}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px}
+.cmp div{background:#f7f8fa;border-radius:6px;padding:10px}
+.cmp b{display:block;font-size:20px;margin:4px 0}
+.cmp em{font-style:normal;color:#f53f3f;font-size:11px}
+.poll{padding:12px}
+.po{margin:8px 0}
+.po .l{display:flex;justify-content:space-between;margin-bottom:4px}
+.po .t2{height:8px;border-radius:4px;background:#f2f3f5;overflow:hidden}
+.po .t2 i{display:block;height:100%;width:0;background:var(--me);transition:width 1.2s .3s cubic-bezier(.2,.8,.2,1)}
+.sol{padding:12px}
+.kpi{border:1px solid var(--line);border-radius:8px;padding:12px;position:relative}
+.kpi .n{font-size:24px;font-weight:700}
+.tagc{display:inline-block;font-size:11px;background:#e8f3ff;color:var(--me);padding:1px 8px;border-radius:4px;margin-left:6px;vertical-align:middle}
+.tip{position:absolute;right:10px;top:40px;width:180px;background:#1d2129;color:#fff;padding:8px 10px;border-radius:6px;font-size:11px;line-height:1.6;animation:in .5s 1s both}
+.ctl{height:64px;background:#fff;border-top:1px solid var(--line);display:flex;align-items:center;gap:10px;padding:0 22px}
+.ctl button{height:34px;padding:0 14px;border:1px solid var(--line);background:#fff;border-radius:8px;cursor:pointer;font-size:13px}
+.ctl button.pri{background:var(--ink);color:#fff;border-color:var(--ink)}
+.ctl .prog{flex:1;height:4px;background:var(--line);border-radius:2px;overflow:hidden}
+.ctl .prog i{display:block;height:100%;background:var(--me);width:0;transition:width .4s}
+.notes{padding:28px 24px;border-left:1px solid var(--line);overflow-y:auto}
+.notes h4{font-size:11px;color:var(--mut);letter-spacing:.15em;margin-bottom:16px;font-weight:500}
+.note{background:#fff;border-radius:10px;padding:16px;margin-bottom:14px;border-left:3px solid var(--key);animation:slide .6s cubic-bezier(.2,.8,.2,1)}
+@keyframes slide{from{opacity:0;transform:translateX(30px)}}
+.note small{font-size:11px;color:var(--key);font-weight:600}
+.note h5{font-size:15px;margin:6px 0}
+.note p{font-size:13px;color:#4e5969;line-height:1.7}
+.empty{font-size:13px;color:var(--mut);line-height:1.8;border:1px dashed #c9cdd4;border-radius:10px;padding:16px}
+@media(max-width:1100px){.app{grid-template-columns:1fr}.side,.notes{display:none}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <small>CASE · 需求澄清 · 示例内容</small>
+    <h1>“两个看板的销售额对不上”——一个需求是怎么被聊清楚的</h1>
+    <p>按时间顺序回放项目群的真实对话。看设计师如何在讨论中把模糊的抱怨变成明确的问题定义。</p>
+    <div class="chap" id="chap"></div>
+  </aside>
+  <main class="chat">
+    <div class="ch-head"><b>【需求】销售额口径对齐</b><span>5 人</span>
+      <div class="avs"><i style="background:#f77234">PM</i><i style="background:#14c9c9">析</i><i style="background:#722ed1">开</i><i style="background:#165dff">我</i></div></div>
+    <div class="stream" id="stream"></div>
+    <div class="ctl"><button class="pri" id="play">❚❚ 暂停</button><button id="speed">1×</button><button id="skip">跳到下一个关键节点 ★</button><div class="prog"><i id="prog"></i></div></div>
+  </main>
+  <aside class="notes"><h4>设计师笔记 · 自动从关键节点提取</h4><div id="notes"><div class="empty">播放到 ★ 关键节点时，这里会出现我当时的思考。</div></div></aside>
 </div>
-<div class="notes"><div data-s="2"><small>笔记 · 关键条件</small>收件人按文件名识别，不会打开文件确认。</div><div data-s="3"><small>笔记 · 改写后的诉求</small>每个部门拿到“一眼认得出”的文件。</div></div>
-<script src="demo.js"></script>
-</body></html>
+<script>
+const P={pm:['王敏 · PM','#f77234','PM'],an:['李哲 · 数据分析师','#14c9c9','析'],dev:['赵琳 · 开发','#722ed1','开'],me:['我 · 交互设计','#165dff','我'],boss:['刘总 · 销售总监','#86909c','刘']};
+const M=[
+ {c:0,sys:'Day 1 · 刘总把大家拉进了群'},
+ {w:'boss',t:'周会上华东区销售额，经营看板说 4,820 万，区域看板说 5,160 万。到底哪个是对的？'},
+ {w:'pm',t:'收到，我们查一下。先拉上分析和开发的同学。'},
+ {w:'an',t:'大概率是口径不同：一个含税一个不含税？或者一个按下单日期、一个按支付日期。'},
+ {w:'me',card:'cmp'},
+ {w:'dev',t:'底层确实是两张表，两个团队各自算的。'},
+ {w:'pm',t:'那能不能直接统一成一个“销售额”？改一下就好了。'},
+ {w:'me',t:'统一之前我想先确认一件事：大家平时说的“销售额”，到底有几种意思？如果合并错了，会有人拿到他不想要的数。',key:{h:'先定义问题，而不是马上合并',p:'“统一”是 PM 给的解法，不是问题本身。如果直接合并，必然有一方的数字会“变”，信任损失更大。先把“销售额”有几种含义摸清楚。'}},
+ {w:'me',card:'poll'},
+ {c:1,sys:'Day 3 · 访谈 6 位看板使用者'},
+ {w:'me',t:'聊完了。结论有点意外：大家要的其实不是“一个数”，而是“知道自己在看哪个数”。',key:{h:'真实需求 ≠ 表面需求',p:'6 人中有 5 人会同时看含税和不含税的数字（财务对账、销售考核）。所以问题不是“有两个数”，而是“同名但不同义，而且界面上看不出来”。'}},
+ {w:'an',t:'对，我们写报告时也经常要手动注明“本数据为不含税”。'},
+ {c:2,sys:'Day 5 · 方案评审'},
+ {w:'me',card:'sol'},
+ {w:'me',t:'方案：指标名称后面加“口径标签”，悬停查看完整定义；同一页面出现不同口径的同名指标时自动提醒。',key:{h:'用“可见性”解决“一致性”问题',p:'不强行统一底层计算，而是把口径作为指标的一等属性展示出来。成本低，不破坏现有报表，还能沉淀为组件规范。'}},
+ {w:'dev',t:'口径信息指标中心本来就有，前端读出来就行，工作量可控 👌'},
+ {w:'pm',t:'那就排进 v2.3。'},
+ {w:'boss',t:'这个好，以后开会大家先对口径再对数。'},
+ {c:3,sys:'上线 1 个月 · 口径相关咨询减少 70%（示例数据）'}
+];
+const chapters=['Day 1 · 抛出问题','Day 3 · 用户访谈','Day 5 · 方案评审','上线之后'];
+const chap=document.getElementById('chap');chapters.forEach((c,i)=>{const d=document.createElement('div');d.innerHTML=`<span>${c}</span><span>›</span>`;d.onclick=()=>jumpTo(M.findIndex(m=>m.c===i));chap.appendChild(d)});
+const stream=document.getElementById('stream'),notes=document.getElementById('notes');
+const cards={
+ cmp:`<div class="card"><div class="t">📎 两个看板截图对比</div><div class="cmp"><div>经营看板 · 华东区<b>4,820 万</b><em>不含税 · 按支付日期</em></div><div>区域看板 · 华东区<b>5,160 万</b><em>含税 · 按下单日期</em></div></div></div>`,
+ poll:`<div class="card"><div class="t">📊 群投票：你说的“销售额”通常指？</div><div class="poll">${[['含税金额',40],['不含税金额',35],['看场景，两个都用',85]].map(x=>`<div class="po"><div class="l"><span>${x[0]}</span><span>${x[1]}%</span></div><div class="t2"><i data-w="${x[1]}%"></i></div></div>`).join('')}</div></div>`,
+ sol:`<div class="card"><div class="t">🎨 方案稿 · 指标口径标签</div><div class="sol"><div class="kpi">销售额<span class="tagc">不含税 · 支付日</span><div class="n">4,820 万</div><div class="tip">口径：订单实付金额（不含税），按支付完成日期统计。来源：指标中心 / 销售域</div></div></div></div>`
+};
+let i=0,playing=true,speed=1,timer=null,noteCount=0;
+function render(m){
+  if(m.sys){stream.insertAdjacentHTML('beforeend',`<div class="sys"><span>${m.sys}</span></div>`);}
+  else{const p=P[m.w],me=m.w==='me';
+    stream.insertAdjacentHTML('beforeend',`<div class="msg ${me?'me':''} ${m.key?'key':''}"><div class="av" style="background:${p[1]}">${p[2]}</div><div><div class="who">${p[0]}</div>${m.card?cards[m.card]:`<div class="bub">${m.t}</div>`}</div></div>`);
+    setTimeout(()=>stream.querySelectorAll('[data-w]').forEach(x=>x.style.width=x.dataset.w),50);
+    if(m.key){if(!noteCount)notes.innerHTML='';noteCount++;notes.insertAdjacentHTML('afterbegin',`<div class="note"><small>★ 关键节点 ${noteCount}</small><h5>${m.key.h}</h5><p>${m.key.p}</p></div>`);}}
+  if(m.c!==undefined)[...chap.children].forEach((d,k)=>{d.classList.toggle('on',k===m.c);d.classList.toggle('done',k<m.c)});
+  stream.scrollTop=stream.scrollHeight;
+  document.getElementById('prog').style.width=(i/M.length*100)+'%';
+}
+function step(){if(i>=M.length){playing=false;document.getElementById('play').textContent='↺ 重播';return}
+  const m=M[i];
+  if(m.sys){render(m);i++;timer=setTimeout(step,900/speed);return}
+  const ty=document.createElement('div');ty.className='msg'+(m.w==='me'?' me':'');ty.innerHTML=`<div class="av" style="background:${P[m.w][1]}">${P[m.w][2]}</div><div class="bub typing"><i></i><i></i><i></i></div>`;
+  stream.appendChild(ty);stream.scrollTop=stream.scrollHeight;
+  const len=m.t?m.t.length:40;
+  timer=setTimeout(()=>{ty.remove();render(m);i++;if(playing)timer=setTimeout(step,(m.key?2200:700)/speed)},Math.min(1800,400+len*25)/speed);
+}
+function jumpTo(n){clearTimeout(timer);stream.querySelectorAll('.typing').forEach(t=>t.closest('.msg').remove());
+  if(n<i){stream.innerHTML='';notes.innerHTML='<div class="empty">播放到 ★ 关键节点时，这里会出现我当时的思考。</div>';noteCount=0;i=0}
+  while(i<n){render(M[i]);i++}
+  if(playing)step();}
+document.getElementById('play').onclick=function(){if(i>=M.length){jumpTo(0);playing=true;this.textContent='❚❚ 暂停';return}
+  playing=!playing;this.textContent=playing?'❚❚ 暂停':'▶ 继续';clearTimeout(timer);stream.querySelectorAll('.typing').forEach(t=>t.closest('.msg').remove());if(playing)step()};
+document.getElementById('speed').onclick=function(){speed=speed===1?2:speed===2?4:1;this.textContent=speed+'×'};
+document.getElementById('skip').onclick=()=>{let n=M.findIndex((m,k)=>k>=i&&m.key);if(n<0)n=M.length-1;jumpTo(n+1)};
+setTimeout(step,600);
+</script>
+<script>window.STEPS={n:()=>1,go:()=>{},get:()=>0}</script>
+<script src="scroll.js"></script>
+</body>
+</html>

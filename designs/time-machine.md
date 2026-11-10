@@ -4,7 +4,7 @@
 
 **想说明：** 一个组件经历了几版演进  
 **分类：** 样式  
-**Theme：** 深色  
+**Theme：** 浅色  
 **样例：** `demos/time-machine.html`  
 
 下列数值从本库样例在 1280 × 720 视口、最后一步时的实际渲染中量出（`getComputedStyle`），不是原始参考网站的取值。改成自己的案例时，按内容替换颜色和文字，保留层级比例。
@@ -18,15 +18,15 @@
 
 | Name | Value | Token | Role |
 |---|---|---|---|
-| Canvas | `#0C0B12` | `--bg` | 背景 / 面 |
+| Canvas | `#F4F3EF` | `--bg` | 背景 / 面 |
 | Surface 1 | `#FFFFFF` | — | 面 / 区块 |
-| Surface 2 | `#F3F1FF` | `--fg` | 面 / 区块 |
+| Surface 2 | `#F3F1FF` | — | 面 / 区块 |
 | Surface 3 | `#E8E3FF` | — | 面 / 区块 |
-| Accent · 橙 | `#FFB547` | `--amber` | 面 / 区块 |
-| Text 1 | `#9A95A8` | `--mut` | 文字 |
-| Text 2 | `#1D2129` | — | 文字 |
+| Accent · 橙 | `#B86E00` | `--amber` | 面 / 区块 |
+| Text 1 | `#1D2129` | `--fg` | 文字 |
+| Text 2 | `#6B7280` | `--mut` | 文字 |
 | Text 3 | `#86909C` | — | 文字 |
-| Accent · 紫 | `#B9A8FF` | `--violet` | 文字 |
+| Accent · 紫 | `#6A55D6` | `--violet` | 文字 |
 
 ## Tokens — Typography
 
@@ -96,7 +96,7 @@
 
 ## Agent Prompt Guide
 
-**颜色速查：** `#0C0B12`（背景 / 面），`#FFFFFF`（面 / 区块），`#F3F1FF`（面 / 区块），`#E8E3FF`（面 / 区块），`#FFB547`（面 / 区块），`#9A95A8`（文字）
+**颜色速查：** `#F4F3EF`（背景 / 面），`#FFFFFF`（面 / 区块），`#F3F1FF`（面 / 区块），`#E8E3FF`（面 / 区块），`#B86E00`（面 / 区块），`#1D2129`（文字）
 
 ```text
 做一页「版本时间机器」形式的 HTML 演示：一个组件经历了几版演进。
@@ -117,15 +117,15 @@
 
 ```css
 :root{
-  --canvas:#0C0B12;
+  --canvas:#F4F3EF;
   --surface-1:#FFFFFF;
   --surface-2:#F3F1FF;
   --surface-3:#E8E3FF;
-  --surface-4:#FFB547;
-  --text-1:#9A95A8;
-  --text-2:#1D2129;
+  --surface-4:#B86E00;
+  --text-1:#1D2129;
+  --text-2:#6B7280;
   --text-3:#86909C;
-  --text-4:#B9A8FF;
+  --text-4:#6A55D6;
   --radius:8px;
   --ease:cubic-bezier(.3,.8,.2,1);
 }

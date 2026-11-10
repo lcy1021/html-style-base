@@ -1,10 +1,10 @@
 # 标注解读 + 前后滑块 — Style Reference
 
-> 在界面上点出编号热点，右侧逐条写理由；最后用可拖动的滑块看改版前后。
+> 长页案例：三个数字讲卡点 → 在界面上逐点标注设计理由 → 拖动滑块看改版前后 → 翻卡讲关键取舍 → 上线结果。
 
 **想说明：** 每个细节为什么这样设计  
 **分类：** 样式  
-**Theme：** 深色  
+**Theme：** 浅色  
 **样例：** `demos/annotate.html`  
 
 下列数值从本库样例在 1280 × 720 视口、最后一步时的实际渲染中量出（`getComputedStyle`），不是原始参考网站的取值。改成自己的案例时，按内容替换颜色和文字，保留层级比例。
@@ -18,34 +18,31 @@
 
 | Name | Value | Token | Role |
 |---|---|---|---|
-| Canvas | `#0C0B12` | `--bg` | 背景 / 面 |
+| Canvas | `#F6F4EF` | `--bg` | 背景 / 面 |
 | Surface 1 | `#FFFFFF` | — | 面 / 区块 |
-| Surface 2 | `#F3F1FF` | `--fg` | 面 / 区块 |
-| Surface 3 | `#F2F3F5` | — | 面 / 区块 |
-| Accent · 橙 | `#FFB547` | `--amber` | 面 / 区块 |
-| Accent · 紫 | `#B9A8FF` | `--violet` | 面 / 区块 |
-| Text 1 | `#1D2129` | — | 文字 |
-| Text 2 | `#4E5969` | — | 文字 |
-| Text 3 | `#9A95A8` | `--mut` | 文字 |
-| Accent · 紫 | `#5B4BFF` | — | 描边 |
+| Surface 2 | `#F6F4EF / 90%` | `--bg` | 面 / 区块 |
+| Surface 3 | `#1A1A1A` | `--fg` | 面 / 区块 |
+| Text 1 | `#6B6B6B` | `--mut` | 文字 |
+| Accent · 橙 | `#FF5A1F` | — | 文字 |
+| Line 1 | `#E3DFD6` | — | 描边 |
 
 ## Tokens — Typography
 
-- **字体栈：** `-apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif`
+- **字体栈：** `-apple-system, "PingFang SC", "Microsoft YaHei", sans-serif`
 - **说明：** 中文优先系统字体（PingFang SC / 微软雅黑），不引外部字体，离线也能显示。
 
 ### Type Scale
 
 | Size | Weight | Line height | Letter spacing | 用在 | 示例 |
 |---|---|---|---|---|---|
-| 30px | 400 | 39px | -0.9px | `h1, em` | 每个细节， |
-| 14px | 700 | normal | normal | `h4` | 新建项目 · 改版前 |
-| 14px | 400 | normal | normal | `div.ln` | 项目名称 |
-| 14px | 400 | 22.4px | normal | `li.cur` | 必填写在标签上，不等提交后才报错 |
-| 14px | 700 | 22.4px | normal | `b` | 1 |
-| 13px | 700 | normal | normal | `div.hot` | 1 |
-| 11px | 400 | normal | 1.54px | `p.eb` | 示例 · 去业务化 |
-| 11px | 400 | normal | normal | `p.note` | 内容为示意 |
+| 76.8px | 800 | 82.944px | -1.536px | `h1, u` | 让数据资产 |
+| 44px | 800 | 44px | normal | `div.n` | 73% |
+| 38.4px | 700 | 48px | normal | `h2` | 用户在数据目录里的三个“卡点” |
+| 17px | 700 | 29.75px | normal | `h3` | 搜不到 |
+| 14px | 400 | 24.5px | normal | `p` | 搜索只匹配表名，业务人员用“销售 |
+| 13px | 400 | 22.75px | normal | `a.on, a, aside` | 问题 |
+| 13px | 700 | 22.75px | normal | `b` | 交互设计 · 用户研究 |
+| 12px | 400 | 21px | normal | `small` | CASE STUDY / 数据目 |
 
 ## Tokens — Spacing & Shapes
 
@@ -53,31 +50,29 @@
 
 | Value | 次数 |
 |---|---|
-| 8px | 6 |
-| 50% | 3 |
-| 14px | 2 |
+| 99px | 5 |
+| 14px | 3 |
 
 ### Shadows
 
-| Value | 次数 |
-|---|---|
-| `rgba(255, 181, 71, 0.25) 0px 0px 0px 6px` | 3 |
+不用阴影，靠底色和描边分层。
 
 ### Layout
 
 - 舞台：`position:fixed; inset:0 0 56px; padding:28px 34px`，标题区在左上。
 - 底部步进控制条高 56px：← / 步数 / 本步说明 / 重播 / 下一步。
 - 主体元素（最后一步）：
-  - `div.stage` — 1280×664 @ (0, 0)，block
-  - `div#wrap.wrap` — 717×510 @ (34, 120)，block
-  - `ul.side` — 410×142 @ (836, 130)，block
-  - `p.note` — 55×16 @ (1205, 640)，block
+  - `nav#nav` — 1280×56 @ (0, 0)，flex，底色 `#F6F4EF / 90%`
+  - `div.wrap` — 1180×3355 @ (50, 56)，block
 
 ## 步骤脚本
 
-1. 点出每一处设计的理由
-2. 逐个热点讲解（热点也可以直接点）
-3. 拖动滑块，看改版前后
+1. 让数据资产 找得到、看得懂、敢用
+2. 搜不到
+3. 搜业务名，也能命中技术表
+4. 前后对比
+5. 三个关键决策 点击卡片翻面看取舍
+6. 上线 8 周后（示例数据）
 
 ## Do's and Don'ts
 
@@ -94,14 +89,14 @@
 
 ## Agent Prompt Guide
 
-**颜色速查：** `#0C0B12`（背景 / 面），`#FFFFFF`（面 / 区块），`#F3F1FF`（面 / 区块），`#F2F3F5`（面 / 区块），`#FFB547`（面 / 区块），`#B9A8FF`（面 / 区块）
+**颜色速查：** `#F6F4EF`（背景 / 面），`#FFFFFF`（面 / 区块），`#F6F4EF / 90%`（面 / 区块），`#1A1A1A`（面 / 区块），`#6B6B6B`（文字），`#FF5A1F`（文字）
 
 ```text
 做一页「标注解读 + 前后滑块」形式的 HTML 演示：每个细节为什么这样设计。
 适用：设计评审、交付说明；细节多但每处理由都很短。
 做法：热点编号与右侧说明一一对应，可直接点；滑块默认停在中间，讲者可拖；前后两张图尺寸、位置完全对齐。
 避免：热点超过 5 个就该拆页；前后图不对齐，滑块会显得在“抖”。
-步进：共 3 步，← → / 空格 / 滚轮推进，底部控制条显示每步说明。内容用示意并在角落标“内容为示意”。
+步进：共 6 步，← → / 空格 / 滚轮推进，底部控制条显示每步说明。内容用示意并在角落标“内容为示意”。
 ```
 
 ## 相关条目
@@ -114,17 +109,14 @@
 
 ```css
 :root{
-  --canvas:#0C0B12;
+  --canvas:#F6F4EF;
   --surface-1:#FFFFFF;
-  --surface-2:#F3F1FF;
-  --surface-3:#F2F3F5;
-  --surface-4:#FFB547;
-  --surface-5:#B9A8FF;
-  --text-1:#1D2129;
-  --text-2:#4E5969;
-  --text-3:#9A95A8;
-  --line-1:#5B4BFF;
-  --radius:8px;
+  --surface-2:rgba(246,244,239,0.9);
+  --surface-3:#1A1A1A;
+  --text-1:#6B6B6B;
+  --text-2:#FF5A1F;
+  --line-1:#E3DFD6;
+  --radius:99px;
   --ease:cubic-bezier(.3,.8,.2,1);
 }
 ```

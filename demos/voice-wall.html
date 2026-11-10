@@ -1,20 +1,88 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>声音墙</title><link rel="stylesheet" href="demo.css">
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Q · 声音墙｜我们手上的需求，都从哪来</title>
 <style>
-.wall{position:absolute;left:34px;right:34px;top:120px;bottom:76px}
-.v{position:absolute;width:23%;padding:10px 12px;border-radius:10px;background:#fff;color:#1d2129;font-size:13px;line-height:1.5;transition:left .9s var(--ease),top .9s var(--ease),transform .9s var(--ease);box-shadow:0 6px 16px rgba(0,0,0,.3)}
-.v i{font-style:normal;font-size:11px;color:#86909c;display:block}
-.col{position:absolute;top:0;width:23%;font-size:13px;color:var(--amber);letter-spacing:.08em;opacity:0;transition:.5s}body.s1 .col{opacity:1}
-body:not(.s1) .v{animation:fl 6s ease-in-out infinite alternate}@keyframes fl{to{transform:translate(6px,-8px) rotate(var(--r))}}
-</style></head>
-<body data-steps="2" data-caps="先把听到的声音打散铺开|再按“背后想完成的事”归成几列">
-<div class="stage"><p class="eb">示例 · 去业务化</p><h1>先听见所有声音，<em>再看它们在说哪几件事。</em></h1></div>
-<div class="wall" id="wl"></div>
-<p class="note">内容为示意 · 归类依据是“想完成的事”，不是来源</p>
-<script src="demo.js"></script>
+:root{--bg:#f5f3ee;--ink:#1a1a1a;--mut:#8a857c;--line:#e4e0d6;--c1:#e8590c;--c2:#1971c2;--c3:#9c36b5;--c4:#2b8a3e;--c5:#e67700}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;height:100vh;overflow:hidden}
+.hd{position:absolute;left:5vw;top:4vh;z-index:5;max-width:760px;pointer-events:none}
+.hd small{font-size:12px;color:var(--mut);letter-spacing:.15em}
+.hd h1{font-size:clamp(26px,3.2vw,44px);line-height:1.25;margin-top:8px;transition:opacity .4s}
+.wall{position:absolute;inset:0}
+.q{position:absolute;max-width:270px;background:#fff;border-radius:16px 16px 16px 4px;padding:12px 15px;font-size:14px;line-height:1.6;box-shadow:0 6px 18px -10px #0004;border:1.5px solid var(--line);
+  transition:left 1s cubic-bezier(.65,0,.25,1),top 1s cubic-bezier(.65,0,.25,1),border-color .5s,transform .5s,opacity .5s;cursor:default}
+.q small{display:block;font-size:11px;color:var(--mut);margin-top:6px}
+.q.col{border-color:var(--c)}
+.q.col small{color:var(--c);font-weight:600}
+.q:hover{transform:scale(1.04);z-index:3}
+.colh{position:absolute;top:22vh;font-weight:800;font-size:17px;text-align:center;opacity:0;transform:translateY(-10px);transition:all .6s;padding-bottom:8px;border-bottom:3px solid var(--c)}
+.colh span{display:block;font-size:12px;font-weight:400;color:var(--mut);margin-top:4px}
+.colh.on{opacity:1;transform:none}
+.dock{position:absolute;left:50%;bottom:4vh;transform:translateX(-50%);display:flex;gap:8px;background:var(--ink);padding:8px;border-radius:14px;z-index:6}
+.dock button{height:40px;padding:0 18px;border:0;border-radius:9px;background:transparent;color:#fff;font-size:14px;cursor:pointer}
+.dock button.on{background:#fff;color:var(--ink);font-weight:700}
+.tip{position:absolute;right:5vw;top:4vh;width:280px;font-size:12px;color:var(--mut);line-height:1.7;border-left:2px solid var(--line);padding-left:12px;z-index:5}
+.tip b{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="hd"><small>第 0 段 · 开场 · 屏幕 0-1</small><h1 id="h1">这些话，大家应该都很熟。</h1></div>
+<div class="tip" id="tip"><b>讲法</b>：先停在「打散」状态，让大家看 10 秒，问“哪句话你这周听过？”再点「按来源」。</div>
+<div class="wall" id="wall"></div>
+<div class="dock"><button class="on" data-m="0">打散</button><button data-m="1">按来源</button><button data-m="2">按怎么来</button></div>
 <script>
-const C=['找得到','交得出','看得懂'],V=[['搜不到上周的文件',0],['筛选条件每次都要重设',0],['导出的文件名都一样',1],['发出去还要再改格式',1],['总数和明细对不上',2],['图表太多不知道看哪',2],['想按负责人找',0],['审批人看不懂字段',2]];
-wl.innerHTML=C.map((c,i)=>`<div class="col" style="left:${i*33+1}%">${c}</div>`).join('')+V.map(([t],i)=>`<div class="v" style="--r:${(i%3-1)*2}deg"><i>声音 ${i+1}</i>${t}</div>`).join('');
-const vs=[...document.querySelectorAll('.v')],cnt=[0,0,0];
-const rnd=V.map((_,i)=>[(i*37)%76,(i*53)%70+4]);
-window.onStep=k=>{const c=[0,0,0];vs.forEach((v,i)=>{if(k===0){v.style.left=rnd[i][0]+'%';v.style.top=rnd[i][1]+'%';v.style.transform=`rotate(${(i%3-1)*3}deg)`}else{const col=V[i][1];v.style.left=(col*33+1)+'%';v.style.top=(8+c[col]++*17)+'%';v.style.transform='none'}})};
-</script></body></html>
+// s: 来源 0客户/CS 1产品 2大客户 3设计自己 4从零开始；w: 0被动 1主动
+const Q=[
+ ['客户说导入的时候老是出错，能不能加个校验？','CS 转述',0,0],
+ ['希望支持字段批量排序，现在拖得太慢了。','CS 转述',0,0],
+ ['客户想在手机上看报表。','销售反馈',0,0],
+ ['这一期要做 XX 功能，方案我画好了，你出个高保真。','产品',1,0],
+ ['PRD 已经评审过了，这周能出图吗？','产品',1,0],
+ ['删除表的时候加个二次确认就行。','产品',1,0],
+ ['XX 客户要求指标树支持他们的拆解方式。','大客户',2,0],
+ ['这是我们最大的客户，他们的流程必须支持。','大客户 · 销售',2,0],
+ ['这个模块的交互和其他地方不一致，是不是该统一一下？','设计自己发现',3,1],
+ ['英文版的语序有问题，但好像没人投诉。','设计自己发现',3,1],
+ ['我发现用户每次都在手动绕过这一步。','设计走查',3,1],
+ ['我们要做一个新模块，你先想想怎么设计。','从零开始',4,1],
+ ['老板想做一个 AI 分析助手。','从零开始',4,1]
+];
+const S=[['客户的声音','经过 CS / 销售转述','--c1'],['产品给的方案','方案已经想好了','--c2'],['大客户','一个重要的客户','--c3'],['设计自己发现','没人提，我们看到了','--c4'],['从零开始','全是假设','--c5']];
+const W=[['被动：需求找上门','要在别人的方案里，做好自己的判断','--c2'],['主动：我们自己去找','要挖出真正有价值的场景','--c4']];
+const H=['这些话，大家应该都很熟。','它们来自不同的人。来的方式不一样，要做的分析也不一样。','再看一次：要么是需求找上门，要么是我们自己去找。'];
+const TIP=['<b>讲法</b>：先停在「打散」，让大家看 10 秒，问“哪句话你这周听过？”再点「按来源」。','<b>讲法</b>：“这些需求为什么会以这样的方式来到我们手上？”→ 过渡到第 1 段：产品背景。','<b>讲法</b>：对应第 1 段的第二条线：职能的两面。'];
+const wall=document.getElementById('wall');
+Q.forEach(q=>{const d=document.createElement('div');d.className='q';d.innerHTML=`${q[0]}<small>— ${q[1]}</small>`;wall.appendChild(d);q.el=d;q.ph=Math.random()*6.28;q.sp=.3+Math.random()*.4;});
+const heads=[];
+function mkHead(t,c){const h=document.createElement('div');h.className='colh';h.style.setProperty('--c',`var(${c[2]})`);h.innerHTML=`${c[0]}<span>${c[1]}</span>`;wall.appendChild(h);return h}
+const H5=S.map(s=>mkHead(0,s)),H2=W.map(w=>mkHead(0,w));
+let mode=0;
+function scatter(){const W_=innerWidth,Hh=innerHeight;Q.forEach((q,i)=>{const col=i%5,row=Math.floor(i/5);
+  q.bx=W_*(.06+col*.18+((row%2)*.06))+(Math.sin(i*7)*30);q.by=Hh*(.24+row*.22)+(Math.cos(i*5)*30);q.rot=(Math.sin(i*3.3)*4)})}
+function layout(){const W_=innerWidth;
+  [...H5,...H2].forEach(h=>h.classList.remove('on'));
+  Q.forEach(q=>{q.el.classList.toggle('col',mode>0);q.el.style.setProperty('--c',mode===1?`var(${S[q[2]][2]})`:mode===2?`var(${W[q[3]][2]})`:'')});
+  if(mode===0){scatter();Q.forEach(q=>{q.tx=q.bx;q.ty=q.by})}
+  if(mode===1){const cw=W_*.9/5;H5.forEach((h,i)=>{h.style.left=(W_*.05+cw*i+8)+'px';h.style.width=(cw-16)+'px';setTimeout(()=>h.classList.add('on'),300+i*80)});
+    const cnt=[0,0,0,0,0];Q.forEach(q=>{const c=q[2];q.tx=W_*.05+cw*c+10;q.ty=innerHeight*.32+cnt[c]*112;q.rot=0;cnt[c]++})}
+  if(mode===2){const cw=W_*.84/2;H2.forEach((h,i)=>{h.style.left=(W_*.08+cw*i+20)+'px';h.style.width=(cw-40)+'px';setTimeout(()=>h.classList.add('on'),300+i*100)});
+    const cnt=[0,0];Q.forEach(q=>{const c=q[3],k=cnt[c]++;q.tx=W_*.08+cw*c+20+(k%2)*(cw/2-10);q.ty=innerHeight*.32+Math.floor(k/2)*100;q.rot=0})}
+  Q.forEach((q,i)=>{q.el.style.transitionDelay=(mode?i*35:0)+'ms';q.el.style.left=q.tx+'px';q.el.style.top=q.ty+'px';q.el.style.maxWidth=mode===1?(W_*.9/5-20)+'px':'270px'});
+  const h1=document.getElementById('h1');h1.style.opacity=0;setTimeout(()=>{h1.textContent=H[mode];h1.style.opacity=1},300);
+  document.getElementById('tip').innerHTML=TIP[mode];
+  document.querySelectorAll('.dock button').forEach(b=>b.classList.toggle('on',+b.dataset.m===mode));}
+// 漂浮
+(function drift(t){if(mode===0)Q.forEach(q=>{q.el.style.transform=`translate(${Math.sin(t/1000*q.sp+q.ph)*8}px,${Math.cos(t/1300*q.sp+q.ph)*8}px) rotate(${q.rot}deg)`});
+  else Q.forEach(q=>q.el.style.transform='');requestAnimationFrame(drift)})(0);
+document.querySelectorAll('.dock button').forEach(b=>b.onclick=()=>{mode=+b.dataset.m;layout()});
+addEventListener('keydown',e=>{if(e.key==='ArrowRight'){mode=Math.min(2,mode+1);layout()}if(e.key==='ArrowLeft'){mode=Math.max(0,mode-1);layout()}});
+addEventListener('resize',layout);
+layout();
+</script>
+<script>window.STEPS={n:()=>3,go:k=>{mode=k;layout()},get:()=>mode,caps:()=>['打散','按来源归列','按被动 / 主动归列']}</script>
+<script src="scroll.js"></script>
+</body>
+</html>

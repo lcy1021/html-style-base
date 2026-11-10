@@ -67,7 +67,7 @@
 - 底部步进控制条高 56px：← / 步数 / 本步说明 / 重播 / 下一步。
 - 主体元素（最后一步）：
   - `div.stage` — 1280×664 @ (0, 0)，block
-  - `div.card` — 560×176 @ (360, 120)，block，底色 `#FFFFFF`，圆角 16px
+  - `div.card` — 560×175 @ (360, 120)，block，底色 `#FFFFFF`，圆角 16px
   - `div#cells.cells` — 1212×34 @ (34, 596)，grid
   - `p.note` — 55×16 @ (1205, 640)，block
 

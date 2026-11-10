@@ -1,28 +1,160 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>线索板</title><link rel="stylesheet" href="demo.css">
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>方案 D · 线索板｜仪表板首屏流失诊断</title>
 <style>
-.board{position:absolute;left:34px;right:34px;top:120px;bottom:76px;background:#2a2118;border-radius:14px;background-image:radial-gradient(rgba(255,255,255,.05) 1px,transparent 1px);background-size:14px 14px}
-.cl{position:absolute;width:210px;background:#fffbe8;color:#2b2b2b;padding:14px;border-radius:4px;font-size:13px;line-height:1.6;box-shadow:0 8px 20px rgba(0,0,0,.4);opacity:0;transform:translateY(16px) rotate(var(--r));transition:.5s var(--ease)}
-.cl.on{opacity:1;transform:rotate(var(--r))}.cl small{display:block;color:#a0662a;font-size:11px;margin-bottom:4px}
-.cl::before{content:"";position:absolute;top:-6px;left:50%;width:12px;height:12px;border-radius:50%;background:#e5483a;margin-left:-6px}
-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-svg line{stroke:#e5483a;stroke-width:2;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1s}
-body.s3 svg line{stroke-dashoffset:0}
-.stamp{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%) rotate(-6deg) scale(1.6);border:3px solid #e5483a;color:#e5483a;padding:10px 18px;font-size:20px;font-weight:700;border-radius:6px;opacity:0;transition:.4s cubic-bezier(.2,1.6,.4,1);background:rgba(42,33,24,.85)}
-.stamp.on{opacity:1;transform:translate(-50%,-50%) rotate(-6deg) scale(1)}
-</style></head>
-<body data-steps="5" data-caps="一条一条把证据钉上去|第二条证据|第三条证据|红线把证据连起来|盖章：几条证据一起指向的结论">
-<div class="stage"><p class="eb">示例 · 去业务化</p><h1>几条证据，<em>拼出一个结论。</em></h1></div>
-<div class="board" id="bd">
- <div class="cl" data-s="0" style="--r:-3deg;left:6%;top:10%"><small>反馈</small>“每次导完都要手动改文件名。”</div>
- <div class="cl" data-s="1" style="--r:2deg;right:8%;top:8%"><small>观察</small>导出后，用户在文件夹里逐个重命名。</div>
- <div class="cl" data-s="2" style="--r:-1deg;left:36%;bottom:8%"><small>材料</small>收件人按文件名归档，不打开文件。</div>
- <svg id="sv"></svg>
- <div class="stamp" data-s="4">问题在命名，不在拆分</div>
+:root{--paper:#e8e2d3;--ink:#1f1b16;--mut:#7a7163;--red:#c8322b;--yel:#ffe27a;--card:#fffdf8}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:var(--paper);color:var(--ink);font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+.mono{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace}
+#vp{position:fixed;inset:0;cursor:grab;touch-action:none;
+  background-image:radial-gradient(#00000014 1px,transparent 1.2px);background-size:24px 24px}
+#vp.drag{cursor:grabbing}
+#world{position:absolute;left:0;top:0;width:2400px;height:1400px;transform-origin:0 0}
+svg#strings{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+svg#strings path{fill:none;stroke:var(--red);stroke-width:2.2;stroke-dasharray:var(--len);stroke-dashoffset:var(--len);transition:stroke-dashoffset 1.2s cubic-bezier(.6,0,.2,1);filter:drop-shadow(0 2px 1px #0003)}
+svg#strings path.on{stroke-dashoffset:0}
+svg#strings path.ex{stroke:#9a9184;stroke-dasharray:6 6;opacity:0;transition:opacity .8s}
+svg#strings path.ex.on{opacity:1}
+.card{position:absolute;background:var(--card);padding:16px 18px 18px;box-shadow:0 1px 0 #0001,0 14px 30px -12px #0005;transform:rotate(var(--r));transition:transform .5s,box-shadow .5s;cursor:pointer;user-select:none}
+.card:before{content:"";position:absolute;top:-9px;left:50%;width:18px;height:18px;margin-left:-9px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#ff7b72,var(--red) 60%,#7a1612);box-shadow:0 3px 3px #0004;z-index:2}
+.card.focus{transform:rotate(0) scale(1.04);box-shadow:0 0 0 3px var(--ink),0 30px 50px -16px #0007;z-index:5}
+.card .tag{font-size:11px;color:var(--mut);letter-spacing:.06em;display:flex;justify-content:space-between}
+.card h3{font-size:19px;margin:6px 0 10px;line-height:1.35}
+.card p{font-size:13px;line-height:1.75;color:#4a443b}
+.card .big{font-size:46px;font-weight:800;color:var(--red);line-height:1}
+.note{position:absolute;width:170px;padding:14px;background:var(--yel);font-size:13px;line-height:1.6;transform:rotate(var(--r));box-shadow:0 10px 20px -10px #0005;font-family:"Kaiti SC","STKaiti","KaiTi",serif}
+.stamp{position:absolute;right:14px;bottom:16px;border:3px solid var(--red);color:var(--red);padding:3px 12px;font-weight:900;font-size:20px;letter-spacing:.2em;transform:rotate(-12deg) scale(2.4);opacity:0;transition:all .35s cubic-bezier(.3,1.6,.5,1)}
+.stamp.on{transform:rotate(-12deg) scale(1);opacity:.85}
+.bars{display:flex;align-items:flex-end;gap:5px;height:70px;margin:10px 0 6px;border-bottom:1px solid #ccc}
+.bars i{flex:1;background:#cfc6b4}
+.bars i.hot{background:var(--red)}
+.ax{display:flex;justify-content:space-between;font-size:10px;color:var(--mut)}
+.quote{font-size:15px;line-height:1.7;border-left:3px solid var(--ink);padding-left:12px;font-family:"Kaiti SC","STKaiti","KaiTi",serif}
+.grid{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin:10px 0;position:relative}
+.grid i{height:22px;background:#eee8dc;border-radius:2px;position:relative}
+.grid i b{position:absolute;inset:3px;border-radius:50%;background:radial-gradient(circle,#c8322b99,transparent 70%)}
+.cmp2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+.cmp2>div{border:1px solid #ddd5c5;padding:8px;font-size:11px}
+.cmp2 .mini{display:grid;gap:3px;margin-top:6px}
+.cmp2 .mini i{height:9px;background:#e4dccb}
+.cmp2 .kpi{display:flex;gap:3px;margin-top:6px}.cmp2 .kpi i{flex:1;height:18px;background:var(--ink)}
+.sol{display:flex;gap:6px;margin:12px 0}
+.sol span{flex:1;background:var(--ink);color:#fff;padding:8px;font-size:12px;text-align:center}
+.res{display:flex;gap:16px;align-items:baseline;margin-top:8px}
+.res b{font-size:34px;color:var(--red)} .res s{color:var(--mut);font-size:18px}
+
+/* HUD */
+.intro{position:fixed;left:32px;top:28px;max-width:400px;z-index:10;pointer-events:none;transition:opacity .5s,transform .5s}
+.intro.hide{opacity:0;transform:translateY(-12px)}
+.intro small{font-size:11px;color:var(--mut);letter-spacing:.2em}
+.intro h1{font-size:34px;line-height:1.2;margin:6px 0 8px}
+.intro p{font-size:13px;color:var(--mut);line-height:1.7}
+.mini-map{position:fixed;right:24px;top:24px;width:192px;height:112px;background:#fffdf8cc;border:1px solid #0002;z-index:10;backdrop-filter:blur(4px)}
+.mini-map i{position:absolute;background:#0003}
+.mini-map i.f{background:var(--red)}
+.mini-map .view{position:absolute;border:1.5px solid var(--ink)}
+.dock{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);display:flex;align-items:center;gap:6px;background:var(--ink);color:#fff;padding:8px;border-radius:14px;z-index:10;box-shadow:0 20px 40px -12px #0007}
+.dock button{background:none;border:0;color:#fff;height:38px;min-width:38px;border-radius:9px;cursor:pointer;font-size:14px;padding:0 12px}
+.dock button:hover{background:#ffffff1a}
+.dock .start{background:var(--red)}
+.dock .label{min-width:300px;padding:0 10px;font-size:13px}
+.dock .label b{font-family:"SF Mono",ui-monospace,Menlo,monospace;color:#ffb3ad;margin-right:8px}
+.dots{display:flex;gap:4px;padding:0 6px}
+.dots i{width:7px;height:7px;border-radius:50%;background:#ffffff40;transition:all .3s}
+.dots i.on{background:#fff;width:18px;border-radius:4px}
+.hint{position:fixed;left:32px;bottom:32px;font-size:12px;color:var(--mut);z-index:10}
+</style>
+</head>
+<body>
+<div id="vp"><div id="world"><svg id="strings"></svg></div></div>
+
+<div class="intro">
+  <small class="mono">CASE FILE No.0427 · 示例内容</small>
+  <h1>谁让用户在<br>8 秒内关掉了仪表板？</h1>
+  <p>一次体验问题诊断。拖动画布自由查看线索，或点下方「开始侦查」按推理顺序浏览。</p>
 </div>
-<p class="note">内容为示意</p>
-<script src="demo.js"></script>
+<div class="mini-map" id="mm"><div class="view" id="mv"></div></div>
+<div class="hint">拖动平移 · 滚轮缩放 · 点击卡片聚焦 · ← → 切换线索</div>
+<div class="dock">
+  <button id="ov" title="全局视图">⤢</button>
+  <button id="prev">←</button>
+  <div class="label" id="lab"><b>00/06</b>案件概览</div>
+  <div class="dots" id="dots"></div>
+  <button id="next">→</button>
+  <button class="start" id="go">开始侦查</button>
+</div>
+
 <script>
-const cls=[...document.querySelectorAll('.cl')];
-function lines(){const b=bd.getBoundingClientRect();const c=cls.map(e=>{const r=e.getBoundingClientRect();return[r.left-b.left+r.width/2,r.top-b.top+6]});sv.innerHTML=[[0,1],[1,2],[2,0]].map(([a,z])=>`<line pathLength="1" x1="${c[a][0]}" y1="${c[a][1]}" x2="${c[z][0]}" y2="${c[z][1]}"/>`).join('');}
-window.onStep=k=>{if(k===3)lines()};setTimeout(lines,50);addEventListener('resize',lines);
-</script></body></html>
+const C=[
+ {x:150,y:520,w:300,r:-2,tag:'线索 01 · 埋点数据',title:'现象：31% 的用户 8 秒内离开',body:`<div class="bars"><i class="hot" style="height:95%"></i><i style="height:42%"></i><i style="height:30%"></i><i style="height:26%"></i><i style="height:22%"></i><i style="height:20%"></i><i style="height:18%"></i></div><div class="ax mono"><span>0-8s</span><span>停留时长</span><span>5min+</span></div><p style="margin-top:8px">新版仪表板上线后，首屏流失明显高于旧版。</p>`},
+ {x:620,y:150,w:290,r:2.5,tag:'线索 02 · 假设 A',title:'是不是加载太慢？',body:`<div class="big mono">2.1s</div><p>P50 首屏加载时间，处于正常区间；慢加载与快加载用户的流失率无显著差异。</p><div class="stamp" data-at="2">已排除</div>`},
+ {x:640,y:800,w:310,r:-1.5,tag:'线索 03 · 用户访谈 ×8',title:'“不知道先看哪个”',body:`<div class="quote">“一打开二十几个图，我也不知道哪个是我要的，就先关了，回头让同事截图给我。”</div><p style="margin-top:10px">—— 区域销售经理</p>`},
+ {x:1110,y:520,w:320,r:1.5,tag:'线索 04 · 眼动 / 录屏观察',title:'24 个组件，视线没有落点',body:`<div class="grid" id="heat"></div><p>首屏同时出现 24 个图表组件，注视点散布在全屏，平均在单个组件上停留不足 0.4 秒。</p>`},
+ {x:1580,y:180,w:330,r:-2,tag:'线索 05 · 对照组',title:'留存高的看板有什么不同？',body:`<div class="cmp2"><div>高流失看板<div class="mini"><i></i><i></i><i></i><i></i><i></i><i></i></div></div><div>高留存看板<div class="kpi"><i></i><i></i><i></i></div><div class="mini"><i></i><i></i></div></div></div><p>留存最高的 10 个看板：组件 ≤ 8 个，且首屏顶部都有一行关键指标。</p>`},
+ {x:1700,y:800,w:380,r:1,tag:'结论 · 设计方案',title:'问题不是慢，是“没有入口”',body:`<div class="sol"><span>① 首屏指标摘要条</span><span>② 组件按主题分组折叠</span><span>③ 角色默认视图</span></div><div class="res"><s>31%</s><span>→</span><b>14%</b><span style="font-size:12px;color:#7a7163">8 秒流失率（示例）</span></div><div class="stamp" data-at="6">结案</div>`}
+];
+const NOTES=[{x:960,y:260,r:4,t:'P90 也只有 3.4s，<br>不是性能问题 ✗'},{x:330,y:980,r:-5,t:'8 人中 6 人<br>提到“找不到重点”'},{x:1500,y:1000,r:3,t:'组件数 &gt; 15 时<br>流失率翻倍！'}];
+const LINKS=[[0,1,'ex'],[0,2],[2,3],[3,4],[4,5]];
+const world=document.getElementById('world'),svg=document.getElementById('strings'),vp=document.getElementById('vp');
+C.forEach((c,i)=>{const d=document.createElement('div');d.className='card';d.style.cssText=`left:${c.x}px;top:${c.y}px;width:${c.w}px;--r:${c.r}deg`;
+  d.innerHTML=`<div class="tag mono"><span>${c.tag}</span><span>#${String(i+1).padStart(2,'0')}</span></div><h3>${c.title}</h3>${c.body}`;
+  d.addEventListener('click',e=>{if(moved)return;go(i+1)});world.appendChild(d);c.el=d;});
+NOTES.forEach(n=>{const d=document.createElement('div');d.className='note';d.style.cssText=`left:${n.x}px;top:${n.y}px;--r:${n.r}deg`;d.innerHTML=n.t;world.appendChild(d)});
+// heat grid
+document.getElementById('heat').innerHTML=Array.from({length:24},()=>`<i>${Math.random()>.45?'<b style="opacity:'+(.3+Math.random()*.7).toFixed(2)+'"></b>':''}</i>`).join('');
+// strings
+requestAnimationFrame(()=>{svg.innerHTML=LINKS.map(([a,b,t])=>{const A=C[a],B=C[b];const x1=A.x+A.w/2,y1=A.y,x2=B.x+B.w/2,y2=B.y;
+  const mx=(x1+x2)/2,my=Math.max(y1,y2)+90;return `<path class="${t||''}" d="M${x1},${y1} Q${mx},${my} ${x2},${y2}"/>`}).join('');
+  svg.querySelectorAll('path').forEach(p=>{const l=p.getTotalLength();p.style.setProperty('--len',l)});});
+// minimap
+const mm=document.getElementById('mm'),K=192/2400;
+C.forEach(c=>{const i=document.createElement('i');i.style.cssText=`left:${c.x*K}px;top:${c.y*K}px;width:${c.w*K}px;height:${200*K}px`;mm.appendChild(i);c.mm=i});
+
+// camera
+let cam={x:0,y:0,s:.5},anim=null;
+function apply(){world.style.transform=`translate(${cam.x}px,${cam.y}px) scale(${cam.s})`;
+  const v=document.getElementById('mv');v.style.left=(-cam.x/cam.s*K)+'px';v.style.top=(-cam.y/cam.s*K)+'px';v.style.width=(innerWidth/cam.s*K)+'px';v.style.height=(innerHeight/cam.s*K)+'px';}
+function fly(t,ms=1000){cancelAnimationFrame(anim);const f={...cam},st=performance.now();
+  (function step(n){let p=Math.min((n-st)/ms,1);p=p<.5?4*p*p*p:1-Math.pow(-2*p+2,3)/2;
+    // 中途略微拉远，产生“镜头飞行”感
+    const dip=Math.sin(Math.PI*p)*.12*Math.min(f.s,t.s);
+    cam.s=f.s+(t.s-f.s)*p-dip;cam.x=f.x+(t.x-f.x)*p;cam.y=f.y+(t.y-f.y)*p;apply();if(p<1)anim=requestAnimationFrame(step)})(st);}
+function fit(){const s=Math.min(innerWidth/2300,innerHeight/1350)*.92;return{s,x:(innerWidth-2400*s)/2,y:(innerHeight-1300*s)/2+30}}
+function focusOn(c){const s=Math.min(1.15,innerHeight/900);const h=c.el.offsetHeight;return{s,x:innerWidth/2-(c.x+c.w/2)*s,y:innerHeight/2-(c.y+h/2)*s-20}}
+
+// steps
+let cur=0;const dots=document.getElementById('dots');C.forEach(()=>dots.appendChild(document.createElement('i')));
+function go(i){cur=Math.max(0,Math.min(C.length,i));
+  C.forEach((c,k)=>{c.el.classList.toggle('focus',k===cur-1);c.mm.classList.toggle('f',k===cur-1)});
+  svg.querySelectorAll('path').forEach((p,k)=>p.classList.toggle('on',cur>=LINKS[k][1]+1));
+  document.querySelectorAll('.stamp').forEach(s=>setTimeout(()=>s.classList.toggle('on',cur>=+s.dataset.at),600));
+  [...dots.children].forEach((d,k)=>d.classList.toggle('on',k===cur-1));
+  document.getElementById('lab').innerHTML=`<b>${String(cur).padStart(2,'0')}/06</b>`+(cur?C[cur-1].title:'案件概览');
+  document.getElementById('go').style.display=cur?'none':'';
+  document.querySelector('.intro').classList.toggle('hide',cur>0);
+  fly(cur?focusOn(C[cur-1]):fit());}
+document.getElementById('next').onclick=()=>go(cur+1);
+document.getElementById('prev').onclick=()=>go(cur-1);
+document.getElementById('go').onclick=()=>go(1);
+document.getElementById('ov').onclick=()=>{C.forEach(c=>c.el.classList.remove('focus'));document.querySelector('.intro').classList.remove('hide');fly(fit())};
+addEventListener('keydown',e=>{if(e.key==='ArrowRight')go(cur+1);if(e.key==='ArrowLeft')go(cur-1)});
+
+// drag + inertia
+let dragging=false,moved=false,last=null,vel={x:0,y:0};
+vp.addEventListener('pointerdown',e=>{dragging=true;moved=false;last={x:e.clientX,y:e.clientY};vel={x:0,y:0};cancelAnimationFrame(anim);vp.classList.add('drag')});
+addEventListener('pointermove',e=>{if(!dragging)return;const dx=e.clientX-last.x,dy=e.clientY-last.y;if(Math.abs(dx)+Math.abs(dy)>3)moved=true;
+  cam.x+=dx;cam.y+=dy;vel={x:dx,y:dy};last={x:e.clientX,y:e.clientY};apply()});
+addEventListener('pointerup',()=>{if(!dragging)return;dragging=false;vp.classList.remove('drag');
+  (function glide(){vel.x*=.92;vel.y*=.92;cam.x+=vel.x;cam.y+=vel.y;apply();if(Math.abs(vel.x)+Math.abs(vel.y)>.3)anim=requestAnimationFrame(glide)})();});
+vp.addEventListener('wheel',e=>{e.preventDefault();cancelAnimationFrame(anim);const ns=Math.max(.25,Math.min(2,cam.s*Math.exp(-e.deltaY*.0015)));
+  cam.x=e.clientX-(e.clientX-cam.x)*ns/cam.s;cam.y=e.clientY-(e.clientY-cam.y)*ns/cam.s;cam.s=ns;apply()},{passive:false});
+addEventListener('resize',()=>go(cur));
+cam=fit();apply();go(0);
+</script>
+<script>window.STEPS={n:()=>C.length+1,go:k=>go(k),get:()=>cur,caps:()=>['案件概览',...C.map(c=>c.title)]}</script>
+<script src="scroll.js"></script>
+</body>
+</html>

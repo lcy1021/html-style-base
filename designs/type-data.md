@@ -4,7 +4,7 @@
 
 **想说明：** 用可追溯的数据呈现差异  
 **分类：** 方法  
-**Theme：** 深色  
+**Theme：** 浅色  
 **样例：** `demos/slope.html`  
 
 下列数值从本库样例在 1280 × 720 视口、最后一步时的实际渲染中量出（`getComputedStyle`），不是原始参考网站的取值。改成自己的案例时，按内容替换颜色和文字，保留层级比例。
@@ -17,11 +17,11 @@
 
 | Name | Value | Token | Role |
 |---|---|---|---|
-| Canvas | `#0C0B12` | `--bg` | 背景 / 面 |
-| Text 1 | `#F3F1FF` | `--fg` | 文字 |
-| Text 2 | `#9A95A8` | `--mut` | 文字 |
-| Accent · 橙 | `#FFB547` | `--amber` | 文字 |
-| Accent · 紫 | `#B9A8FF` | `--violet` | 文字 |
+| Canvas | `#F4F3EF` | `--bg` | 背景 / 面 |
+| Text 1 | `#1D2129` | `--fg` | 文字 |
+| Text 2 | `#6B7280` | `--mut` | 文字 |
+| Accent · 橙 | `#B86E00` | `--amber` | 文字 |
+| Accent · 紫 | `#6A55D6` | `--violet` | 文字 |
 
 ## Tokens — Typography
 
@@ -80,7 +80,7 @@
 
 ## Agent Prompt Guide
 
-**颜色速查：** `#0C0B12`（背景 / 面），`#F3F1FF`（文字），`#9A95A8`（文字），`#FFB547`（文字），`#B9A8FF`（文字）
+**颜色速查：** `#F4F3EF`（背景 / 面），`#1D2129`（文字），`#6B7280`（文字），`#B86E00`（文字），`#6A55D6`（文字）
 
 ```text
 做一页「数据发现」形式的 HTML 演示：用可追溯的数据呈现差异。
@@ -102,11 +102,11 @@
 
 ```css
 :root{
-  --canvas:#0C0B12;
-  --text-1:#F3F1FF;
-  --text-2:#9A95A8;
-  --text-3:#FFB547;
-  --text-4:#B9A8FF;
+  --canvas:#F4F3EF;
+  --text-1:#1D2129;
+  --text-2:#6B7280;
+  --text-3:#B86E00;
+  --text-4:#6A55D6;
   --ease:cubic-bezier(.3,.8,.2,1);
 }
 ```

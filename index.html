@@ -306,7 +306,7 @@ main{padding:32px 32px 120px}
         const f = fr; if (!f) return;
         const w = f.contentWindow, d = f.contentDocument;
         try {
-          const st = d.createElement('style'); st.textContent = '.ctrl{display:none!important}.stage{bottom:0!important}'; d.head.appendChild(st);
+          if (d.querySelector('script[src="demo.js"]')) { const st = d.createElement('style'); st.textContent = '.ctrl{display:none!important}.stage{bottom:0!important}'; d.head.appendChild(st); }
           const N = w.DEMO ? w.DEMO.N : 1;
           let k = 0;
           const show = () => { if (w.DEMO) w.DEMO.set(k); };

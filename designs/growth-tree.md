@@ -4,7 +4,7 @@
 
 **想说明：** 范围怎么收敛到 MVP  
 **分类：** 样式  
-**Theme：** 深色  
+**Theme：** 浅色  
 **样例：** `demos/growth-tree.html`  
 
 下列数值从本库样例在 1280 × 720 视口、最后一步时的实际渲染中量出（`getComputedStyle`），不是原始参考网站的取值。改成自己的案例时，按内容替换颜色和文字，保留层级比例。
@@ -18,24 +18,31 @@
 
 | Name | Value | Token | Role |
 |---|---|---|---|
-| Canvas | `#0C0B12` | `--bg` | 背景 / 面 |
-| Text 1 | `#F3F1FF` | `--fg` | 文字 |
-| Accent · 橙 | `#FFB547` | `--amber` | 文字 |
-| Accent · 紫 | `#B9A8FF` | `--violet` | 文字 |
-| Text 2 | `#9A95A8` | `--mut` | 文字 |
+| Canvas | `#FBF7F0` | `--bg` | 背景 / 面 |
+| Surface 1 | `#2B2622` | — | 面 / 区块 |
+| Surface 2 | `#FFFFFF` | — | 面 / 区块 |
+| Text 1 | `#968B7E` | `--mut` | 文字 |
+| Text 2 | `#000000` | — | 文字 |
+| Accent · 橙 | `#E0D5C5` | — | 描边 |
 
 ## Tokens — Typography
 
-- **字体栈：** `-apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif`
+- **字体栈：** `-apple-system, "PingFang SC", "Microsoft YaHei", sans-serif`
 - **说明：** 中文优先系统字体（PingFang SC / 微软雅黑），不引外部字体，离线也能显示。
 
 ### Type Scale
 
 | Size | Weight | Line height | Letter spacing | 用在 | 示例 |
 |---|---|---|---|---|---|
-| 30px | 400 | 39px | -0.9px | `h1, em` | 先让想法长出来， |
-| 11px | 400 | normal | 1.54px | `p.eb` | 示例 · 去业务化 |
-| 11px | 400 | normal | normal | `p.note` | 内容为示意 |
+| 30px | 700 | 39px | normal | `h1` | “做一个 AI 分析助手”是怎么 |
+| 16px | 700 | 24px | normal | `span.t` | 老板：做一个 AI 分析助手 |
+| 15px | 700 | normal | normal | `b` | 原始需求 |
+| 14px | 400 | 25.2px | normal | `p` | 一句话需求，经过 4 步：发散、 |
+| 14px | 600 | normal | normal | `button, button.p` | 上一步 |
+| 14px | 700 | normal | normal | `h4` | 📌 MVP 范围（v1.0） |
+| 13px | 700 | normal | normal | `i` | 0 |
+| 12px | 400 | normal | 1.8px | `small` | CASE · 需求分析 · 示例 |
+| 12px | 400 | 20.4px | normal | `span` | 只有一句话。此时任何方案都是猜测 |
 
 ## Tokens — Spacing & Shapes
 
@@ -43,28 +50,30 @@
 
 | Value | 次数 |
 |---|---|
-| 0 | — |
+| 50% | 5 |
+| 21px | 2 |
+| 24px | 1 |
 
 ### Shadows
 
-不用阴影，靠底色和描边分层。
+| Value | 次数 |
+|---|---|
+| `rgba(107, 85, 51, 0.4) 0px 6px 18px -8px` | 1 |
 
 ### Layout
 
 - 舞台：`position:fixed; inset:0 0 56px; padding:28px 34px`，标题区在左上。
 - 底部步进控制条高 56px：← / 步数 / 本步说明 / 重播 / 下一步。
 - 主体元素（最后一步）：
-  - `div.stage` — 1280×664 @ (0, 0)，block
-  - `svg#sv` — 1212×520 @ (34, 120)，block
-  - `p.note` — 55×16 @ (1205, 640)，block
+  - `div.wrap` — 1280×836 @ (0, 0)，grid
 
 ## 步骤脚本
 
-1. 从一个诉求出发
-2. 想法一路长出分支
-3. 砍掉：不服务这个任务的
-4. 延后：有价值但不是现在
-5. 剩下的就是 MVP
+1. 原始需求
+2. 发散：四个追问维度
+3. 追问：每个维度展开
+4. 收敛：砍掉与延后
+5. 定义 MVP
 
 ## Do's and Don'ts
 
@@ -80,7 +89,7 @@
 
 ## Agent Prompt Guide
 
-**颜色速查：** `#0C0B12`（背景 / 面），`#F3F1FF`（文字），`#FFB547`（文字），`#B9A8FF`（文字），`#9A95A8`（文字）
+**颜色速查：** `#FBF7F0`（背景 / 面），`#2B2622`（面 / 区块），`#FFFFFF`（面 / 区块），`#968B7E`（文字），`#000000`（文字），`#E0D5C5`（描边）
 
 ```text
 做一页「需求生长图」形式的 HTML 演示：范围怎么收敛到 MVP。
@@ -100,11 +109,13 @@
 
 ```css
 :root{
-  --canvas:#0C0B12;
-  --text-1:#F3F1FF;
-  --text-2:#FFB547;
-  --text-3:#B9A8FF;
-  --text-4:#9A95A8;
+  --canvas:#FBF7F0;
+  --surface-1:#2B2622;
+  --surface-2:#FFFFFF;
+  --text-1:#968B7E;
+  --text-2:#000000;
+  --line-1:#E0D5C5;
+  --radius:50%;
   --ease:cubic-bezier(.3,.8,.2,1);
 }
 ```

@@ -4,7 +4,7 @@
 
 **想说明：** 两个指标此消彼长  
 **分类：** 样式  
-**Theme：** 深色  
+**Theme：** 浅色  
 **样例：** `demos/tradeoff.html`  
 
 下列数值从本库样例在 1280 × 720 视口、最后一步时的实际渲染中量出（`getComputedStyle`），不是原始参考网站的取值。改成自己的案例时，按内容替换颜色和文字，保留层级比例。
@@ -17,29 +17,33 @@
 
 | Name | Value | Token | Role |
 |---|---|---|---|
-| Canvas | `#0C0B12` | `--bg` | 背景 / 面 |
+| Canvas | `#FAFAFA` | `--bg` | 背景 / 面 |
 | Surface 1 | `#FFFFFF` | — | 面 / 区块 |
-| Text 1 | `#F3F1FF` | `--fg` | 文字 |
-| Accent · 橙 | `#FFB547` | `--amber` | 文字 |
-| Text 2 | `#9A95A8` | `--mut` | 文字 |
-| Accent · 紫 | `#B9A8FF` | `--violet` | 文字 |
-| Accent · 青 | `#5AD0B3` | `--teal` | 文字 |
-| Accent · 红 | `#FF6B5A` | `--red` | 文字 |
+| Surface 2 | `#F9F9FB` | — | 面 / 区块 |
+| Text 1 | `#1C1C1E` | — | 文字 |
+| Text 2 | `#48484A` | — | 文字 |
+| Text 3 | `#8E8E93` | `--mut` | 文字 |
+| Accent · 紫 | `#5E5CE6` | — | 文字 |
+| Accent · 绿 | `#34C759` | — | 文字 |
+| Accent · 红 | `#FF3B30` | — | 文字 |
+| Line 1 | `#E5E5EA` | — | 描边 |
 
 ## Tokens — Typography
 
-- **字体栈：** `-apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif`
+- **字体栈：** `-apple-system, "PingFang SC", "Microsoft YaHei", sans-serif`
 - **说明：** 中文优先系统字体（PingFang SC / 微软雅黑），不引外部字体，离线也能显示。
 
 ### Type Scale
 
 | Size | Weight | Line height | Letter spacing | 用在 | 示例 |
 |---|---|---|---|---|---|
-| 30px | 400 | 39px | -0.9px | `h1, em` | 限制越严， |
-| 26px | 500 | 49.4px | normal | `b` | 50% |
-| 15px | 400 | 28.5px | normal | `div.t, div.r` | 会换行的场景 |
-| 13px | 400 | normal | normal | `div.ctl, span` | 字数上限 |
-| 11px | 400 | normal | 1.54px | `p.eb` | 示意曲线 · 不是真实数据 |
+| 64px | 700 | 71.68px | -1.28px | `h1, span.a, span.b` | 数据表格该有多“密”？和给出了相 |
+| 18px | 400 | 32.4px | normal | `p` | 下面是一个可以自己动手的模拟器。 |
+| 15px | 700 | normal | normal | `b` | 表格实时预览 |
+| 14.4px | 600 | normal | normal | `div.c` | 门店 |
+| 14.4px | 400 | normal | normal | `div.c, span.up, span.dn` | 杭州西湖 |
+| 13px | 600 | normal | normal | `small` | CASE · 信息密度设计 ·  |
+| 12px | 400 | normal | normal | `span` | 一屏 8 行 · 4 列 |
 
 ## Tokens — Spacing & Shapes
 
@@ -47,27 +51,29 @@
 
 | Value | 次数 |
 |---|---|
-| 0 | — |
+| 20px | 2 |
+| 14px | 2 |
+| 12px | 1 |
 
 ### Shadows
 
-不用阴影，靠底色和描边分层。
+| Value | 次数 |
+|---|---|
+| `rgba(0, 0, 0, 0.06) 0px 1px 3px 0px, rgba(0, 0, 0, 0.2) 0px 20px 50px -30px` | 2 |
 
 ### Layout
 
 - 舞台：`position:fixed; inset:0 0 56px; padding:28px 34px`，标题区在左上。
 - 底部步进控制条高 56px：← / 步数 / 本步说明 / 重播 / 下一步。
 - 主体元素（最后一步）：
-  - `div.stage` — 1280×664 @ (0, 0)，block
-  - `div.g` — 768×450 @ (34, 120)，block
-  - `div.ctl` — 768×19 @ (34, 625)，flex
-  - `div.rd` — 358×156 @ (888, 140)，block
+  - `section.hero` — 1200×388 @ (0, 0)，block
+  - `section.lab` — 1280×749 @ (0, 388)，grid
 
 ## 步骤脚本
 
-1. 两个指标此消彼长
-2. 拖动滑块，看平衡点怎么移动
-3. 只用在有真实数据的时候
+1. 数据表格该有多“密”？ 新手和专家给出了相反的答案。
+2. 数据表格该有多“密”？ 新手和专家给出了相反的答案。（续）
+3. 最终答案不是选一个点，而是默认标准 + 让用户自己切换。
 
 ## Do's and Don'ts
 
@@ -84,7 +90,7 @@
 
 ## Agent Prompt Guide
 
-**颜色速查：** `#0C0B12`（背景 / 面），`#FFFFFF`（面 / 区块），`#F3F1FF`（文字），`#FFB547`（文字），`#9A95A8`（文字），`#B9A8FF`（文字）
+**颜色速查：** `#FAFAFA`（背景 / 面），`#FFFFFF`（面 / 区块），`#F9F9FB`（面 / 区块），`#1C1C1E`（文字），`#48484A`（文字），`#8E8E93`（文字）
 
 ```text
 做一页「权衡模拟器」形式的 HTML 演示：两个指标此消彼长。
@@ -104,14 +110,17 @@
 
 ```css
 :root{
-  --canvas:#0C0B12;
+  --canvas:#FAFAFA;
   --surface-1:#FFFFFF;
-  --text-1:#F3F1FF;
-  --text-2:#FFB547;
-  --text-3:#9A95A8;
-  --text-4:#B9A8FF;
-  --text-5:#5AD0B3;
-  --text-6:#FF6B5A;
+  --surface-2:#F9F9FB;
+  --text-1:#1C1C1E;
+  --text-2:#48484A;
+  --text-3:#8E8E93;
+  --text-4:#5E5CE6;
+  --text-5:#34C759;
+  --text-6:#FF3B30;
+  --line-1:#E5E5EA;
+  --radius:20px;
   --ease:cubic-bezier(.3,.8,.2,1);
 }
 ```

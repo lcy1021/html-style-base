@@ -1,35 +1,136 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>可玩原型</title><link rel="stylesheet" href="demo.css">
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>方案 M · 可玩原型｜亲手创建一个指标</title>
 <style>
-.task{position:absolute;left:34px;top:130px;width:30%;font-size:15px;line-height:1.8}
-.task b{display:block;font-size:20px;font-weight:500;margin-bottom:8px}
-.cnt{display:flex;gap:22px;margin-top:20px}.cnt div{font-size:12px;color:var(--mut)}.cnt span{display:block;font-size:30px;color:var(--fg);font-variant-numeric:tabular-nums}
-.res{margin-top:18px;padding:12px 14px;border-radius:10px;background:rgba(90,208,179,.12);color:var(--teal);opacity:0;transition:.4s}.res.on{opacity:1}
-.ph{position:absolute;right:12%;top:110px;width:300px;height:calc(100% - 200px);background:#fff;color:#1d2129;border-radius:28px;border:8px solid #2b2838;padding:16px 14px;overflow:hidden;font-size:14px}
-.ph h5{font-size:14px;margin-bottom:10px;display:flex;gap:8px;align-items:center}
-.ph button{all:unset;cursor:pointer;display:block;width:100%;box-sizing:border-box;padding:12px;border-bottom:1px solid #f2f3f5}
-.ph button:hover{background:#f7f8fa}.ph .bk{width:auto;border:0;padding:2px 8px;color:#5b4bff}
-.ph .pg{display:none}.ph .pg.on{display:block}
-.hint{position:absolute;inset:auto 0 0;padding:10px;text-align:center;font-size:12px;color:#86909c}
-</style></head>
-<body data-steps="2" data-caps="请一位听众上来：找到“订单 0042”，看完回到列表第 3 页|对比：返回后停在原位，点击数少一半">
-<div class="stage"><p class="eb">示例 · 去业务化</p><h1>别讲了，<em>请你亲手点一遍。</em></h1></div>
-<div class="task"><b>任务：看完 0042 后，回到原来的位置。</b>先用“现状”试一遍，再切换到“改版后”。
- <div class="cnt"><div><span id="ck">0</span>点击次数</div><div><span id="md">现状</span>版本</div></div>
- <div class="res" id="rs"></div></div>
-<div class="ph">
- <div class="pg on" id="list"><h5>订单列表 · 第 <span id="pgn">3</span> 页</h5><div id="items"></div></div>
- <div class="pg" id="det"><h5><button class="bk" id="bk">‹ 返回</button>订单 0042</h5><p style="padding:12px;color:#4e5969">详情内容……</p></div>
- <div class="hint">可以直接点</div>
-</div>
-<p class="note">内容为示意</p>
-<script src="demo.js"></script>
+:root{--bg:#120c2c;--fg:#f3eeff;--mut:#9b8fd0;--neo:#b6ff3b;--pk:#ff4fd8;--cy:#3be8ff;--card:#1d1546}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--fg);font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;min-height:100vh;
+  background-image:linear-gradient(#ffffff06 1px,transparent 1px),linear-gradient(90deg,#ffffff06 1px,transparent 1px);background-size:32px 32px}
+.mono{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace}
+.top{text-align:center;padding:6vh 6vw 3vh}
+.top small{color:var(--neo);font-size:13px;letter-spacing:.3em}
+.top h1{font-size:clamp(34px,5vw,64px);line-height:1.15;margin:12px 0;text-shadow:0 0 30px #b6ff3b55}
+.top h1 em{font-style:normal;color:var(--neo)}
+.top p{color:var(--mut);font-size:16px;max-width:640px;margin:0 auto;line-height:1.8}
+.mission{display:inline-flex;gap:14px;align-items:center;margin-top:22px;border:2px solid var(--neo);border-radius:12px;padding:12px 20px;font-size:15px;box-shadow:0 0 24px #b6ff3b33}
+.mission b{color:var(--neo)}
+.game{max-width:1100px;margin:0 auto;padding:0 4vw 6vh}
+.modes{display:flex;justify-content:center;gap:12px;margin:18px 0 22px}
+.modes button{height:46px;padding:0 24px;border-radius:12px;border:2px solid #ffffff33;background:transparent;color:var(--fg);font-size:15px;cursor:pointer;font-weight:700;transition:all .2s}
+.modes button:hover{border-color:var(--fg)}
+.modes button.old.on{background:var(--pk);border-color:var(--pk);color:#fff;box-shadow:0 0 24px #ff4fd866}
+.modes button.new.on{background:var(--neo);border-color:var(--neo);color:#000;box-shadow:0 0 24px #b6ff3b66}
+.hud{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}
+.hud div{background:var(--card);border-radius:12px;padding:12px 16px;border:1px solid #ffffff14}
+.hud small{font-size:11px;color:var(--mut);letter-spacing:.2em}
+.hud b{display:block;font-size:30px;font-weight:800;font-variant-numeric:tabular-nums}
+.hud .bump{animation:bump .25s}
+@keyframes bump{50%{transform:scale(1.2);color:var(--pk)}}
+.device{background:#fff;color:#1d2129;border-radius:16px;min-height:380px;padding:0;overflow:hidden;position:relative;box-shadow:0 0 0 6px #2a2060,0 40px 80px -30px #000}
+.bar{height:40px;background:#f2f3f5;display:flex;align-items:center;padding:0 16px;gap:8px;font-size:12px;color:#86909c}
+.bar i{width:10px;height:10px;border-radius:50%;background:#dcdfe6}
+.scr{padding:24px;animation:sc .35s cubic-bezier(.2,.8,.2,1)}
+@keyframes sc{from{opacity:0;transform:translateX(30px)}}
+.scr h3{font-size:18px;margin-bottom:6px}.scr .s{font-size:13px;color:#86909c;margin-bottom:18px}
+.btn{display:inline-flex;align-items:center;height:36px;padding:0 16px;border-radius:8px;border:1px solid #dcdfe6;background:#fff;cursor:pointer;font-size:13px;margin:4px 6px 4px 0}
+.btn.p{background:#165dff;color:#fff;border-color:#165dff}
+.btn.sel{background:#e8f3ff;border-color:#165dff;color:#165dff}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.list .btn{display:flex;width:100%;justify-content:space-between;height:44px}
+.fx{border:1px solid #dcdfe6;border-radius:8px;min-height:46px;padding:10px;font-family:monospace;font-size:15px;margin:10px 0;background:#f7f8fa}
+.search{border:2px solid #165dff;border-radius:10px;height:48px;display:flex;align-items:center;padding:0 14px;font-size:15px;gap:8px}
+.sug{border:1px solid #e5e6eb;border-radius:10px;margin-top:8px;overflow:hidden}
+.sug div{padding:12px 14px;font-size:14px;cursor:pointer;border-bottom:1px solid #f2f3f5;display:flex;justify-content:space-between}
+.sug div:hover{background:#f2f7ff}
+.sug div em{font-style:normal;color:#86909c;font-size:12px}
+.prev{border:1px solid #e5e6eb;border-radius:12px;padding:18px;display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:13px}
+.prev label{color:#86909c;font-size:12px;display:block;margin-bottom:4px}
+.chip{display:inline-block;background:#e8f3ff;color:#165dff;padding:2px 10px;border-radius:99px}
+.hint{position:absolute;right:16px;bottom:14px;font-size:12px;color:#c9cdd4}
+.done{text-align:center;padding:60px 20px}
+.done .big{font-size:64px}
+.res{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px}
+.rc{background:var(--card);border-radius:16px;padding:22px;border:1px solid #ffffff14}
+.rc h4{font-size:13px;color:var(--mut);letter-spacing:.15em;margin-bottom:12px}
+.rr{display:grid;grid-template-columns:90px 1fr 70px;gap:10px;align-items:center;margin:10px 0;font-size:13px}
+.rr .t{height:14px;border-radius:7px;background:#ffffff10;overflow:hidden}
+.rr .t i{display:block;height:100%;width:0;border-radius:7px;transition:width 1s cubic-bezier(.2,.8,.2,1)}
+.rr b{text-align:right;font-variant-numeric:tabular-nums}
+.verdict{margin-top:18px;font-size:15px;line-height:1.8;color:#d9d2ff}
+.verdict b{color:var(--neo)}
+footer{text-align:center;padding:30px;font-size:12px;color:var(--mut)}
+.flash{position:fixed;inset:0;pointer-events:none;background:var(--neo);opacity:0}
+.flash.go{animation:fl .6s}
+@keyframes fl{20%{opacity:.25}}
+</style>
+</head>
+<body>
+<div class="flash" id="flash"></div>
+<section class="top">
+  <small class="mono">PLAYABLE CASE · 示例内容</small>
+  <h1>别看我们说，<br><em>你自己试试。</em></h1>
+  <p>这是“创建计算指标”流程改版前后的可交互原型。选一个版本，完成同一个任务，看看你花了多少次点击和多少时间。</p>
+  <div class="mission">🎯 任务：创建指标 <b>「华东区毛利率」</b></div>
+</section>
+<section class="game">
+  <div class="modes"><button class="old on" data-m="old">旧版流程（7 步）</button><button class="new" data-m="new">新版流程（2 步）</button></div>
+  <div class="hud"><div><small>TIME</small><b class="mono" id="t">0.0s</b></div><div><small>CLICKS</small><b class="mono" id="c">0</b></div><div><small>STEP</small><b class="mono" id="s">1/7</b></div></div>
+  <div class="device"><div class="bar"><i></i><i></i><i></i><span style="margin-left:8px" id="url">app.example/metrics</span></div><div id="scr"></div></div>
+  <div class="res" id="res"></div>
+</section>
+<footer>方案 M · 可玩原型 — 把任务流做成可以真正操作的原型，用读者自己的点击次数和耗时证明效率提升。</footer>
 <script>
-let clicks=0,ver=0,page=3,seen=false;const show=id=>{list.classList.toggle('on',id==='list');det.classList.toggle('on',id==='det')};
-const hit=()=>{clicks++;ck.textContent=clicks};
-function done(){if(seen&&page===3&&list.classList.contains('on')){rs.classList.add('on');rs.textContent=ver===0?`回到第 3 页，一共点了 ${clicks} 次。`:`直接回到原位，一共点了 ${clicks} 次。`}}
-function draw(){pgn.textContent=page;items.innerHTML=Array.from({length:6},(_,i)=>{const n=String((page-1)*6+i+30).padStart(4,'0');return `<button data-n="${n}">订单 ${n}</button>`}).join('')+(page<3?'<button id="nx">下一页 ›</button>':'');
- items.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{hit();if(b.dataset.n==='0042'){seen=true;show('det')}});
- const nx=document.getElementById('nx');if(nx)nx.onclick=()=>{hit();page++;draw();done()};}
-bk.onclick=()=>{hit();if(ver===0)page=1;show('list');draw();done();};
-window.onStep=k=>{ver=k;clicks=0;seen=false;ck.textContent=0;md.textContent=k?'改版后':'现状';page=3;rs.classList.remove('on');show('list');draw();};
-</script></body></html>
+const F={
+ old:[
+  s=>`<h3>指标管理</h3><div class="s">共 128 个指标</div><button class="btn">导入</button><button class="btn">刷新</button><button class="btn p" data-go>+ 新建指标</button>`,
+  s=>`<h3>第 1 步：选择数据集</h3><div class="s">指标需要基于一个数据集</div><div class="list"><button class="btn">订单明细 <span>fct_order</span></button><button class="btn" data-go>销售明细 <span>fct_sales</span></button><button class="btn">库存快照 <span>fct_stock</span></button></div>`,
+  s=>`<h3>第 2 步：编写计算公式</h3><div class="s">依次点击构建：SUM(毛利) ÷ SUM(销售额)</div><div class="fx" id="fx">${s.fx.join(' ')||'<span style="color:#c9cdd4">点击下方元素构建公式</span>'}</div>
+     ${['SUM(毛利)','SUM(成本)','÷','×','SUM(销售额)'].map(t=>`<button class="btn" data-tok="${t}">${t}</button>`).join('')}<br><button class="btn" data-clr>清空</button><button class="btn p" data-go ${s.fx.join(' ')==='SUM(毛利) ÷ SUM(销售额)'?'':'disabled'}>下一步</button>`,
+  s=>`<h3>第 3 步：添加过滤条件</h3><div class="s">限定统计范围</div>${s.f1?`<div class="s">选择字段：</div><button class="btn">渠道</button><button class="btn ${s.f2?'sel':''}" data-f2>区域</button><button class="btn">门店</button>${s.f2?`<div class="s" style="margin-top:10px">选择值：</div><button class="btn">华南</button><button class="btn ${s.f3?'sel':''}" data-f3>华东</button><button class="btn">华北</button>`:''}`:`<button class="btn" data-f1>+ 添加条件</button>`}<br><br><button class="btn p" data-go ${s.f3?'':'disabled'}>确定</button>`,
+  s=>`<h3>第 4 步：设置格式</h3><div class="s">数值格式</div><button class="btn">整数</button><button class="btn sel">百分比</button><button class="btn">千分位</button><br><br><button class="btn p" data-go>下一步</button>`,
+  s=>`<h3>第 5 步：命名</h3><div class="s">指标名称</div><button class="btn ${s.nm?'sel':''}" data-nm>使用推荐：华东区毛利率</button><br><br><button class="btn p" data-go ${s.nm?'':'disabled'}>保存</button>`,
+  s=>`<h3>第 6 步：发布</h3><div class="s">保存成功！发布后其他人才能使用</div><button class="btn">稍后</button><button class="btn p" data-go>发布</button>`
+ ],
+ new:[
+  s=>`<h3>新建指标</h3><div class="s">用一句话描述你想要的指标</div><div class="search">✦ <span>华东区 毛利率</span><span style="width:1px;height:18px;background:#165dff;animation:b 1s steps(1) infinite"></span></div>
+     <div class="sug"><div data-go><span>✦ <b>华东区毛利率</b> = SUM(毛利) ÷ SUM(销售额)，区域 = 华东</span><em>推荐</em></div><div><span>毛利率</span><em>已存在</em></div><div><span>华东区销售额</span><em>已存在</em></div></div>`,
+  s=>`<h3>确认指标</h3><div class="s">已根据描述自动生成，可点击任意项修改</div><div class="prev"><div><label>名称</label>华东区毛利率</div><div><label>数据集</label>销售明细（自动匹配）</div><div><label>公式</label><code>SUM(毛利) ÷ SUM(销售额)</code></div><div><label>过滤</label><span class="chip">区域 = 华东</span></div><div><label>格式</label>百分比</div><div><label>相似指标</label>无重复</div></div><br><button class="btn">修改</button><button class="btn p" data-go>保存并发布</button>`
+ ]};
+const AVG={old:{c:14,t:132},new:{c:3,t:19}};
+let mode='old',step=0,clicks=0,t0=null,tick=null,st={},best={};
+const scr=document.getElementById('scr');
+function render(){scr.innerHTML=`<div class="scr">${F[mode][step](st)}</div><div class="hint">提示：按任务要求操作</div>`;
+  document.getElementById('s').textContent=`${step+1}/${F[mode].length}`;document.getElementById('url').textContent='app.example/metrics'+(step?'/new/'+step:'');}
+function reset(m){mode=m;step=0;clicks=0;t0=null;clearInterval(tick);st={fx:[]};
+  document.getElementById('t').textContent='0.0s';document.getElementById('c').textContent='0';
+  document.querySelectorAll('.modes button').forEach(b=>b.classList.toggle('on',b.dataset.m===m));render();}
+scr.addEventListener('click',e=>{if(!t0){t0=performance.now();tick=setInterval(()=>document.getElementById('t').textContent=((performance.now()-t0)/1000).toFixed(1)+'s',100)}
+  clicks++;const c=document.getElementById('c');c.textContent=clicks;c.classList.remove('bump');void c.offsetWidth;c.classList.add('bump');
+  const b=e.target.closest('[data-go],[data-tok],[data-clr],[data-f1],[data-f2],[data-f3],[data-nm]');if(!b||b.disabled)return;
+  if('tok' in b.dataset){st.fx.push(b.dataset.tok);render();return}
+  if('clr' in b.dataset){st.fx=[];render();return}
+  for(const k of ['f1','f2','f3','nm'])if(k in b.dataset){st[k]=1;render();return}
+  if('go' in b.dataset){step++;if(step>=F[mode].length)finish();else render()}});
+function finish(){clearInterval(tick);const sec=(performance.now()-t0)/1000;best[mode]={c:clicks,t:sec};
+  const f=document.getElementById('flash');f.classList.remove('go');void f.offsetWidth;f.classList.add('go');
+  scr.innerHTML=`<div class="done"><div class="big">🏁</div><h3 style="font-size:22px;margin:10px 0">任务完成！</h3><p style="color:#86909c">${mode==='old'?'用了 '+clicks+' 次点击。现在试试新版？':'只用了 '+clicks+' 次点击。'}</p><br><button class="btn p" onclick="reset('${mode==='old'?'new':'old'}')">${mode==='old'?'试试新版 →':'再玩一次旧版'}</button></div>`;
+  showRes();}
+function showRes(){const max={c:20,t:150};
+  const row=(lab,v,m,col,u)=>`<div class="rr"><span>${lab}</span><div class="t"><i style="background:${col}" data-w="${Math.min(100,v/m*100)}%"></i></div><b class="mono">${u(v)}</b></div>`;
+  const card=(k,unit,fmt)=>`<div class="rc"><h4 class="mono">${k==='c'?'CLICKS 点击次数':'TIME 完成耗时'}</h4>
+    ${best.old?row('你 · 旧版',best.old[k],max[k],'var(--pk)',fmt):''}${row('测试均值 · 旧版',AVG.old[k],max[k],'#ff4fd866',fmt)}
+    ${best.new?row('你 · 新版',best.new[k],max[k],'var(--neo)',fmt):''}${row('测试均值 · 新版',AVG.new[k],max[k],'#b6ff3b66',fmt)}</div>`;
+  const res=document.getElementById('res');
+  res.innerHTML=card('c','',v=>Math.round(v))+card('t','',v=>v>=60?Math.floor(v/60)+'m'+Math.round(v%60)+'s':v.toFixed(1)+'s')+
+   `<div class="rc" style="grid-column:span 2"><h4 class="mono">WHY</h4><div class="verdict">${best.old&&best.new?`你在旧版用了 <b>${best.old.c}</b> 次点击，新版只用了 <b>${best.new.c}</b> 次。`:''}旧版把“创建指标”拆成了 6 个独立表单，用户需要知道数据集名称、会写公式；新版把<b>用户的意图</b>作为起点，系统反推数据集、公式和过滤条件，用户只负责<b>确认</b>。在 12 人测试中，旧版有 5 人在公式步骤放弃（示例数据）。</div></div>`;
+  setTimeout(()=>res.querySelectorAll('[data-w]').forEach(i=>i.style.width=i.dataset.w),60);}
+document.querySelectorAll('.modes button').forEach(b=>b.onclick=()=>reset(b.dataset.m));
+reset('old');
+</script>
+<style>@keyframes b{50%{opacity:0}}</style>
+<script src="scroll.js"></script>
+</body>
+</html>

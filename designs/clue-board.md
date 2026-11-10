@@ -1,10 +1,10 @@
 # 线索板 — Style Reference
 
-> 证据像便签一样一张张钉到板上，红线把它们连起来，最后盖章给出结论。
+> 可平移缩放的线索板：几张不同来源的线索依次聚焦，假设被一条条排除，红线连起来，最后盖章给出结论。数字为示例。
 
 **想说明：** 多条证据拼出一个结论  
 **分类：** 样式  
-**Theme：** 深色  
+**Theme：** 浅色  
 **样例：** `demos/clue-board.html`  
 
 下列数值从本库样例在 1280 × 720 视口、最后一步时的实际渲染中量出（`getComputedStyle`），不是原始参考网站的取值。改成自己的案例时，按内容替换颜色和文字，保留层级比例。
@@ -18,32 +18,38 @@
 
 | Name | Value | Token | Role |
 |---|---|---|---|
-| Canvas | `#0C0B12` | `--bg` | 背景 / 面 |
-| Accent · 橙 | `#2A2118` | — | 面 / 区块 |
-| Surface 1 | `#FFFBE8` | — | 面 / 区块 |
-| Accent · 橙 | `#2A2118 / 85%` | — | 面 / 区块 |
-| Text 1 | `#2B2B2B` | — | 文字 |
-| Text 2 | `#F3F1FF` | `--fg` | 文字 |
-| Accent · 红 | `#E5483A` | — | 文字 |
-| Accent · 橙 | `#FFB547` | `--amber` | 文字 |
-| Accent · 紫 | `#B9A8FF` | `--violet` | 文字 |
-| Accent · 橙 | `#A0662A` | — | 文字 |
+| Accent · 橙 | `#E8E2D3` | — | 背景 / 面 |
+| Surface 1 | `#FFFDF8` | — | 面 / 区块 |
+| Surface 2 | `#1F1B16` | — | 面 / 区块 |
+| Surface 3 | `#FFFDF8 / 80%` | — | 面 / 区块 |
+| Accent · 黄 | `#FFE27A` | — | 面 / 区块 |
+| Surface 4 | `#EEE8DC` | — | 面 / 区块 |
+| Text 1 | `#7A7163` | `--mut` | 文字 |
+| Text 2 | `#4A443B` | — | 文字 |
+| Text 3 | `#FFFFFF` | — | 文字 |
+| Accent · 红 | `#C8322B` | `--red` | 文字 |
+| Accent · 红 | `#FFB3AD` | — | 文字 |
+| Accent · 橙 | `#DDD5C5` | — | 描边 |
+| Line 1 | `#000000 / 13%` | — | 描边 |
 
 ## Tokens — Typography
 
-- **字体栈：** `-apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif`
+- **字体栈：** `-apple-system, "PingFang SC", "Microsoft YaHei", sans-serif`
 - **说明：** 中文优先系统字体（PingFang SC / 微软雅黑），不引外部字体，离线也能显示。
 
 ### Type Scale
 
 | Size | Weight | Line height | Letter spacing | 用在 | 示例 |
 |---|---|---|---|---|---|
-| 30px | 400 | 39px | -0.9px | `h1, em` | 几条证据， |
-| 20px | 700 | normal | normal | `div.stamp` | 问题在命名，不在拆分 |
-| 13px | 400 | 20.8px | normal | `div.cl` | “每次导完都要手动改文件名。” |
-| 11px | 400 | normal | 1.54px | `p.eb` | 示例 · 去业务化 |
-| 11px | 400 | 17.6px | normal | `small` | 反馈 |
-| 11px | 400 | normal | normal | `p.note` | 内容为示意 |
+| 46px | 800 | 46px | normal | `div.big` | 2.1s |
+| 34px | 700 | normal | normal | `b` | 14% |
+| 34px | 700 | 40.8px | normal | `h1` | 谁让用户在8 秒内关掉了仪表板？ |
+| 19px | 700 | 25.65px | normal | `h3` | 现象：31% 的用户 8 秒内离 |
+| 18px | 400 | normal | normal | `s` | 31% |
+| 16px | 400 | normal | normal | `span` | → |
+| 15px | 400 | 25.5px | normal | `div.quote` | “一打开二十几个图，我也不知道哪 |
+| 14px | 400 | normal | normal | `button, button.start` | ⤢ |
+| 13px | 400 | 22.75px | normal | `p` | 新版仪表板上线后，首屏流失明显高 |
 
 ## Tokens — Spacing & Shapes
 
@@ -51,32 +57,39 @@
 
 | Value | 次数 |
 |---|---|
-| 4px | 3 |
+| 2px | 24 |
+| 50% | 17 |
+| 9px | 4 |
 | 14px | 1 |
-| 6px | 1 |
 
 ### Shadows
 
 | Value | 次数 |
 |---|---|
-| `rgba(0, 0, 0, 0.4) 0px 8px 20px 0px` | 3 |
+| `rgba(0, 0, 0, 0.067) 0px 1px 0px 0px, rgba(0, 0, 0, 0.333) 0px 14px 30px -12px` | 6 |
+| `rgba(0, 0, 0, 0.333) 0px 10px 20px -10px` | 3 |
+| `rgba(0, 0, 0, 0.467) 0px 20px 40px -12px` | 1 |
 
 ### Layout
 
 - 舞台：`position:fixed; inset:0 0 56px; padding:28px 34px`，标题区在左上。
 - 底部步进控制条高 56px：← / 步数 / 本步说明 / 重播 / 下一步。
 - 主体元素（最后一步）：
-  - `div.stage` — 1280×664 @ (0, 0)，block
-  - `div#bd.board` — 1212×524 @ (34, 120)，block，底色 `#2A2118`，圆角 14px
-  - `p.note` — 55×16 @ (1205, 640)，block
+  - `div#vp` — 1280×720 @ (0, 0)，block
+  - `div.intro` — 400×160 @ (32, 28)，block
+  - `div#mm.mini-map` — 192×112 @ (1064, 24)，block，底色 `#FFFDF8 / 80%`
+  - `div.hint` — 276×17 @ (32, 671)，block
+  - `div.dock` — 614×54 @ (333, 640)，flex，底色 `#1F1B16`，圆角 14px
 
 ## 步骤脚本
 
-1. 一条一条把证据钉上去
-2. 第二条证据
-3. 第三条证据
-4. 红线把证据连起来
-5. 盖章：几条证据一起指向的结论
+1. 案件概览
+2. 现象：31% 的用户 8 秒内离开
+3. 是不是加载太慢？
+4. “不知道先看哪个”
+5. 24 个组件，视线没有落点
+6. 留存高的看板有什么不同？
+7. 问题不是慢，是“没有入口”
 
 ## Do's and Don'ts
 
@@ -93,14 +106,14 @@
 
 ## Agent Prompt Guide
 
-**颜色速查：** `#0C0B12`（背景 / 面），`#2A2118`（面 / 区块），`#FFFBE8`（面 / 区块），`#2A2118 / 85%`（面 / 区块），`#2B2B2B`（文字），`#F3F1FF`（文字）
+**颜色速查：** `#E8E2D3`（背景 / 面），`#FFFDF8`（面 / 区块），`#1F1B16`（面 / 区块），`#FFFDF8 / 80%`（面 / 区块），`#FFE27A`（面 / 区块），`#EEE8DC`（面 / 区块）
 
 ```text
 做一页「线索板」形式的 HTML 演示：多条证据拼出一个结论。
 适用：结论来自几种不同来源的材料；证据纠偏、复盘。
 做法：每张便签写清来源类型（反馈 / 观察 / 材料）；先全部钉完再连线；结论用一句话盖章。
 避免：编造的指标（如“流失 8 秒”）会让整板失去可信度；线太多就变成装饰。
-步进：共 5 步，← → / 空格 / 滚轮推进，底部控制条显示每步说明。内容用示意并在角落标“内容为示意”。
+步进：共 7 步，← → / 空格 / 滚轮推进，底部控制条显示每步说明。内容用示意并在角落标“内容为示意”。
 ```
 
 ## 相关条目
@@ -113,17 +126,20 @@
 
 ```css
 :root{
-  --canvas:#0C0B12;
-  --surface-1:#2A2118;
-  --surface-2:#FFFBE8;
-  --surface-3:rgba(42,33,24,0.85);
-  --text-1:#2B2B2B;
-  --text-2:#F3F1FF;
-  --text-3:#E5483A;
-  --text-4:#FFB547;
-  --text-5:#B9A8FF;
-  --text-6:#A0662A;
-  --radius:4px;
+  --canvas:#E8E2D3;
+  --surface-1:#FFFDF8;
+  --surface-2:#1F1B16;
+  --surface-3:rgba(255,253,248,0.8);
+  --surface-4:#FFE27A;
+  --surface-5:#EEE8DC;
+  --text-1:#7A7163;
+  --text-2:#4A443B;
+  --text-3:#FFFFFF;
+  --text-4:#C8322B;
+  --text-5:#FFB3AD;
+  --line-1:#DDD5C5;
+  --line-2:rgba(0,0,0,0.13);
+  --radius:2px;
   --ease:cubic-bezier(.3,.8,.2,1);
 }
 ```

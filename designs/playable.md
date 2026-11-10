@@ -18,34 +18,38 @@
 
 | Name | Value | Token | Role |
 |---|---|---|---|
-| Canvas | `#0C0B12` | `--bg` | 背景 / 面 |
+| Accent · 紫 | `#120C2C` | `--bg` | 背景 / 面 |
 | Surface 1 | `#FFFFFF` | — | 面 / 区块 |
-| Text 1 | `#F3F1FF` | `--fg` | 文字 |
-| Text 2 | `#1D2129` | — | 文字 |
-| Text 3 | `#9A95A8` | `--mut` | 文字 |
-| Accent · 橙 | `#FFB547` | `--amber` | 文字 |
-| Accent · 紫 | `#B9A8FF` | `--violet` | 文字 |
-| Text 4 | `#86909C` | — | 文字 |
-| Line 1 | `#2B2838` | — | 描边 |
+| Accent · 紫 | `#1D1546` | — | 面 / 区块 |
+| Surface 2 | `#F2F3F5` | — | 面 / 区块 |
+| Accent · 品红 | `#FF4FD8` | — | 面 / 区块 |
+| Accent · 蓝 | `#165DFF` | — | 面 / 区块 |
+| Accent · 紫 | `#9B8FD0` | `--mut` | 文字 |
+| Text 1 | `#F3EEFF` | `--fg` | 文字 |
+| Accent · 绿 | `#B6FF3B` | — | 文字 |
+| Text 2 | `#86909C` | — | 文字 |
+| Text 3 | `#1D2129` | — | 文字 |
+| Line 1 | `#FFFFFF / 8%` | — | 描边 |
+| Line 2 | `#DCDFE6` | — | 描边 |
 
 ## Tokens — Typography
 
-- **字体栈：** `-apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif`
+- **字体栈：** `-apple-system, "PingFang SC", "Microsoft YaHei", sans-serif`
 - **说明：** 中文优先系统字体（PingFang SC / 微软雅黑），不引外部字体，离线也能显示。
 
 ### Type Scale
 
 | Size | Weight | Line height | Letter spacing | 用在 | 示例 |
 |---|---|---|---|---|---|
-| 30px | 400 | 39px | -0.9px | `h1, em` | 别讲了， |
-| 30px | 400 | 54px | normal | `span` | 0 |
-| 20px | 500 | 36px | normal | `b` | 任务：看完 0042 后，回到原 |
-| 15px | 400 | 27px | normal | `div.task` | 先用“现状”试一遍，再切换到“改 |
-| 14px | 700 | normal | normal | `h5, span` | 订单列表 · 第页 |
-| 14px | 400 | normal | normal | `button` | 订单 0042 |
-| 12px | 400 | 21.6px | normal | `div` | 点击次数 |
-| 12px | 400 | normal | normal | `div.hint` | 可以直接点 |
-| 11px | 400 | normal | 1.54px | `p.eb` | 示例 · 去业务化 |
+| 64px | 700 | 73.6px | normal | `h1, em` | 别看我们说， |
+| 30px | 800 | normal | normal | `b.mono` | 0.0s |
+| 18px | 700 | normal | normal | `h3` | 指标管理 |
+| 16px | 400 | 28.8px | normal | `p` | 这是“创建计算指标”流程改版前后 |
+| 15px | 400 | normal | normal | `div.mission` | 🎯 任务：创建指标 |
+| 15px | 700 | normal | normal | `b, button.old, button.new` | 「华东区毛利率」 |
+| 13px | 400 | normal | 3.9px | `small.mono` | PLAYABLE CASE ·  |
+| 13px | 400 | normal | normal | `div.s, button.btn` | 共 128 个指标 |
+| 12px | 400 | normal | normal | `span` | app.example/metr |
 
 ## Tokens — Spacing & Shapes
 
@@ -53,26 +57,31 @@
 
 | Value | 次数 |
 |---|---|
-| 28px | 1 |
+| 12px | 6 |
+| 50% | 3 |
+| 8px | 3 |
+| 16px | 1 |
 
 ### Shadows
 
-不用阴影，靠底色和描边分层。
+| Value | 次数 |
+|---|---|
+| `rgba(182, 255, 59, 0.2) 0px 0px 24px 0px` | 1 |
+| `rgba(255, 79, 216, 0.4) 0px 0px 24px 0px` | 1 |
+| `rgb(42, 32, 96) 0px 0px 0px 6px, rgb(0, 0, 0) 0px 40px 80px -30px` | 1 |
 
 ### Layout
 
 - 舞台：`position:fixed; inset:0 0 56px; padding:28px 34px`，标题区在左上。
 - 底部步进控制条高 56px：← / 步数 / 本步说明 / 重播 / 下一步。
 - 主体元素（最后一步）：
-  - `div.stage` — 1280×664 @ (0, 0)，block
-  - `div.task` — 384×209 @ (34, 130)，block
-  - `div.ph` — 300×520 @ (826, 110)，block，底色 `#FFFFFF`，圆角 28px
-  - `p.note` — 55×16 @ (1205, 640)，block
+  - `section.top` — 1280×385 @ (0, 0)，block
+  - `section.game` — 1100×608 @ (90, 403)，block
 
 ## 步骤脚本
 
-1. 请一位听众上来：找到“订单 0042”，看完回到列表第 3 页
-2. 对比：返回后停在原位，点击数少一半
+1. 别看我们说， 你自己试试。
+2. 指标管理
 
 ## Do's and Don'ts
 
@@ -89,7 +98,7 @@
 
 ## Agent Prompt Guide
 
-**颜色速查：** `#0C0B12`（背景 / 面），`#FFFFFF`（面 / 区块），`#F3F1FF`（文字），`#1D2129`（文字），`#9A95A8`（文字），`#FFB547`（文字）
+**颜色速查：** `#120C2C`（背景 / 面），`#FFFFFF`（面 / 区块），`#1D1546`（面 / 区块），`#F2F3F5`（面 / 区块），`#FF4FD8`（面 / 区块），`#165DFF`（面 / 区块）
 
 ```text
 做一页「可玩原型」形式的 HTML 演示：让听众亲手做一遍。
@@ -109,16 +118,20 @@
 
 ```css
 :root{
-  --canvas:#0C0B12;
+  --canvas:#120C2C;
   --surface-1:#FFFFFF;
-  --text-1:#F3F1FF;
-  --text-2:#1D2129;
-  --text-3:#9A95A8;
-  --text-4:#FFB547;
-  --text-5:#B9A8FF;
-  --text-6:#86909C;
-  --line-1:#2B2838;
-  --radius:28px;
+  --surface-2:#1D1546;
+  --surface-3:#F2F3F5;
+  --surface-4:#FF4FD8;
+  --surface-5:#165DFF;
+  --text-1:#9B8FD0;
+  --text-2:#F3EEFF;
+  --text-3:#B6FF3B;
+  --text-4:#86909C;
+  --text-5:#1D2129;
+  --line-1:rgba(255,255,255,0.08);
+  --line-2:#DCDFE6;
+  --radius:12px;
   --ease:cubic-bezier(.3,.8,.2,1);
 }
 ```

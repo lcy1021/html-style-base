@@ -1,24 +1,153 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>权衡模拟器</title><link rel="stylesheet" href="demo.css">
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>方案 J · 权衡模拟器｜数据表格该有多“密”？</title>
 <style>
-.g{position:absolute;left:34px;top:120px;width:60%;bottom:150px}
-svg{width:100%;height:100%;overflow:visible}
-.ax{stroke:rgba(255,255,255,.25)}.a{fill:none;stroke:var(--teal);stroke-width:3}.b{fill:none;stroke:var(--red);stroke-width:3}
-.cur{stroke:var(--amber);stroke-width:1.5;stroke-dasharray:4 4}
-text{fill:var(--mut);font-size:12px}
-.ctl{position:absolute;left:34px;width:60%;bottom:76px;display:flex;gap:14px;align-items:center;font-size:13px;color:var(--mut)}.ctl input{flex:1;accent-color:var(--amber)}
-.rd{position:absolute;right:34px;top:140px;width:28%;font-size:15px;line-height:1.9}.rd b{font-size:26px;font-weight:500;display:block}.rd .t b{color:var(--teal)}.rd .r b{color:var(--red)}
-</style></head>
-<body data-steps="3" data-caps="两个指标此消彼长|拖动滑块，看平衡点怎么移动|只用在有真实数据的时候">
-<div class="stage"><p class="eb">示意曲线 · 不是真实数据</p><h1>限制越严，<em>换行越少，截断越多。</em></h1></div>
-<div class="g"><svg viewBox="0 0 600 300" preserveAspectRatio="none"><line class="ax" x1="0" y1="300" x2="600" y2="300"/><line class="ax" x1="0" y1="0" x2="0" y2="300"/><path class="a" id="pa"/><path class="b" id="pb"/><line class="cur" id="cu" y1="0" y2="300"/><text x="0" y="318">宽松</text><text x="560" y="318">严格</text></svg></div>
-<div class="ctl">字数上限<input type="range" min="4" max="12" value="8" id="sl" aria-label="字数上限"><span id="sv">8 字</span></div>
-<div class="rd"><div class="t">会换行的场景<b id="va"></b></div><div class="r">被截断的配置<b id="vb"></b></div></div>
-<script src="demo.js"></script>
+:root{--bg:#fafafa;--ink:#1c1c1e;--mut:#8e8e93;--p:#5e5ce6;--a:#ff9f0a;--b:#30b0c7;--line:#e5e5ea}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+.hero{padding:12vh 6vw 6vh;max-width:1200px}
+.hero small{font-size:13px;color:var(--p);font-weight:600}
+.hero h1{font-size:clamp(36px,5vw,68px);line-height:1.12;letter-spacing:-.02em;margin:12px 0 18px}
+.hero h1 .a{color:var(--a)}.hero h1 .b{color:var(--b)}
+.hero p{font-size:18px;color:#48484a;max-width:720px;line-height:1.8}
+.lab{display:grid;grid-template-columns:1.25fr 1fr;gap:28px;padding:0 6vw 8vh;max-width:1440px}
+.panel{background:#fff;border-radius:20px;box-shadow:0 1px 3px #0000000f,0 20px 50px -30px #0003;padding:24px}
+.ph{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.ph b{font-size:15px}.ph span{font-size:12px;color:var(--mut)}
+/* 表格预览 */
+.tbl{border:1px solid var(--line);border-radius:12px;overflow:hidden;height:430px;position:relative}
+.tr{display:grid;align-items:center;border-bottom:1px solid #f2f2f7;transition:all .35s cubic-bezier(.3,.7,.2,1);padding:0 14px;gap:12px;white-space:nowrap;overflow:hidden}
+.tr.h{background:#f9f9fb;font-weight:600;color:#636366}
+.tr .c{overflow:hidden;text-overflow:ellipsis;transition:opacity .3s}
+.tr .hide{opacity:0;width:0}
+.zebra .tr:nth-child(even):not(.h){background:#fafafd}
+.tag{display:inline-block;padding:1px 7px;border-radius:5px;font-size:.85em}
+.up{color:#34c759}.dn{color:#ff3b30}
+/* 控件 */
+.ctrl{margin-top:20px;display:grid;gap:18px}
+.row{display:grid;grid-template-columns:110px 1fr 70px;align-items:center;gap:14px;font-size:14px}
+.row output{font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+input[type=range]{-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;background:linear-gradient(90deg,var(--p) var(--v,50%),#e5e5ea var(--v,50%));outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 2px 8px #0003,0 0 0 .5px #0001;cursor:grab}
+input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:#fff;border:0;box-shadow:0 2px 8px #0003}
+.presets{display:flex;gap:8px}
+.presets button{flex:1;height:36px;border:0;border-radius:10px;background:#f2f2f7;cursor:pointer;font-size:13px;transition:all .2s}
+.presets button.on{background:var(--ink);color:#fff}
+.sw{display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer;user-select:none}
+.sw i{width:44px;height:26px;border-radius:13px;background:#e5e5ea;position:relative;transition:background .25s}
+.sw i:after{content:"";position:absolute;left:2px;top:2px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 2px 4px #0003;transition:left .25s}
+.sw.on i{background:#34c759}.sw.on i:after{left:20px}
+/* 曲线 */
+svg{width:100%;height:auto;overflow:visible}
+.zone{fill:#5e5ce614}
+.cur line{stroke:var(--ink);stroke-width:1.5;stroke-dasharray:3 3}
+.dot{transition:cy .2s}
+.meters{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
+.mt{border-radius:14px;padding:14px;background:#f9f9fb}
+.mt small{font-size:12px;color:var(--mut)}
+.mt b{font-size:34px;font-weight:700;display:block;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.mt .bar{height:6px;border-radius:3px;background:#e5e5ea;margin-top:8px;overflow:hidden}
+.mt .bar i{display:block;height:100%;transition:width .3s}
+.voice{border-left:3px solid var(--p);padding:12px 14px;background:#f5f5ff;border-radius:0 12px 12px 0;font-size:14px;line-height:1.7;min-height:76px;transition:opacity .3s}
+.voice small{display:block;color:var(--mut);margin-top:4px;font-size:12px}
+.ans{padding:12vh 6vw;background:var(--ink);color:#fff}
+.ans h2{font-size:clamp(30px,4vw,54px);line-height:1.2;max-width:1000px}
+.ans h2 em{font-style:normal;color:var(--p);background:linear-gradient(90deg,#8e8cff,#64d2ff);-webkit-background-clip:text;color:transparent}
+.ans .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:48px}
+.ans .grid div{border:1px solid #3a3a3c;border-radius:18px;padding:24px}
+.ans .grid b{font-size:18px;display:block;margin-bottom:8px}
+.ans .grid p{font-size:14px;color:#aeaeb2;line-height:1.8}
+footer{padding:30px 6vw;font-size:12px;color:var(--mut)}
+@media(max-width:1000px){.lab,.ans .grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<section class="hero">
+  <small>CASE · 信息密度设计 · 示例内容</small>
+  <h1>数据表格该有多“密”？<br><span class="a">新手</span>和<span class="b">专家</span>给出了相反的答案。</h1>
+  <p>下面是一个可以自己动手的模拟器。拖动滑块改变表格密度，看看两类用户的表现如何此消彼长——以及我们最终是怎么在中间找到平衡的。</p>
+</section>
+<section class="lab">
+  <div class="panel">
+    <div class="ph"><b>表格实时预览</b><span id="info"></span></div>
+    <div class="tbl" id="tbl"></div>
+    <div class="ctrl">
+      <div class="presets" id="presets"><button data-v="10">宽松</button><button data-v="50">标准</button><button data-v="90">紧凑</button></div>
+      <div class="row"><span>信息密度</span><input type="range" id="den" min="0" max="100" value="20"><output id="denO"></output></div>
+      <div class="row"><span>可见列数</span><input type="range" id="col" min="3" max="8" value="4"><output id="colO"></output></div>
+      <div class="sw" id="zb"><i></i>斑马纹（辅助横向阅读）</div>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="ph"><b>可用性测试结果</b><span>新手 8 人 · 专家 8 人 · 示例数据</span></div>
+    <svg viewBox="0 0 400 220" id="chart">
+      <rect class="zone" x="160" y="0" width="80" height="190" rx="4"/>
+      <text x="200" y="14" text-anchor="middle" font-size="10" fill="#5e5ce6">平衡区</text>
+      <line x1="0" y1="190" x2="400" y2="190" stroke="#e5e5ea"/>
+      <path id="pa" fill="none" stroke="var(--a)" stroke-width="3" stroke-linecap="round"/>
+      <path id="pb" fill="none" stroke="var(--b)" stroke-width="3" stroke-linecap="round"/>
+      <g class="cur"><line id="cl" y1="0" y2="190"/></g>
+      <circle id="da" class="dot" r="6" fill="#fff" stroke="var(--a)" stroke-width="3"/>
+      <circle id="db" class="dot" r="6" fill="#fff" stroke="var(--b)" stroke-width="3"/>
+      <text x="0" y="208" font-size="10" fill="#8e8e93">宽松</text><text x="400" y="208" font-size="10" fill="#8e8e93" text-anchor="end">紧凑</text>
+    </svg>
+    <div class="meters">
+      <div class="mt"><small>新手 · 任务正确率</small><b id="ma"></b><div class="bar"><i id="ba" style="background:var(--a)"></i></div></div>
+      <div class="mt"><small>专家 · 每分钟可比对行数</small><b id="mb"></b><div class="bar"><i id="bb" style="background:var(--b)"></i></div></div>
+    </div>
+    <div class="voice" id="voice"></div>
+  </div>
+</section>
+<section class="ans">
+  <h2>最终答案不是选一个点，而是<em>默认标准 + 让用户自己切换</em>。</h2>
+  <div class="grid">
+    <div><b>默认：标准密度</b><p>落在平衡区内：新手正确率仍在 85% 以上，专家效率达到紧凑档的 80%。</p></div>
+    <div><b>三档可切换</b><p>表格右上角提供“宽松 / 标准 / 紧凑”，并记住每个用户的选择。专家组 7/8 的人在首周就切到了紧凑档。</p></div>
+    <div><b>密度 ≠ 字号</b><p>紧凑档只压缩行高和内边距，字号最小不低于 12px；同时启用斑马纹，弥补横向阅读时的串行问题。</p></div>
+  </div>
+</section>
+<footer>方案 J · 权衡模拟器 — 读者亲手拖动参数，界面与指标实时联动，直观感受设计中的此消彼长。</footer>
 <script>
-const fa=x=>300-260*Math.exp(-((x-12)**2)/18),fb=x=>300-260/(1+Math.exp(1.2*(x-6.5)));
-const P=f=>Array.from({length:61},(_,i)=>{const x=12-i*8/60;return `${i?'L':'M'}${i*10} ${f(x).toFixed(1)}`}).join(' ');
-pa.setAttribute('d',P(x=>300-260/(1+Math.exp(-1.1*(x-8)))));pb.setAttribute('d',P(fb));
-function upd(){const v=+sl.value,px=(12-v)/8*600;cu.setAttribute('x1',px);cu.setAttribute('x2',px);sv.textContent=v+' 字';
- va.textContent=Math.round(100/(1+Math.exp(-1.1*(v-8))))+'%';vb.textContent=Math.round(100/(1+Math.exp(1.2*(v-6.5))))+'%';}
-sl.oninput=upd;window.onStep=k=>{sl.value=[8,6,8][k];upd()};
-</script></body></html>
+const COLS=[['门店',1.4],['区域',.8],['销售额',1],['环比',.7],['毛利率',.8],['客单价',.8],['会员数',.8],['负责人',.8]];
+const DATA=Array.from({length:14},(_,i)=>['杭州西湖','上海徐汇','南京新街口','苏州园区','宁波天一','合肥万达','无锡恒隆'][i%7]+(i>6?' 二店':''));
+const tbl=document.getElementById('tbl'),den=document.getElementById('den'),col=document.getElementById('col');
+function rnd(i,k){return Math.abs(Math.sin(i*9.1+k*3.7))}
+tbl.innerHTML=[['h',...COLS.map(c=>c[0])],...DATA.map((n,i)=>[i,n,['华东','华东','华东','华东','华东','华中','华东'][i%7],(800+rnd(i,1)*900).toFixed(0)+' 万',(rnd(i,2)>.35?'+':'-')+(rnd(i,3)*20).toFixed(1)+'%',(25+rnd(i,4)*15).toFixed(1)+'%',(180+rnd(i,5)*200).toFixed(0),(2000+rnd(i,6)*8000).toFixed(0),['王敏','李哲','赵琳','陈宇'][i%4]])]
+ .map(r=>`<div class="tr ${r[0]==='h'?'h':''}">${r.slice(1).map((c,k)=>`<div class="c" data-k="${k}">${k===3&&r[0]!=='h'?`<span class="${c[0]==='+'?'up':'dn'}">${c}</span>`:c}</div>`).join('')}</div>`).join('');
+const f=x=>x/100; // 0宽松→1紧凑
+const A=x=>96-38*Math.pow(f(x),2.2);           // 新手正确率
+const B=x=>18+44*Math.sqrt(f(x));               // 专家行数/分钟
+const X=x=>x*4,YA=v=>190-(v-50)/50*180,YB=v=>190-(v)/70*180;
+let da='',db='';for(let x=0;x<=100;x+=2){da+=(x?'L':'M')+X(x)+','+YA(A(x));db+=(x?'L':'M')+X(x)+','+YB(B(x))}
+document.getElementById('pa').setAttribute('d',da);document.getElementById('pb').setAttribute('d',db);
+const VOICES=[[30,'“很清楚，一眼能看出每一行是哪家店。”','新手 · 区域运营'],[30,'“一屏只能看 8 行，我要比较 40 家店得一直翻。”','专家 · 数据分析师'],[60,'“还行，看久了也不太累。”','新手 · 门店店长'],[60,'“基本够用，偶尔想再紧一点。”','专家 · 财务 BP'],[101,'“字挤在一起，看串行了好几次。”','新手 · 区域运营'],[101,'“对！就要这样，一屏 20 多行。”','专家 · 数据分析师']];
+let vt=0;
+function upd(){const d=+den.value,c=+col.value;
+  den.style.setProperty('--v',d+'%');col.style.setProperty('--v',((c-3)/5*100)+'%');
+  document.getElementById('denO').textContent=d<35?'宽松':d<65?'标准':'紧凑';document.getElementById('colO').textContent=c+' 列';
+  const rh=52-d*.26,fs=15-d*.03,pad=18-d*.1;
+  tbl.querySelectorAll('.tr').forEach(r=>{r.style.height=rh+'px';r.style.fontSize=fs+'px';r.style.padding=`0 ${pad}px`;
+    r.style.gridTemplateColumns=COLS.map((x,k)=>k<c?x[1]+'fr':'0fr').join(' ');
+    r.querySelectorAll('.c').forEach(cell=>cell.classList.toggle('hide',+cell.dataset.k>=c))});
+  const rows=Math.floor((430-rh)/rh);document.getElementById('info').textContent=`一屏 ${rows} 行 · ${c} 列`;
+  // 列数对新手也有负担
+  const a=Math.max(50,A(d)-(c-4)*2.2),b=B(d)+(c-4)*1.5;
+  document.getElementById('ma').textContent=a.toFixed(0)+'%';document.getElementById('mb').textContent=b.toFixed(0);
+  document.getElementById('ba').style.width=a+'%';document.getElementById('bb').style.width=(b/70*100)+'%';
+  const cl=document.getElementById('cl');cl.setAttribute('x1',X(d));cl.setAttribute('x2',X(d));
+  const p1=document.getElementById('da'),p2=document.getElementById('db');p1.setAttribute('cx',X(d));p1.setAttribute('cy',YA(A(d)));p2.setAttribute('cx',X(d));p2.setAttribute('cy',YB(B(d)));
+  document.querySelectorAll('#presets button').forEach(b=>b.classList.toggle('on',Math.abs(+b.dataset.v-d)<15));
+  const zone=VOICES.filter(v=>d<v[0]).slice(0,2),v=zone[vt%2];const el=document.getElementById('voice');el.innerHTML=`${v[1]}<small>—— ${v[2]}</small>`;}
+den.oninput=upd;col.oninput=upd;
+setInterval(()=>{vt++;upd()},3500);
+document.querySelectorAll('#presets button').forEach(b=>b.onclick=()=>{const from=+den.value,to=+b.dataset.v,st=performance.now();
+  (function a(n){const p=Math.min((n-st)/500,1),e=1-Math.pow(1-p,3);den.value=from+(to-from)*e;upd();if(p<1)requestAnimationFrame(a)})(st)});
+document.getElementById('zb').onclick=function(){this.classList.toggle('on');tbl.classList.toggle('zebra')};
+upd();
+</script>
+<script src="scroll.js"></script>
+</body>
+</html>

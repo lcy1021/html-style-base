@@ -1,24 +1,239 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>你来决策</title><link rel="stylesheet" href="demo.css">
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>方案 F · 你来决策｜数据导入引导的 3 次 A/B 测试</title>
 <style>
-.q{position:absolute;left:34px;right:34px;top:130px;display:grid;grid-template-columns:1.1fr 1fr;gap:28px}
-.ctx{background:#fff;color:#1d2129;border-radius:14px;padding:22px;font-size:15px;line-height:1.8}
-.ctx b{color:#5b4bff}
-.opts{display:flex;flex-direction:column;gap:12px}
-.op{all:unset;cursor:pointer;padding:16px 18px;border-radius:12px;border:1px solid rgba(255,255,255,.18);font-size:16px;transition:.3s;position:relative}
-.op:hover{border-color:var(--fg)}.op.sel{border-color:var(--amber);background:rgba(255,181,71,.1)}
-.op.ans::after{content:"最终选择";position:absolute;right:14px;top:50%;transform:translateY(-50%) rotate(-4deg);border:2px solid var(--red);color:var(--red);font-size:13px;padding:2px 8px;border-radius:4px}
-.why{grid-column:1/-1;font-size:15px;line-height:1.8;color:var(--mut);opacity:0;transform:translateY(10px);transition:.5s}.why.on{opacity:1;transform:none}.why b{color:var(--fg)}
-</style></head>
-<body data-steps="3" data-caps="先给条件，请大家选|现场举手 / 点一个选项|揭晓最终选择和理由">
-<div class="stage"><p class="eb">示例 · 去业务化</p><h1>换你来定：<em>这个按钮要改吗？</em></h1></div>
-<div class="q">
- <div class="ctx">按钮文字最长 8 个字。有人反馈<b>窄屏下会换行</b>。<br>改短到 6 个字能解决，但有一部分已有配置会被截断。</div>
- <div class="opts"><button class="op" data-o="a">A · 改，统一限制 6 个字</button><button class="op" data-o="b">B · 只在窄屏缩小字号</button><button class="op" data-o="c">C · 先不改，记录下来</button></div>
- <p class="why" data-s="2"><b>为什么是 C：</b>放到所有用户里看，会换行的场景很少；强行限制会影响更多已有配置。评估之后决定不改，也是一个结论。</p>
-</div>
-<p class="note">内容为示意</p>
-<script src="demo.js"></script>
+:root{--bg:#f1efe9;--ink:#111;--blue:#3b3bff;--yel:#ffd43b;--pink:#ff6fae;--mut:#6d6a63}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+.mono{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace}
+.box{border:2.5px solid var(--ink);box-shadow:5px 5px 0 var(--ink);border-radius:14px;background:#fff}
+/* 计分板 */
+.score{position:fixed;top:18px;right:18px;z-index:20;padding:10px 16px;display:flex;align-items:center;gap:12px;font-size:13px}
+.score .pips{display:flex;gap:5px}
+.score .pips i{width:14px;height:14px;border-radius:50%;border:2px solid var(--ink);background:#fff;transition:all .4s cubic-bezier(.4,2,.5,1)}
+.score .pips i.ok{background:var(--blue);transform:scale(1.15)}
+.score .pips i.no{background:var(--pink)}
+.score.pop{animation:pop .5s}
+@keyframes pop{40%{transform:scale(1.12) rotate(-2deg)}}
+/* Hero：磁吸字母 */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:0 7vw;position:relative;overflow:hidden}
+.hero small{font-size:13px;font-weight:700;letter-spacing:.1em}
+.mag{font-size:clamp(64px,13vw,210px);font-weight:900;line-height:.95;letter-spacing:-.04em;margin:14px 0 28px}
+.mag span{display:inline-block;transition:transform .35s cubic-bezier(.3,1.8,.5,1)}
+.mag .q{color:var(--blue)}
+.hero p{font-size:18px;max-width:620px;line-height:1.8}
+.hero .cta{align-self:flex-start;display:inline-flex;margin-top:34px;padding:14px 26px;font-size:16px;font-weight:700;text-decoration:none;color:var(--ink);background:var(--yel);transition:transform .15s,box-shadow .15s}
+.hero .cta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink)}
+.hero .cta:active{transform:translate(4px,4px);box-shadow:1px 1px 0 var(--ink)}
+.sticker{position:absolute;right:8vw;top:20vh;width:150px;height:150px;border-radius:50%;background:var(--pink);border:2.5px solid var(--ink);display:flex;align-items:center;justify-content:center;text-align:center;font-weight:900;font-size:16px;line-height:1.3;animation:spin 14s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* 回合 */
+.round{min-height:100vh;padding:12vh 7vw;border-top:2.5px solid var(--ink)}
+.rh{display:flex;align-items:flex-start;gap:24px;margin-bottom:34px}
+.rh .no{font-size:15px;font-weight:900;background:var(--ink);color:#fff;padding:6px 12px;border-radius:8px;white-space:nowrap}
+.rh h2{font-size:clamp(26px,3.4vw,46px);line-height:1.2}
+.rh p{color:var(--mut);margin-top:10px;font-size:15px;max-width:720px;line-height:1.7}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:34px;perspective:1200px}
+.opt{padding:20px;cursor:pointer;transition:transform .5s cubic-bezier(.2,.8,.2,1),opacity .5s,box-shadow .2s;transform-style:preserve-3d;position:relative}
+.opt .lab{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.opt .lab b{font-size:28px;font-weight:900}
+.opt .lab span{font-size:12px;border:2px solid var(--ink);border-radius:99px;padding:3px 10px;font-weight:700}
+.opt:hover .lab span{background:var(--yel)}
+.opt .desc{font-size:13px;color:var(--mut);margin-top:14px;line-height:1.7}
+.round.done .opt{cursor:default}
+.round.done .opt.lose{opacity:.45;transform:scale(.96)!important}
+.round.done .opt.win{box-shadow:5px 5px 0 var(--blue);border-color:var(--blue)}
+.opt .flag{position:absolute;top:-16px;left:20px;background:var(--blue);color:#fff;font-weight:800;font-size:13px;padding:5px 12px;border-radius:8px;border:2.5px solid var(--ink);transform:scale(0) rotate(-8deg);transition:transform .45s cubic-bezier(.3,1.8,.5,1) .3s}
+.round.done .opt.win .flag{transform:scale(1) rotate(-4deg)}
+.opt .mine{position:absolute;top:-16px;right:20px;background:var(--yel);font-weight:800;font-size:13px;padding:5px 12px;border-radius:8px;border:2.5px solid var(--ink);transform:scale(0)}
+.opt.picked .mine{transform:scale(1) rotate(4deg);transition:transform .4s cubic-bezier(.3,1.8,.5,1)}
+/* 迷你原型 */
+.proto{height:210px;border:2px solid #e5e2da;border-radius:10px;background:#fafaf7;padding:16px;position:relative;overflow:hidden;font-size:12px}
+.ill{width:70px;height:56px;margin:22px auto 10px;border-radius:12px;background:repeating-linear-gradient(45deg,#e8e5dc 0 6px,#f3f1ea 6px 12px)}
+.c{text-align:center;color:var(--mut)}
+.starts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}
+.starts div{border:2px solid var(--ink);border-radius:10px;padding:12px 8px;text-align:center;font-weight:700;background:#fff}
+.starts div i{display:block;font-style:normal;font-size:22px;margin-bottom:6px}
+.starts div small{display:block;font-weight:400;color:var(--mut);font-size:11px;margin-top:4px}
+.tb{display:grid;grid-template-columns:repeat(4,1fr);border:1.5px solid #ddd;border-radius:6px;overflow:hidden;background:#fff}
+.tb div{padding:6px 8px;border-bottom:1px solid #eee;font-size:11px;white-space:nowrap;overflow:hidden}
+.tb .th{background:#f2f0ea;font-weight:700}
+.tb .th em{font-style:normal;font-size:10px;margin-left:4px;padding:0 5px;border-radius:4px;background:#e2e0ff;color:var(--blue)}
+.tb .th em.w{background:#ffe1ee;color:#c2185b}
+.tb .sus{background:#fff0f6}
+.modal{position:absolute;inset:26px 40px;background:#fff;border:2px solid var(--ink);border-radius:10px;padding:14px;box-shadow:0 10px 30px #0002}
+.modal .row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed #ddd}
+.modal .pg{color:var(--mut);margin-top:8px;text-align:right}
+.toast{position:absolute;left:50%;top:20px;transform:translateX(-50%);background:#2b2b2b;color:#fff;padding:9px 14px;border-radius:8px;white-space:nowrap}
+.err{border:2px solid var(--pink);background:#fff5f9;border-radius:8px;padding:12px;margin-top:6px}
+.err b{color:#c2185b}
+.err .fix{display:inline-block;margin-top:8px;background:var(--ink);color:#fff;padding:5px 10px;border-radius:6px}
+/* 揭晓 */
+.reveal{display:grid;grid-template-columns:1.1fr 1fr;gap:34px;margin-top:40px;max-height:0;overflow:hidden;opacity:0;transition:max-height .9s cubic-bezier(.2,.8,.2,1),opacity .6s}
+.round.done .reveal{max-height:600px;opacity:1}
+.res{padding:24px}
+.res h4{font-size:13px;letter-spacing:.1em;margin-bottom:16px}
+.bar{display:grid;grid-template-columns:30px 1fr 60px;gap:12px;align-items:center;margin:12px 0;font-weight:800}
+.bar .t{height:26px;border:2px solid var(--ink);border-radius:6px;overflow:hidden;background:#fff}
+.bar .t i{display:block;height:100%;width:0;background:#cfccc3;transition:width 1.3s cubic-bezier(.2,.8,.2,1) .4s}
+.bar .t i.w{background:var(--blue)}
+.res .meta{display:flex;gap:24px;margin-top:16px;font-size:13px;color:var(--mut)}
+.res .meta b{display:block;font-size:22px;color:var(--ink)}
+.verdict{padding:24px;background:var(--yel)}
+.verdict.wrong{background:var(--pink)}
+.verdict h3{font-size:24px;margin-bottom:10px}
+.verdict p{font-size:14px;line-height:1.8}
+/* 便当格总结 */
+.sum{padding:14vh 7vw;border-top:2.5px solid var(--ink)}
+.sum h2{font-size:clamp(34px,5vw,68px);font-weight:900;margin-bottom:36px;line-height:1.1}
+.bento{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:170px;gap:20px}
+.bento .box{padding:22px;position:relative;overflow:hidden;opacity:0;transform:translateY(40px) scale(.97);transition:opacity .7s,transform .7s cubic-bezier(.2,.8,.2,1)}
+.bento .box.in{opacity:1;transform:none}
+.bento .box:before{content:"";position:absolute;inset:0;background:radial-gradient(260px circle at var(--mx,50%) var(--my,50%),#3b3bff22,transparent 60%);opacity:0;transition:opacity .3s}
+.bento .box:hover:before{opacity:1}
+.bento small{font-size:12px;color:var(--mut);font-weight:700;letter-spacing:.08em}
+.bento .k{font-size:54px;font-weight:900;letter-spacing:-.03em;line-height:1.05;margin-top:8px}
+.bento p{font-size:14px;line-height:1.7;margin-top:8px}
+.b1{grid-column:span 2;grid-row:span 2;background:var(--blue)!important;color:#fff}
+.b1 small{color:#c9c9ff}.b1 .k{font-size:110px}
+.b4{grid-column:span 2;background:var(--yel)!important}
+.b5{grid-column:span 2}
+footer{padding:40px 7vw;font-size:12px;color:var(--mut);border-top:2.5px solid var(--ink)}
+@media(max-width:900px){.opts,.reveal{grid-template-columns:1fr}.bento{grid-template-columns:1fr 1fr}.sticker{display:none}}
+</style>
+</head>
+<body>
+<div class="score box" id="score"><span>你与用户一致</span><div class="pips"><i></i><i></i><i></i></div><b class="mono" id="sc">0/3</b></div>
+
+<section class="hero">
+  <div class="sticker">先选<br>再看<br>答案 ↓</div>
+  <small class="mono">CASE · 数据导入引导改版 · 示例内容</small>
+  <h1 class="mag" id="mag">如果是你，<br>会怎么选<span class="q">？</span></h1>
+  <p>这次改版中我们做了 3 轮 A/B 原型测试。先别看结论——每一轮你先凭直觉选一个方案，再看 12 位真实用户的测试结果。</p>
+  <a class="cta box" href="#r1">开始第 1 轮 →</a>
+</section>
+
+<section class="round" id="r1" data-win="B">
+  <div class="rh"><span class="no mono">ROUND 1/3</span><div><h2>新用户第一次进入，数据集列表是空的</h2><p>目标：让新用户在 5 分钟内完成第一次数据导入。哪个空状态更好？</p></div></div>
+  <div class="opts">
+    <div class="opt box" data-o="A"><span class="flag">用户更快 ✓</span><span class="mine">你的选择</span>
+      <div class="lab"><b>A</b><span>选这个</span></div>
+      <div class="proto"><div class="ill"></div><div class="c" style="font-size:14px;color:#333;font-weight:700">暂无数据集</div><div class="c" style="margin-top:6px">点击右上角「新建」开始添加数据</div></div>
+      <p class="desc">简洁的插画空状态，引导去右上角按钮。</p></div>
+    <div class="opt box" data-o="B"><span class="flag">用户更快 ✓</span><span class="mine">你的选择</span>
+      <div class="lab"><b>B</b><span>选这个</span></div>
+      <div class="proto"><div style="font-weight:700;font-size:14px">从这里开始 👋</div><div class="c" style="text-align:left;margin-top:4px">选一种方式导入你的第一份数据</div>
+        <div class="starts"><div><i>📄</i>上传 Excel<small>最常用</small></div><div><i>🗄</i>连接数据库<small>需要账号</small></div><div><i>✨</i>用示例数据<small>先试试看</small></div></div></div>
+      <p class="desc">把空状态变成起步任务卡，直接给出三条路径。</p></div>
+  </div>
+  <div class="reveal">
+    <div class="res box"><h4 class="mono">12 位新用户 · 5 分钟内完成首次导入</h4>
+      <div class="bar"><span>A</span><div class="t"><i data-w="42%"></i></div><span class="mono">5/12</span></div>
+      <div class="bar"><span>B</span><div class="t"><i class="w" data-w="92%"></i></div><span class="mono">11/12</span></div>
+      <div class="meta"><div>A 平均耗时<b class="mono">4m12s</b></div><div>B 平均耗时<b class="mono">1m48s</b></div></div></div>
+    <div class="verdict box"><h3></h3><p>空状态是新用户唯一的注意力焦点。A 要求用户去别处找入口，7 人在页面停留 30 秒以上没有行动；B 的「用示例数据」还意外成为 4 人的首选——先体验，再导入自己的数据。</p></div>
+  </div>
+</section>
+
+<section class="round" id="r2" data-win="A">
+  <div class="rh"><span class="no mono">ROUND 2/3</span><div><h2>导入时，系统需要用户确认字段类型</h2><p>12 列数据中有 2 列可能识别错误。哪种确认方式更好？</p></div></div>
+  <div class="opts">
+    <div class="opt box" data-o="A"><span class="flag">用户更准 ✓</span><span class="mine">你的选择</span>
+      <div class="lab"><b>A</b><span>选这个</span></div>
+      <div class="proto"><div class="tb">
+        <div class="th">日期<em>日期</em></div><div class="th">门店<em>文本</em></div><div class="th sus">编码<em class="w">数字?</em></div><div class="th">金额<em>数字</em></div>
+        <div>2026-10-01</div><div>杭州西湖店</div><div class="sus">00125</div><div>12,800</div>
+        <div>2026-10-01</div><div>上海徐汇店</div><div class="sus">00087</div><div>9,420</div>
+        <div>2026-10-02</div><div>南京新街口</div><div class="sus">00213</div><div>15,060</div></div>
+        <div class="c" style="text-align:left;margin-top:10px">⚠ 1 列可能识别有误，点击列头类型即可修改</div></div>
+      <p class="desc">在数据预览里直接标注类型，只高亮可疑列。</p></div>
+    <div class="opt box" data-o="B"><span class="flag">用户更准 ✓</span><span class="mine">你的选择</span>
+      <div class="lab"><b>B</b><span>选这个</span></div>
+      <div class="proto"><div class="modal"><b>请确认字段类型</b>
+        <div class="row"><span>日期</span><span>日期 ▾</span></div><div class="row"><span>门店</span><span>文本 ▾</span></div><div class="row"><span>编码</span><span>数字 ▾</span></div>
+        <div class="pg mono">1 / 4 页 · 下一页 →</div></div></div>
+      <p class="desc">弹窗逐列列出，用户逐一确认全部 12 列。</p></div>
+  </div>
+  <div class="reveal">
+    <div class="res box"><h4 class="mono">12 位用户 · 正确修正“编码”列的比例</h4>
+      <div class="bar"><span>A</span><div class="t"><i class="w" data-w="83%"></i></div><span class="mono">10/12</span></div>
+      <div class="bar"><span>B</span><div class="t"><i data-w="33%"></i></div><span class="mono">4/12</span></div>
+      <div class="meta"><div>B 中直接点“全部确认”<b class="mono">7 人</b></div></div></div>
+    <div class="verdict box"><h3></h3><p>“让用户逐一确认”看似更严谨，实际上 12 列全部要求确认，用户会习惯性地一路点下去。A 只在可疑处打断，并且让用户看到真实数据（00125 前面的 0），判断成本低得多。</p></div>
+  </div>
+</section>
+
+<section class="round" id="r3" data-win="B">
+  <div class="rh"><span class="no mono">ROUND 3/3</span><div><h2>导入失败了，怎么告诉用户？</h2><p>一份 3000 行的文件，第 128 行日期格式不对。</p></div></div>
+  <div class="opts">
+    <div class="opt box" data-o="A"><span class="flag">用户自救 ✓</span><span class="mine">你的选择</span>
+      <div class="lab"><b>A</b><span>选这个</span></div>
+      <div class="proto"><div class="toast">✕ 导入失败（错误码 E1023），请检查文件后重试</div><div class="ill" style="margin-top:70px;opacity:.4"></div></div>
+      <p class="desc">轻量 Toast 提示，附错误码便于反馈技术支持。</p></div>
+    <div class="opt box" data-o="B"><span class="flag">用户自救 ✓</span><span class="mine">你的选择</span>
+      <div class="lab"><b>B</b><span>选这个</span></div>
+      <div class="proto"><b>2,999 行可以导入，1 行需要处理</b>
+        <div class="err">第 <b>128</b> 行「日期」列：<b>2026/13/01</b> 不是有效日期<br><span class="fix">跳过该行并导入</span> <span style="margin-left:8px;text-decoration:underline">在线修改</span></div></div>
+      <p class="desc">定位到行和列，说明原因，给出可直接执行的处理方式。</p></div>
+  </div>
+  <div class="reveal">
+    <div class="res box"><h4 class="mono">12 位用户 · 不求助他人完成导入</h4>
+      <div class="bar"><span>A</span><div class="t"><i data-w="17%"></i></div><span class="mono">2/12</span></div>
+      <div class="bar"><span>B</span><div class="t"><i class="w" data-w="100%"></i></div><span class="mono">12/12</span></div>
+      <div class="meta"><div>A 中打开 Excel 逐行排查<b class="mono">9 人</b></div></div></div>
+    <div class="verdict box"><h3></h3><p>好的错误提示要回答三个问题：哪里错了、为什么、现在能做什么。B 还把“全部失败”改成了“部分成功”，用户的第一感受从挫败变成了可控。</p></div>
+  </div>
+</section>
+
+<section class="sum">
+  <h2>三轮测试，<br>一条原则：把下一步放到用户眼前。</h2>
+  <div class="bento">
+    <div class="box b1"><small>你与用户一致</small><div class="k mono" id="final">–/3</div><p id="finalT">完成三轮选择后，这里会显示你的结果。</p></div>
+    <div class="box"><small>首次导入成功率</small><div class="k mono">+48%</div></div>
+    <div class="box"><small>导入相关工单</small><div class="k mono">−61%</div></div>
+    <div class="box b4"><small>反直觉发现</small><p style="font-size:16px;font-weight:700">“更严谨”的逐项确认，反而带来了更多错误——确认疲劳会让用户停止思考。</p></div>
+    <div class="box b5"><small>方法</small><p>可点击原型 · 12 人 · 每轮任务完成率 + 耗时 + 出声思考</p></div>
+    <div class="box b5" style="background:#111!important;color:#fff"><small style="color:#aaa">下一步</small><p>把三条结论沉淀进组件规范：空状态 = 起步任务；确认只打断可疑项；报错必须给出可执行动作。<br><span style="color:#888;font-size:12px">* 本页数据均为示例</span></p></div>
+  </div>
+</section>
+<footer>方案 F · 你来决策（Interactive A/B）— 读者先选、再揭晓用户测试结果，把“读案例”变成“参与决策”。</footer>
+
 <script>
-const ops=[...document.querySelectorAll('.op')];ops.forEach(o=>o.onclick=()=>{ops.forEach(x=>x.classList.toggle('sel',x===o));if(DEMO.get()<1)DEMO.set(1)});
-window.onStep=k=>{ops.forEach(o=>o.classList.toggle('ans',k>=2&&o.dataset.o==='c'));if(k===0)ops.forEach(o=>o.classList.remove('sel'));};
-</script></body></html>
+// 磁吸字母
+const mag=document.getElementById('mag');
+function split(el){[...el.childNodes].forEach(n=>{if(n.nodeType===3){const f=document.createDocumentFragment();[...n.textContent].forEach(c=>{const x=document.createElement('span');x.className='ch';x.textContent=c;f.appendChild(x)});n.replaceWith(f)}else if(n.nodeType===1&&n.tagName!=='BR')split(n)})}
+split(mag);const ls=[...mag.querySelectorAll('.ch')];
+addEventListener('mousemove',e=>ls.forEach(s=>{const r=s.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2,d=Math.hypot(e.clientX-cx,e.clientY-cy),f=Math.max(0,1-d/220);
+  s.style.transform=`translate(${(e.clientX-cx)*f*.18}px,${(e.clientY-cy)*f*.18}px) rotate(${(e.clientX-cx)*f*.04}deg)`}));
+
+// 3D 倾斜
+document.querySelectorAll('.opt').forEach(o=>{
+  o.addEventListener('mousemove',e=>{if(o.closest('.round').classList.contains('done'))return;const r=o.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+    o.style.transform=`rotateY(${x*10}deg) rotateX(${-y*10}deg) translateZ(10px)`});
+  o.addEventListener('mouseleave',()=>{if(!o.closest('.round').classList.contains('done'))o.style.transform=''});
+  o.addEventListener('click',()=>choose(o));});
+
+let score=0,done=0;const pips=document.querySelectorAll('.pips i');
+function choose(o){const r=o.closest('.round');if(r.classList.contains('done'))return;
+  const win=r.dataset.win,ok=o.dataset.o===win;o.classList.add('picked');
+  r.querySelectorAll('.opt').forEach(x=>{x.style.transform='';x.classList.add(x.dataset.o===win?'win':'lose')});
+  r.classList.add('done');
+  const v=r.querySelector('.verdict');v.classList.toggle('wrong',!ok);v.querySelector('h3').textContent=ok?'你和用户想到一起了 🎯':'和大多数用户的表现不一样 👀';
+  setTimeout(()=>r.querySelectorAll('.bar i').forEach(i=>i.style.width=i.dataset.w),50);
+  pips[done].classList.add(ok?'ok':'no');done++;if(ok)score++;
+  document.getElementById('sc').textContent=score+'/3';const sb=document.getElementById('score');sb.classList.remove('pop');void sb.offsetWidth;sb.classList.add('pop');
+  if(done===3){document.getElementById('final').textContent=score+'/3';
+    document.getElementById('finalT').textContent=['你的直觉和用户几乎相反——这正是做测试的意义。','直觉只对了一部分，测试帮你补上了另一部分。','大部分判断准确，但仍有一轮出乎意料。','完全一致！不过别忘了：直觉需要被验证。'][score];}
+}
+
+// 便当格入场 + 光标聚光
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){const i=[...e.target.parentNode.children].indexOf(e.target);setTimeout(()=>e.target.classList.add('in'),i*90);io.unobserve(e.target)}}),{threshold:.2});
+document.querySelectorAll('.bento .box').forEach(b=>{io.observe(b);b.addEventListener('mousemove',e=>{const r=b.getBoundingClientRect();b.style.setProperty('--mx',e.clientX-r.left+'px');b.style.setProperty('--my',e.clientY-r.top+'px')})});
+</script>
+<script src="scroll.js"></script>
+</body>
+</html>

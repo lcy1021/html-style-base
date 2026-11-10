@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>S · 收件箱与雷达｜职能的两面</title>
+<style>
+:root{--bg:#f5f3ee;--ink:#1a1a1a;--mut:#8a857c;--line:#e4e0d6;--b:#1971c2;--g:#2fe07a}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;min-height:100vh}
+.hd{padding:4vh 5vw 2vh;display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap}
+.hd small{font-size:12px;color:var(--mut);letter-spacing:.15em}
+.hd h1{font-size:clamp(26px,3.2vw,44px);line-height:1.25;margin-top:8px}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:2vw;padding:0 5vw}
+.pane{border-radius:20px;height:440px;position:relative;overflow:hidden}
+.pane h2{position:absolute;left:24px;top:20px;font-size:20px;z-index:3}
+.pane h2 span{display:block;font-size:13px;font-weight:400;opacity:.65;margin-top:4px}
+/* 被动 */
+.inbox{background:#fff;border:1px solid var(--line)}
+.tray{position:absolute;left:24px;right:24px;bottom:24px;top:96px;display:flex;flex-direction:column-reverse;gap:10px;overflow:hidden}
+.env{background:#f8f9fb;border:1px solid #e3e6ec;border-radius:12px;padding:12px 14px;display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;animation:drop .7s cubic-bezier(.3,1.4,.5,1);flex:none;cursor:pointer}
+@keyframes drop{from{transform:translateY(-260px) rotate(-4deg);opacity:0}}
+.env i{font-style:normal;font-size:22px}
+.env b{font-size:14px;display:block}
+.env .hide{font-size:12px;color:#c0c4cc;border-top:1px dashed #dde1e7;margin-top:6px;padding-top:6px;transition:all .4s;max-height:22px;overflow:hidden}
+.env.open .hide{color:var(--b);max-height:80px}
+.env.open{border-color:var(--b);background:#f1f6fd}
+/* 主动 */
+.radar{background:#0c1a14;color:#d6ffe6}
+.scope{position:absolute;left:50%;top:56%;width:340px;height:340px;margin:-170px 0 0 -170px;border-radius:50%;
+  background:repeating-radial-gradient(circle,transparent 0 56px,#2fe07a22 56px 57px);border:1px solid #2fe07a44}
+.scope:before,.scope:after{content:"";position:absolute;background:#2fe07a22}
+.scope:before{left:50%;top:0;bottom:0;width:1px}.scope:after{top:50%;left:0;right:0;height:1px}
+.sweep{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,#2fe07a00 0deg,#2fe07a00 300deg,#2fe07a55 358deg,#2fe07a 360deg);animation:spin 4s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.blip{position:absolute;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:var(--g);box-shadow:0 0 14px var(--g);opacity:.08;transition:opacity 1.6s}
+.blip.ghost{background:#7a8a82;box-shadow:none}
+.blip.lit{opacity:1;transition:opacity .1s}
+.blip span{position:absolute;left:16px;top:-6px;white-space:nowrap;font-size:12px;background:#0c1a14cc;padding:2px 8px;border-radius:6px;opacity:0;transition:opacity 1.6s;border:1px solid #2fe07a55}
+.blip.ghost span{border-color:#7a8a82;color:#9aa8a1}
+.blip.lit span{opacity:1;transition:opacity .2s}
+.legend{position:absolute;right:20px;bottom:18px;font-size:12px;opacity:.7;text-align:right;line-height:1.8}
+.legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px}
+.verdict{display:grid;grid-template-columns:1fr 1fr;gap:2vw;padding:16px 5vw 0}
+.verdict div{font-size:18px;font-weight:700;padding:14px 18px;border-left:4px solid var(--c)}
+.verdict span{display:block;font-size:13px;font-weight:400;color:var(--mut);margin-top:4px}
+.mx{margin:4vh 5vw 5vh;background:#fff;border-radius:18px;border:1px solid var(--line);overflow:hidden}
+.mx table{width:100%;border-collapse:collapse;font-size:14px}
+.mx th,.mx td{padding:14px 18px;text-align:left;border-bottom:1px solid #f0ede6;transition:background .25s,opacity .25s}
+.mx th{font-size:12px;color:var(--mut);font-weight:500;background:#faf9f6}
+.mx td:first-child{font-weight:700;white-space:nowrap}
+.mx.hov td{opacity:.35}
+.mx tr.on td,.mx td.on{opacity:1!important;background:#fff8e6}
+.mx .cap{padding:14px 18px;font-size:13px;color:var(--mut);display:flex;justify-content:space-between}
+@media(max-width:1000px){.split,.verdict{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="hd"><div><small>第 1 段 · 1-2 · 第二条线</small><h1>不管在哪个阶段，需求到我们手上只有两种方式。</h1></div></div>
+<div class="split">
+  <div class="pane inbox"><h2>被动：需求找上门<span>点开信封，看看方案背后写了什么</span></h2><div class="tray" id="tray"></div></div>
+  <div class="pane radar"><h2>主动：我们自己去找<span>没人喊疼，证据要自己扫出来</span></h2>
+    <div class="scope" id="scope"><div class="sweep"></div></div>
+    <div class="legend"><i style="background:#2fe07a"></i>真实受影响的场景<br><i style="background:#7a8a82"></i>“规范上不对”，但没找到受影响的人</div></div>
+</div>
+<div class="verdict"><div style="--c:var(--b)">被动的时候，要能判断<span>方案背后的问题和假设，常常没写出来</span></div><div style="--c:#2b8a3e">主动的时候，要能发现<span>小心拿“规范上不对”代替真实场景</span></div></div>
+<div class="mx" id="mx">
+  <div class="cap"><b style="color:#1a1a1a">两条线交叉起来看</b><span>悬停任意行或列</span></div>
+  <table><thead><tr><th>产品背景</th><th data-c="1">被动需求常见的样子</th><th data-c="2">主动优化的重点</th></tr></thead><tbody>
+    <tr><td>0 到 1</td><td>产品给出方向，方案还在变</td><td>帮忙定边界，找出最该先验证的场景</td></tr>
+    <tr><td>快速发展期</td><td>规划好的功能成批下发</td><td>先保证直观、常用的场景</td></tr>
+    <tr><td>成熟期</td><td>客户诉求经产品转化成方案</td><td>看比较细的交互体验和方式</td></tr>
+    <tr><td>大客户</td><td>按大客户场景定制的方案</td><td>守住通用性，避免产品被一个客户带偏</td></tr>
+  </tbody></table>
+</div>
+<script>
+// 被动：信封持续投递
+const ENV=[['📨','“方案我画好了，你出个高保真。”','这个方案最初想解决什么问题？'],['📨','“PRD 评审过了，这周出图。”','有哪些客户反馈支持它？'],['📨','“删除表时加个二次确认就行。”','删除之后，用户还会回来吗？'],['📨','“移动端加一个报表入口。”','哪些已经定了，哪些还能调？'],['📨','“按大客户的流程做一版。”','别的客户也是这样用的吗？']];
+const tray=document.getElementById('tray');let ei=0;
+function drop(){const e=ENV[ei%ENV.length];ei++;const d=document.createElement('div');d.className='env';
+  d.innerHTML=`<i>${e[0]}</i><div><b>${e[1]}</b><div class="hide">背后的问题：${e[2]}</div></div>`;d.onclick=()=>d.classList.toggle('open');
+  tray.append(d);if(tray.children.length>5)tray.firstElementChild.remove();}
+drop();setInterval(drop,2600);
+// 主动：雷达
+const B=[[30,-70,'用户每次手动绕过这一步'],[110,-45,'同一操作在 3 个模块不一致'],[200,-60,'英文版语序：规范风险，暂无投诉',1],[250,-100,'导出后用户还要再整理一遍'],[320,-55,'“全部”不含隐藏项，逻辑上不对',1],[160,-110,'空状态无引导，新用户直接离开']];
+const scope=document.getElementById('scope');
+B.forEach(b=>{const a=(b[0]-90)*Math.PI/180,r=-b[1];const d=document.createElement('div');d.className='blip'+(b[3]?' ghost':'');
+  d.style.left=(170+Math.cos(a)*r)+'px';d.style.top=(170+Math.sin(a)*r)+'px';d.innerHTML=`<span>${b[2]}</span>`;scope.appendChild(d);b.el=d});
+const t0=performance.now();let last=0;
+(function loop(n){const ang=((n-t0)/4000*360)%360;B.forEach(b=>{let diff=(ang-b[0]+360)%360;if(diff<8){b.el.classList.add('lit');clearTimeout(b.t);b.t=setTimeout(()=>b.el.classList.remove('lit'),900)}});requestAnimationFrame(loop)})(t0);
+// 矩阵悬停
+const mx=document.getElementById('mx');
+mx.querySelectorAll('tbody tr').forEach(tr=>{tr.onmouseenter=()=>{mx.classList.add('hov');tr.classList.add('on')};tr.onmouseleave=()=>{mx.classList.remove('hov');tr.classList.remove('on')}});
+mx.querySelectorAll('th[data-c]').forEach(th=>{const c=+th.dataset.c;th.onmouseenter=()=>{mx.classList.add('hov');mx.querySelectorAll(`tbody td:nth-child(${c+1})`).forEach(td=>td.classList.add('on'))};
+  th.onmouseleave=()=>{mx.classList.remove('hov');mx.querySelectorAll('td.on').forEach(td=>td.classList.remove('on'))}});
+</script>
+<script src="scroll.js"></script>
+</body>
+</html>
