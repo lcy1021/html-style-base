@@ -60,13 +60,13 @@ main{padding:32px 32px 120px}
 .cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top left;transition:opacity .35s}
 .cover iframe{position:absolute;left:0;top:0;width:960px;height:600px;border:0;transform-origin:0 0;pointer-events:none;opacity:0;transition:opacity .35s}
 .cover.live iframe{opacity:1}.cover.live img{opacity:0}
-.meta{display:flex;align-items:baseline;gap:12px;margin-top:16px}
-.meta h3{font-family:var(--serif);font-size:21px;font-weight:900;letter-spacing:.01em;line-height:1.25;transition:color .25s}
-.meta h3::after{content:"→";display:inline-block;margin-left:8px;font-family:var(--sans);font-size:15px;font-weight:400;color:var(--tc);opacity:0;transform:translateX(-6px);transition:opacity .25s,transform .35s var(--ease)}
-.card:hover .meta h3::after,.card:focus-visible .meta h3::after{opacity:1;transform:none}
+.meta{display:flex;align-items:center;gap:10px;margin-top:14px}
+.meta h3{font-size:16px;font-weight:600;letter-spacing:-.01em;line-height:1.3}
+.gl{flex:none;width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:color-mix(in srgb,var(--gc) 16%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--gc) 35%,transparent);transition:transform .4s var(--ease)}
+.gl svg{width:14px;height:14px;display:block;fill:var(--gc);stroke:var(--gc)}
+.card:hover .gl{transform:rotate(-8deg) scale(1.08)}
 .meta .tg{margin-left:auto;display:flex;gap:6px;flex:none}
 .meta .tg span{font-size:11.5px;line-height:1;padding:5px 8px;border-radius:99px;color:var(--mut);box-shadow:inset 0 0 0 1px var(--line)}
-.no{font-family:var(--mono);font-size:12px;color:var(--tc,var(--accent))}
 .line{margin-top:6px;font-size:13.5px;line-height:1.65;color:var(--ink2)}
 
 /* 紧凑卡（方法 / 规范 / 参考 / 工具） */
@@ -222,13 +222,18 @@ main{padding:32px 32px 120px}
 
   /* ---------- 卡片 ---------- */
   const flowOf = p => { const h = (p.how || [])[0] || ''; return h.startsWith('统一讲法：') ? h.slice(5).split(/\s*→\s*/) : null; };
+  /* 标题前的小图形：每个样式卡分到不同的“形状 × 颜色”组合，方便一眼区分 */
+  const GS = ['<circle cx="7" cy="7" r="6"/>', '<rect x="1.5" y="1.5" width="11" height="11" rx="2" transform="rotate(45 7 7)"/>', '<path d="M7 1 13 12.5H1Z"/>', '<path d="M1 8a6 6 0 0 1 12 0Z"/>', '<circle cx="7" cy="7" r="4.6" fill="none" stroke-width="2.6"/>', '<path d="M5.4 1h3.2v4.4H13v3.2H8.6V13H5.4V8.6H1V5.4h4.4Z"/>', '<circle cx="4" cy="7" r="3"/><circle cx="10" cy="7" r="3" opacity=".55"/>', '<path d="M1 13V1a12 12 0 0 1 12 12Z"/>'];
+  const GC = ['#ff8a5b', '#b9a8ff', '#5ad0b3', '#ffb547', '#4ea1ff', '#ff6b9a', '#9be15d', '#e8e4ff'];
+  let GI = {};
+  const glyph = p => { if (!(p.id in GI)) GI[p.id] = Object.keys(GI).length; const i = GI[p.id]; return `<span class="gl" style="--gc:${GC[(i + Math.floor(i / 8)) % 8]}"><svg viewBox="0 0 14 14">${GS[i % 8]}</svg></span>`; };
+  P.filter(p => p.category === '样式').forEach(p => glyph(p));
   function cardHTML(p) {
     const tc = TYPES[p.category].c, attrs = `data-id="${esc(p.id)}" tabindex="0" role="link" style="--tc:${tc}"`;
     if (p.category === '样式') return `
       <div class="card rv" ${attrs} data-demo="${esc(p.demo || '')}">
         <div class="cover">${p.demo ? `<img src="covers/${esc(base(p.demo))}.jpg" alt="" loading="lazy">` : ''}</div>
-        <div class="meta"><h3>${esc(p.title)}</h3><div class="tg">${(p.tags || []).slice(0, 2).map(x => `<span>${esc(x)}</span>`).join('')}</div></div>
-        <p class="line">${esc(p.card || p.intent)}</p>
+        <div class="meta">${glyph(p)}<h3>${esc(p.title)}</h3><div class="tg">${(p.tags || []).slice(0, 2).map(x => `<span>${esc(x)}</span>`).join('')}</div></div>
       </div>`;
     const flow = p.category === '方法' && flowOf(p);
     const recs = (p.related || []).map(id => BY[id]).filter(r => r && r.demo && owns(r)).slice(0, 4);
