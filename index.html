@@ -223,20 +223,20 @@ main{padding:32px 32px 120px}
     if (p.category === '样式') return `
       <div class="card rv" ${attrs} data-demo="${esc(p.demo || '')}">
         <div class="cover">${p.demo ? `<img src="covers/${esc(base(p.demo))}.jpg" alt="" loading="lazy">` : ''}</div>
-        <div class="meta"><span class="no">#${p.no}</span><h3>${esc(p.title)}</h3></div>
+        <div class="meta"><h3>${esc(p.title)}</h3></div>
         <p class="line">${esc(p.card || p.intent)}</p>
       </div>`;
     const flow = p.category === '方法' && flowOf(p);
     const recs = (p.related || []).map(id => BY[id]).filter(r => r && r.demo && owns(r)).slice(0, 4);
     const body = flow
       ? `<div class="flow">${flow.map(s => `<span>${esc(s)}</span>`).join('<em>→</em>')}</div>
-         ${recs.length ? `<div class="rec"><small>推荐</small>${recs.map(r => `<button type="button" data-go="${esc(r.id)}" title="#${r.no} ${esc(r.title)}"><img src="covers/${esc(base(r.demo))}.jpg" alt="${esc(r.title)}" loading="lazy"></button>`).join('')}</div>` : ''}`
+         ${recs.length ? `<div class="rec"><small>推荐</small>${recs.map(r => `<button type="button" data-go="${esc(r.id)}" title="${esc(r.title)}"><img src="covers/${esc(base(r.demo))}.jpg" alt="${esc(r.title)}" loading="lazy"></button>`).join('')}</div>` : ''}`
       : ((p.how || [])[0] ? `<p class="do"><b>做法</b>${esc(p.how[0])}</p>` : '');
     const th = owns(p) ? `<div class="th"><img src="covers/${esc(base(p.demo))}.jpg" alt="" loading="lazy"></div>` : '';
     return `
       <div class="mini rv" ${attrs}>${th}
         <div class="bd">
-          <div class="hd"><span class="no">#${p.no}</span><h3>${esc(p.title)}</h3>${p.url ? `<a class="ext" href="${esc(p.url)}" target="_blank" rel="noopener" data-ext>原站 ↗</a>` : ''}</div>
+          <div class="hd"><h3>${esc(p.title)}</h3>${p.url ? `<a class="ext" href="${esc(p.url)}" target="_blank" rel="noopener" data-ext>原站 ↗</a>` : ''}</div>
           <p class="line">${esc(p.card || p.intent)}</p>${body}
         </div>
       </div>`;
