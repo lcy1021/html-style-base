@@ -116,6 +116,8 @@ main{padding:8px 48px 120px}
 .seg button{padding:0 13px;border-radius:99px;font-size:12.5px;color:var(--ink2);transition:background .2s,color .2s}
 .seg button[aria-pressed=true]{background:rgba(255,255,255,.14);color:var(--ink)}
 .ob.ic{width:38px;padding:0;justify-content:center}
+.ox{width:38px;height:38px;display:grid;place-items:center;margin-left:4px;color:var(--ink2);transition:color .2s,transform .3s var(--ease)}
+.ox:hover{color:var(--ink);transform:rotate(90deg)}
 .ovpanel{position:absolute;left:28px;right:28px;top:68px;bottom:28px;border-radius:14px;transform-origin:0 0;will-change:transform}
 .ovpanel iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;background:transparent;opacity:0;transition:opacity .35s}
 .ovpanel.ready iframe{opacity:1}
@@ -157,7 +159,7 @@ main{padding:8px 48px 120px}
     <div class="seg" id="ovMode" role="group" aria-label="播放方式" hidden><button type="button" data-m="auto" aria-pressed="true">自动播放</button><button type="button" data-m="manual" aria-pressed="false">手动浏览</button></div>
     <button class="ob" id="ovInfo" type="button" aria-pressed="false"><span class="dot"></span>查看详情 <kbd>I</kbd></button>
     <a class="ob ic" id="ovFull" href="#" target="_blank" rel="noopener" title="在新窗口打开"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
-    <button class="ob" id="ovClose" type="button">关闭 <kbd>Esc</kbd></button>
+    <button class="ox" id="ovClose" type="button" title="关闭（Esc）" aria-label="关闭"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
   </div>
   <div class="ovpanel" id="ovp"><iframe id="ovf" title="样例详情"></iframe><div class="ovsnap" id="ovs"></div></div>
 </div>
@@ -340,7 +342,8 @@ main{padding:8px 48px 120px}
   const EASE = 'cubic-bezier(.2,.8,.2,1)';
   let from = null, loaded = false, grown = false;
   function fromTransform(el) {
-    const f = ovp.getBoundingClientRect();
+    const keep = ovp.style.transform; ovp.style.transform = 'none';   // 先复位再量，避免上一次关闭留下的变形算错起点
+    const f = ovp.getBoundingClientRect(); ovp.style.transform = keep;
     if (!el || !el.isConnected) return `translate(${f.width * .03}px, ${f.height * .03}px) scale(.94)`;
     const r = el.getBoundingClientRect();
     if (!r.width || r.bottom < 0 || r.top > innerHeight) return `translate(${f.width * .03}px, ${f.height * .03}px) scale(.94)`;
