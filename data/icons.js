@@ -38,4 +38,44 @@ window.ICONS = {
   'diagnose':        ['#059669', '<path d="M4 16.5a8 8 0 0 1 16 0"/><path d="m12 16.5 4.2-5"/><circle cx="12" cy="16.5" r="1.4" fill="#fff"/>'],
   'chapters':        ['#5b3fd6', '<rect x="3.5" y="6" width="7" height="12" rx="1.5"/><rect x="13.5" y="6" width="7" height="12" rx="1.5" opacity=".55"/>'],
   'inbox-radar':     ['#0284c7', '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5" opacity=".55"/><path d="M12 12 18 6"/><circle cx="16.5" cy="9.5" r="1.2" fill="#fff"/>'],
+  /* —— 方法 —— */
+  'bridge-sentence': ['#9b8cff', '<path d="M4 8h10a3.5 3.5 0 0 1 0 7H8"/><path d="m10.5 12-3 3 3 3"/>'],
+  'one-case-through':['#c084fc', '<path d="M3 12h18"/><circle cx="12" cy="12" r="3.2" style="fill:var(--gk)"/><circle cx="12" cy="12" r="1" style="fill:var(--gs)"/>'],
+  'speaker-cues':    ['#f472b6', '<rect x="9" y="3.5" width="6" height="11" rx="3"/><path d="M6 11.5a6 6 0 0 0 12 0M12 17.5v3"/>'],
+  'type-task':       ['#60a5fa', '<circle cx="8" cy="8" r="3"/><path d="M3 19.5a5 5 0 0 1 10 0"/><path d="M15.5 6h5M15.5 10h5M15.5 14h3.5"/>'],
+  'type-evidence':   ['#f87171', '<circle cx="10.5" cy="10.5" r="6"/><path d="m15 15 5 5M8 10.5l2 2 3-3.5"/>'],
+  'type-path':       ['#34d399', '<path d="M4 18 9 12.5l4 3L20 6"/><circle cx="4" cy="18" r="1.5" style="fill:var(--gs)"/><path d="M16.5 6H20v3.5"/>'],
+  'type-tradeoff':   ['#fbbf24', '<path d="M12 4v16M5 7h14M9 20h6"/><path d="M5 7 2.8 12.5h4.4zM19 7l-2.2 5.5h4.4z"/>'],
+  'type-data':       ['#22d3ee', '<path d="M12 3.5a8.5 8.5 0 1 0 8.5 8.5H12z"/><path d="M15 3.8A8.5 8.5 0 0 1 20.2 9H15z"/>'],
+  /* —— 规范 —— */
+  'particle-vs-stage':['#5ad0b3', '<circle cx="5" cy="7" r="1"/><circle cx="8.5" cy="4.5" r="1"/><circle cx="4" cy="11.5" r="1"/><circle cx="8" cy="9" r="1"/><rect x="11" y="10" width="9.5" height="9.5" rx="1.5"/>'],
+  'step-control':    ['#2dd4bf', '<path d="M3.5 19h4v-4h4.5v-4h4.5V7h4"/>'],
+  'morph':           ['#4ade80', '<circle cx="7" cy="12" r="4"/><path d="M11.5 12h2.5M12.5 10.5 14 12l-1.5 1.5"/><rect x="15" y="8" width="6" height="8" rx="1"/>'],
+  'one-idea':        ['#10b981', '<rect x="3.5" y="5" width="17" height="14" rx="2"/><path d="M8 12h8"/>'],
+  'no-orphan':       ['#14b8a6', '<path d="M4 7h16M4 11.5h16M4 16h11"/><path d="m17 15 3 3M20 15l-3 3"/>'],
+  'big-screen':      ['#06b6d4', '<rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M12 16v4M8 20h8"/>'],
+  'facts':           ['#84cc16', '<path d="M12 3 5 6v5.5c0 4.2 3 7.4 7 9.5 4-2.1 7-5.3 7-9.5V6z"/><path d="m9 12 2.2 2.2L15.5 10"/>'],
+  /* —— 工具与交付 —— */
+  'single-file':     ['#4ea1ff', '<path d="M6 3.5h8l4 4v13H6z"/><path d="M14 3.5v4h4M11 10v1M11 12.5v1M11 15v1"/>'],
+  'publish':         ['#38bdf8', '<path d="M12 15.5V5M7.5 9.5 12 5l4.5 4.5M5 19.5h14"/>'],
+  'verify':          ['#818cf8', '<rect x="3.5" y="3.5" width="7" height="7" rx="1"/><rect x="13.5" y="3.5" width="7" height="7" rx="1"/><rect x="3.5" y="13.5" width="7" height="7" rx="1"/><path d="m14 17 2 2 4-4"/>'],
+  /* —— 参考 —— */
+  'ref-dala':        ['#ffb547', '<circle cx="12" cy="12" r="1.6" style="fill:var(--gs)"/><circle cx="6" cy="7" r="1.2"/><circle cx="18" cy="6.5" r="1.2"/><circle cx="5" cy="16" r="1.2"/><circle cx="18.5" cy="17" r="1.2"/><circle cx="12" cy="4" r="1"/><circle cx="12" cy="20" r="1"/>'],
+  'ref-pudding':     ['#fb7185', '<path d="M4 4v16h16"/><path d="m7.5 15 3.5-4 3 2.5L19 7"/>'],
+  'ref-column':      ['#f59e0b', '<rect x="3.5" y="4" width="17" height="16" rx="2"/><path d="M9.5 4v16M5.5 8h2M5.5 11h2M5.5 14h2"/>'],
+  'ref-foudre':      ['#ec4899', '<rect x="7" y="8" width="13" height="12" rx="2"/><path d="M5.5 16V7.5a2 2 0 0 1 2-2H16"/><path d="M4 13V5a2 2 0 0 1 2-2h7.5" opacity=".55"/>'],
+  'ref-editorial':   ['#eab308', '<path d="M4 6h5M4 10h4M13 6h7M13 10h7M13 14h7M13 18h5"/>'],
+  'ref-boat':        ['#3b82f6', '<path d="M3 15.5h18l-3 4.5H6z"/><path d="M12 3.5v12M12 4.5l6 9h-6"/>'],
+  'ref-briefly':     ['#f97316', '<rect x="3.5" y="4.5" width="7.5" height="15" rx="1.5"/><rect x="13" y="4.5" width="7.5" height="15" rx="1.5"/><path d="M15 10h4" stroke-width="3" opacity=".6"/>'],
+  'ref-moah':        ['#a3a3ff', '<rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="17" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/>'],
+};
+
+/* 生成图标 HTML（首页卡片、弹层标题、详情页共用）。样式类名 .gl，CSS 写在各页面里。 */
+window.iconHTML = function (p, fallbackColor) {
+  const ic = window.ICONS[p.id];
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+  if (!ic) return `<span class="gl txt" style="--gb:${fallbackColor || '#ff8a5b'}">${esc((p.title || '').slice(0, 1))}</span>`;
+  const g = ic[2] && ic[2] !== '#1d1d1f' && ic[2] !== '#14121f' ? ic[2] : ic[0];   // 通透底：用主色做底和线；深色线条的图标改用底色
+  const svg = ic[1].replace(/fill="#fff"/g, 'style="fill:var(--gs)"').split(`fill="${ic[0]}"`).join('style="fill:var(--gk)"').replace(/stroke="#[0-9a-f]+"/gi, '');
+  return `<span class="gl" style="--gb:${g}"><svg viewBox="0 0 24 24" aria-hidden="true">${svg}</svg></span>`;
 };
