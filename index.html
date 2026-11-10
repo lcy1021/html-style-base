@@ -157,7 +157,7 @@ main{padding:32px 32px 120px}
 <div class="ov" id="ov" hidden role="dialog" aria-modal="true" aria-labelledby="ovTitle">
   <div class="ovbg" id="ovbg"></div>
   <div class="ovbar">
-    <div class="ovt"><span class="no" id="ovNo"></span><b id="ovTitle"></b><span class="cat" id="ovCat"></span></div>
+    <div class="ovt"><b id="ovTitle"></b><span class="cat" id="ovCat"></span></div>
     <span class="sp"></span>
     <div class="seg" id="ovMode" role="group" aria-label="播放方式" hidden><button type="button" data-m="auto" aria-pressed="true">自动播放</button><button type="button" data-m="manual" aria-pressed="false">手动浏览</button></div>
     <button class="ob" id="ovInfo" type="button" aria-pressed="false"><span class="dot"></span>查看详情 <kbd>I</kbd></button>
@@ -336,11 +336,11 @@ main{padding:32px 32px 120px}
   let lastFocus = null;
   function meta(id) {
     const p = BY[id]; if (!p) return;
-    $('ovNo').textContent = '#' + p.no; $('ovNo').style.setProperty('--tc', TYPES[p.category].c);
+    
     $('ovTitle').textContent = p.title; $('ovCat').textContent = p.category;
     $('ovFull').href = 'view.html#' + encodeURIComponent(id);
     history.replaceState(null, '', '#' + encodeURIComponent(id));
-    document.title = `#${p.no} ${p.title} · HTML Style Base`;
+    document.title = `${p.title} · HTML Style Base`;
   }
   const ovp = $('ovp'), ovs = $('ovs');
   const EASE = 'cubic-bezier(.2,.8,.2,1)';
