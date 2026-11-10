@@ -204,6 +204,7 @@ body.open .toast{left:calc((100% - var(--dw)) / 2)}
 <script src="data/patterns.js"></script>
 <script src="data/icons.js"></script>
 <script src="data/live.js"></script>
+<script src="data/track.js"></script>
 <script>
 (() => {
   const P = (window.PATTERNS || []).map((p, i) => ({...p, no: String(i + 1).padStart(2, '0')}));
@@ -215,6 +216,8 @@ body.open .toast{left:calc((100% - var(--dw)) / 2)}
   const $ = s => document.getElementById(s), B = document.body;
   const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
   document.title = `${p.title} · HTML Style Base`;
+  const T = (t, x = {}) => window.HSBTrack && HSBTrack(t, { p: p.id, pg: EMBED ? 'overlay' : 'view', ...x });
+  T('page_view');
 
   /* ---------- 元信息 ---------- */
   
@@ -256,10 +259,11 @@ body.open .toast{left:calc((100% - var(--dw)) / 2)}
     }
     return out.join('');
   }
-  const design = () => D ? `<div class="mdbar"><button class="btn pri" type="button" data-copy="all">复制 DESIGN.md</button><button class="btn" type="button" data-copy="prompt">复制给 AI 的提示词</button></div><div class="md">${md(D)}</div>` : '<p class="sum">这一条还没有 DESIGN.md。</p>';
+  const design = () => D ? `<div class="mdbar"><button class="btn pri" type="button" data-copy="all">复制 DESIGN.md</button><button class="btn" type="button" data-copy="prompt">复制给 AI 的提示词</button><a class="btn" href="designs/${encodeURIComponent(p.id)}.md" download="${esc(p.id)}-DESIGN.md" data-dl>下载 .md</a></div><div class="md">${md(D)}</div>` : '<p class="sum">这一条还没有 DESIGN.md。</p>';
 
   let tab = 'a';
   function setTab(t) {
+    if (t === 'd' && tab !== 'd') T('design_open');
     tab = t; document.querySelectorAll('.tab').forEach(x => x.setAttribute('aria-selected', String(x.dataset.t === t)));
     if (t === 'd' && !window.DESIGNS) {
       $('body').innerHTML = '<p class="sum">正在载入 DESIGN.md…</p>';
@@ -274,8 +278,10 @@ body.open .toast{left:calc((100% - var(--dw)) / 2)}
   $('body').addEventListener('click', e => {
     const c = e.target.closest('[data-copy]'); if (c) {
       let txt = D; if (c.dataset.copy === 'prompt') { const m = D.match(/```text\n([\s\S]*?)```/); txt = m ? m[1].trim() : D; }
+      T(c.dataset.copy === 'prompt' ? 'prompt_copy' : 'md_copy');
       navigator.clipboard.writeText(txt).then(() => { $('copied').textContent = '已复制'; $('copied').classList.add('on'); setTimeout(() => $('copied').classList.remove('on'), 1200); }).catch(() => { $('copied').textContent = '浏览器拦截了复制'; $('copied').classList.add('on'); setTimeout(() => $('copied').classList.remove('on'), 1600); });
     }
+    if (e.target.closest('[data-dl]')) T('md_download');
     const s = e.target.closest('.steps li'); if (s && W && W.DEMO) { manual(); W.DEMO.set(+s.dataset.i); }
   });
 

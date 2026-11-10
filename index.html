@@ -175,6 +175,7 @@ main{padding:32px 32px 120px}
 <script src="data/patterns.js"></script>
 <script src="data/icons.js"></script>
 <script src="data/live.js"></script>
+<script src="data/track.js"></script>
 <script>
 (() => {
   const P = (window.PATTERNS || []).map((p, i) => ({...p, no: String(i + 1).padStart(2, '0')}));
@@ -215,6 +216,12 @@ main{padding:32px 32px 120px}
     filters.appendChild(b);
   });
   q.oninput = render;
+  let sT, lastQ = '';
+  function trackSearch(k, n) {           // 停止输入 1.2 秒后记一次搜索词和结果数
+    clearTimeout(sT); if (!k || k === lastQ) return;
+    sT = setTimeout(() => { lastQ = k; window.HSBTrack && HSBTrack('search', { q: k, h: n, pg: 'home' }); }, 1200);
+  }
+  window.HSBTrack && HSBTrack('page_view', { pg: 'home' });
   addEventListener('keydown', e => {
     if (!$('ov').hidden) return ovKey(e);
     if (e.key === '/' && document.activeElement !== q) { e.preventDefault(); q.focus(); }
@@ -257,6 +264,7 @@ main{padding:32px 32px 120px}
     queue = [];
     (cur === '全部' ? cats : [cur]).forEach(c => P.filter(p => p.category === c && hit(p)).forEach(p => queue.push(p)));
     list.innerHTML = queue.length ? '' : '<p class="empty">没有找到，换个关键词试试。</p>';
+    trackSearch(k, queue.length);
     lastSec = lastGrid = null;
     more();
   }
