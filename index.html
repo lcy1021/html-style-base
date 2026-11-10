@@ -2,180 +2,175 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>HTML 设计经验库</title>
+<meta name="color-scheme" content="dark">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Style Base · 设计经验库</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#0c0b12;--fg:#f3f1ff;--mut:#9a95a8;--line:rgba(255,255,255,.1);--violet:#b9a8ff;--amber:#ffb547;--ease:cubic-bezier(.3,.8,.2,1)}
-body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Helvetica Neue",sans-serif;background:var(--bg);color:var(--fg);-webkit-font-smoothing:antialiased;background-image:radial-gradient(rgba(255,255,255,.06) 1px,transparent 1px);background-size:28px 28px;min-height:100vh}
-a{color:var(--violet)}
-h1,h2,h3{text-wrap:balance}p,li{text-wrap:pretty}
-header{max-width:1240px;margin:0 auto;padding:64px 32px 20px}
-.eb{font-size:12px;letter-spacing:.14em;color:var(--amber)}
-header h1{margin-top:12px;font-size:clamp(32px,4.4vw,52px);font-weight:400;letter-spacing:-.04em;line-height:1.2}
-header h1 em{font-style:normal;color:var(--violet)}
-header p{margin-top:14px;max-width:720px;color:var(--mut);font-size:16px;line-height:1.8}
-.tools{position:sticky;top:0;z-index:5;background:rgba(12,11,18,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-.tools .in{max-width:1240px;margin:0 auto;padding:14px 32px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
-.chip{all:unset;cursor:pointer;padding:7px 14px;border-radius:99px;border:1px solid var(--line);font-size:13px;color:var(--mut);transition:.2s}
-.chip:hover{color:var(--fg)}.chip[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
-.chip:focus-visible,.card:focus-visible,.x:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
-.chip b{font-weight:400;opacity:.6;margin-left:4px}
-.search{margin-left:auto;min-width:220px;padding:8px 14px;border-radius:99px;border:1px solid var(--line);background:transparent;color:var(--fg);font-size:13px}
-main{max-width:1240px;margin:0 auto;padding:26px 32px 80px}
-.sec{margin-top:26px}.sec h2{font-size:14px;font-weight:600;color:var(--mut);letter-spacing:.06em;margin-bottom:12px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
-.card{all:unset;cursor:pointer;display:flex;flex-direction:column;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid var(--line);overflow:hidden;transition:transform .3s var(--ease),border-color .2s}
-.card:hover{transform:translateY(-3px);border-color:rgba(185,168,255,.5)}
-.thumb{height:150px;position:relative;overflow:hidden;background:#15131d;border-bottom:1px solid var(--line)}
-.thumb iframe{position:absolute;left:0;top:0;width:1280px;height:720px;border:0;transform:scale(.22);transform-origin:0 0;pointer-events:none}
-.thumb.none{display:grid;place-items:center;color:var(--mut);font-size:13px}
-.cb{padding:14px 16px 16px}
-.cb small{font-size:11px;color:var(--amber);letter-spacing:.06em}
-.cb h3{margin-top:4px;font-size:18px;font-weight:600}
-.cb p{margin-top:6px;font-size:13px;line-height:1.6;color:var(--mut)}
-.empty{color:var(--mut);padding:40px 0}
-/* 详情 */
-.dlg{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.6);display:none}
-.dlg.on{display:block}
-.panel{position:absolute;inset:3vh 3vw;border-radius:18px;background:#14121c;border:1px solid var(--line);display:grid;grid-template-columns:minmax(0,1.45fr) minmax(400px,1fr);overflow:hidden}
-.pv{position:relative;background:#0c0b12}
-.pv iframe{width:100%;height:100%;border:0}
-.pv .none{position:absolute;inset:0;display:grid;place-items:center;color:var(--mut)}
-.info{overflow:auto;padding:26px 26px 40px;border-left:1px solid var(--line)}
-.info small{font-size:12px;color:var(--amber)}
-.info h2{margin-top:6px;font-size:26px;font-weight:500}
-.info .intent{margin-top:6px;color:var(--violet);font-size:14px}
-.info .sum{margin-top:14px;font-size:15px;line-height:1.8}
-.info h4{margin-top:20px;font-size:12px;letter-spacing:.08em;color:var(--mut)}
-.info ul{margin-top:6px;padding-left:1.2em;font-size:14px;line-height:1.8}
-.info .pit li::marker{color:#ff8a7a}
-.meta{margin-top:22px;font-size:12px;color:var(--mut);line-height:1.8}
-.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}.tags span{font-size:11px;padding:2px 8px;border-radius:6px;background:rgba(185,168,255,.14);color:var(--violet)}
-.x{all:unset;cursor:pointer;position:absolute;right:14px;top:12px;z-index:2;padding:6px 12px;border-radius:99px;background:rgba(255,255,255,.1);font-size:13px}
-.open{display:inline-block;margin-top:16px;font-size:13px}
-footer{max-width:1240px;margin:0 auto;padding:0 32px 60px;color:var(--mut);font-size:13px;line-height:1.8}
-.tabs{display:flex;gap:4px;margin:-6px 0 18px;border-bottom:1px solid var(--line)}
-.tab{all:unset;cursor:pointer;padding:9px 14px;font-size:13px;color:var(--mut);border-bottom:2px solid transparent;margin-bottom:-1px}
-.tab[aria-selected="true"]{color:var(--fg);border-color:var(--amber)}
-.mdbar{display:flex;gap:8px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
-.mdbar button,.mdbar a{all:unset;cursor:pointer;font-size:12px;padding:5px 11px;border-radius:99px;border:1px solid var(--line);color:var(--fg)}
-.mdbar button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
-.md{font-size:13.5px;line-height:1.75;color:#d9d6e6}
-.md h1{font-size:20px;font-weight:600;margin:0 0 10px;color:var(--fg)}.md h2{font-size:15px;margin:22px 0 8px;color:var(--fg);padding-top:14px;border-top:1px solid var(--line)}.md h3{font-size:13px;margin:14px 0 6px;color:var(--amber)}
-.md p,.md ul,.md ol,.md blockquote,.md pre,.md table{margin:0 0 10px}.md ul,.md ol{padding-left:18px}.md li{margin:2px 0}
-.md blockquote{border-left:3px solid var(--violet);padding:4px 12px;color:var(--fg);background:rgba(185,168,255,.06)}
-.md code{font:12px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px}
-.md pre{background:#0b0a10;border:1px solid var(--line);border-radius:10px;padding:12px;overflow:auto}.md pre code{background:none;padding:0;white-space:pre}
-.md table{border-collapse:collapse;width:100%;font-size:12px;display:block;overflow:auto}.md th,.md td{border:1px solid var(--line);padding:5px 8px;text-align:left;vertical-align:top}.md th{color:var(--mut);font-weight:500}
-.md .sw{display:inline-block;width:11px;height:11px;border-radius:3px;vertical-align:-1px;margin-right:6px;border:1px solid rgba(255,255,255,.25)}
-.md hr{border:0;border-top:1px solid var(--line);margin:16px 0}.md a{color:var(--violet)}
-.src{white-space:pre-wrap;font:12px/1.65 ui-monospace,SFMono-Regular,Menlo,monospace;color:#d9d6e6;background:#0b0a10;border:1px solid var(--line);border-radius:10px;padding:14px}
-.rel{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}.rel button{all:unset;cursor:pointer;font-size:12px;padding:4px 10px;border-radius:99px;border:1px solid var(--line);color:var(--fg)}.rel button:hover{border-color:var(--violet)}
-.ext{display:inline-block;margin-top:10px;font-size:13px;color:var(--amber)}
-.card .ref{font-size:11px;color:var(--amber);margin-left:6px}
-@media (max-width:860px){.panel{grid-template-columns:1fr;grid-template-rows:45vh 1fr}.info{border-left:0;border-top:1px solid var(--line)}.search{margin-left:0;width:100%}}
+:root{--paper:#0e0d14;--ink:#f3f1ff;--ink2:#b9b5c7;--mut:#7f7b8e;--line:rgba(255,255,255,.09);--accent:#ff8a5b;--serif:"Songti SC","Noto Serif SC","Source Han Serif SC","STSong",serif;--sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Helvetica Neue",sans-serif;--mono:"SF Mono",ui-monospace,Menlo,Consolas,monospace;--ease:cubic-bezier(.2,.7,.2,1)}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;background-image:radial-gradient(rgba(255,255,255,.045) 1px,transparent 1px);background-size:26px 26px}
+.hero{background:radial-gradient(60% 120% at 15% 0%,rgba(255,138,91,.10),transparent 60%),radial-gradient(50% 100% at 90% 10%,rgba(185,168,255,.10),transparent 60%)}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+
+/* 顶栏 */
+.top{display:flex;align-items:center;justify-content:space-between;padding:22px 48px;font-size:13px}
+.brand{display:flex;align-items:baseline;gap:12px}
+.brand b{font-family:var(--serif);font-size:20px;font-weight:900;letter-spacing:-.01em}
+.brand span{color:var(--mut)}
+.search{display:flex;align-items:center;gap:10px;width:300px;height:38px;padding:0 12px 0 14px;border:1px solid var(--line);border-radius:99px;background:rgba(255,255,255,.04);transition:border-color .2s,background .2s}
+.search:focus-within{border-color:rgba(255,255,255,.35);background:rgba(255,255,255,.07)}
+.search input{flex:1;border:0;background:none;outline:0;font:inherit;font-size:13px;color:var(--ink)}
+.search kbd{font-family:var(--mono);font-size:11px;color:var(--mut);border:1px solid var(--line);border-radius:5px;padding:1px 6px}
+
+/* 头图 */
+.hero{display:grid;grid-template-columns:1fr 340px;gap:48px;align-items:end;padding:64px 48px 52px;border-bottom:1px solid var(--line)}
+.eb{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--accent);margin-bottom:22px}
+.hero h1{font-family:var(--serif);font-weight:900;font-size:clamp(44px,6.2vw,92px);line-height:1.04;letter-spacing:-.02em;text-wrap:balance}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero aside{font-size:14px;line-height:1.85;color:var(--ink2);text-wrap:pretty}
+.hero aside .stats{display:flex;gap:28px;margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
+.hero aside .stats div{font-size:12px;color:var(--mut)}
+.hero aside .stats b{display:block;font-family:var(--serif);font-size:30px;font-weight:900;color:var(--ink);line-height:1.1}
+
+/* 筛选 */
+.filters{position:sticky;top:0;z-index:5;display:flex;gap:6px;flex-wrap:wrap;padding:14px 48px;background:rgba(14,13,20,.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.chip{height:32px;padding:0 14px;border-radius:99px;font-size:13px;color:var(--ink2);border:1px solid transparent;transition:all .2s var(--ease)}
+.chip sup{font-family:var(--mono);font-size:10px;margin-left:4px;color:var(--mut)}
+.chip:hover{border-color:var(--line)}
+.chip[aria-pressed=true]{background:var(--ink);color:var(--paper)}
+.chip[aria-pressed=true] sup{color:rgba(14,13,20,.55)}
+
+/* 卡片网格 */
+main{padding:36px 48px 96px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:44px 26px}
+.card{display:block;position:relative}
+.cover{position:relative;aspect-ratio:16/10;border-radius:12px;overflow:hidden;background:#0c0b12;box-shadow:0 0 0 1px rgba(255,255,255,.08);transition:transform .45s var(--ease),box-shadow .45s var(--ease)}
+.card:hover .cover{transform:translateY(-4px);box-shadow:0 24px 48px -20px rgba(0,0,0,.8),0 0 0 1px rgba(255,255,255,.18)}
+.cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top left;transition:opacity .35s}
+.cover iframe{position:absolute;left:0;top:0;width:960px;height:600px;border:0;transform-origin:0 0;pointer-events:none;opacity:0;transition:opacity .35s}
+.cover.live iframe{opacity:1}
+.cover.live img{opacity:0}
+.cover .txt{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;padding:24px;background:#1a1824;color:var(--ink)}
+.cover .txt b{font-family:var(--serif);font-size:30px;font-weight:900;line-height:1.15;letter-spacing:-.01em;text-wrap:balance}
+.cover .txt small{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--mut)}
+.meta{display:flex;align-items:baseline;gap:12px;margin-top:16px}
+.no{font-family:var(--mono);font-size:12px;color:var(--accent)}
+.meta h3{font-size:17px;font-weight:600;letter-spacing:-.01em}
+.meta .cat{margin-left:auto;font-size:12px;color:var(--mut)}
+.intent{margin-top:6px;font-size:13.5px;line-height:1.65;color:var(--ink2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card:focus-visible{outline:2px solid var(--accent);outline-offset:6px;border-radius:12px}
+.empty{padding:80px 0;text-align:center;color:var(--mut)}
+footer{padding:28px 48px 40px;border-top:1px solid var(--line);font-size:12px;color:var(--mut);display:flex;justify-content:space-between}
+
+@media (max-width:860px){.top,.hero,.filters,main,footer{padding-left:20px;padding-right:20px}.hero{grid-template-columns:1fr}.search{width:180px}.grid{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
-<header>
-  <p class="eb">UED · 设计经验库</p>
-  <h1>做 HTML 演示和分享页时，<br><em>先查一下这里。</em></h1>
-  <p>先按案例类型（任务还原、证据纠偏、路径与状态、方案取舍、数据发现）找讲法，再挑展示形式。每条都有可操作的样例、做法、踩过的坑，以及一份从样例实测出来的 DESIGN.md，可以直接交给 AI 复用。样例内容都已去业务化。</p>
+<header class="top">
+  <a class="brand" href="./"><b>HTML Style Base</b><span>UED · 设计经验库</span></a>
+  <label class="search"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="search" placeholder="搜形式、意图、踩过的坑…" aria-label="搜索"><kbd>/</kbd></label>
 </header>
-<div class="tools"><div class="in" id="tools"><input class="search" id="q" type="search" placeholder="搜索：层级、对比、反例、过渡…" aria-label="搜索经验"></div></div>
-<main id="main"></main>
-<footer>新增经验：在 <code>data/patterns.js</code> 里加一条，样例放进 <code>demos/</code>，再运行 <code>python3 tools/gen_design.py .</code> 生成 DESIGN.md。说明见仓库 README。</footer>
 
-<div class="dlg" id="dlg" role="dialog" aria-modal="true" aria-labelledby="dt">
-  <div class="panel">
-    <button class="x" id="x" type="button">关闭 ✕</button>
-    <div class="pv" id="pv"></div>
-    <div class="info" id="info"></div>
+<section class="hero">
+  <div>
+    <div class="eb">VOL.01 · 持续更新</div>
+    <h1>做 HTML 演示之前，<br>先来这里<em>看一眼</em>。</h1>
   </div>
-</div>
+  <aside>
+    按“想让听众明白什么”来找展示形式。卡片里的样例会自己循环演示；点进去可以亲手操作，按 <b>I</b> 看说明和 DESIGN.md。
+    <div class="stats"><div><b id="nAll">0</b>条经验</div><div><b id="nDemo">0</b>个样例</div><div><b id="nCat">0</b>个分类</div></div>
+  </aside>
+</section>
+
+<nav class="filters" id="filters" aria-label="分类"></nav>
+<main><div class="grid" id="grid"></div></main>
+<footer><span>样例内容均已去业务化 · 示意数据会在页面上标注</span><span>原型 v0.1</span></footer>
 
 <script src="data/patterns.js"></script>
-<script src="data/designs.js"></script>
+<script src="data/live.js"></script>
 <script>
 (() => {
-  const P = window.PATTERNS || [], ORDER = ['案例场景', '案例展示', '页面过渡', '文字布局', '讲法', '外部参考', '工程与交付'];
-  const cats = ORDER.filter(c => P.some(p => p.category === c)).concat([...new Set(P.map(p => p.category))].filter(c => !ORDER.includes(c)));
-  const tools = document.getElementById('tools'), q = document.getElementById('q'), main = document.getElementById('main');
+  const P = (window.PATTERNS || []).map((p, i) => ({...p, no: String(i + 1).padStart(2, '0')}));
+  const ORDER = ['案例场景', '案例展示', '页面过渡', '文字布局', '讲法', '外部参考', '工程与交付'];
+  const cats = ORDER.filter(c => P.some(p => p.category === c));
+  const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+  const base = d => d ? d.replace(/^demos\//, '').replace(/\.html$/, '') : '';
+  document.getElementById('nAll').textContent = P.length;
+  document.getElementById('nDemo').textContent = new Set(P.filter(p => p.demo).map(p => p.demo)).size;
+  document.getElementById('nCat').textContent = cats.length;
+
+  const filters = document.getElementById('filters'), grid = document.getElementById('grid'), q = document.getElementById('q');
   let cur = '全部';
-  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
   ['全部', ...cats].forEach(c => {
     const b = document.createElement('button'); b.className = 'chip'; b.type = 'button';
-    b.innerHTML = `${c}<b>${c === '全部' ? P.length : P.filter(p => p.category === c).length}</b>`;
+    b.innerHTML = `${esc(c)}<sup>${c === '全部' ? P.length : P.filter(p => p.category === c).length}</sup>`;
     b.setAttribute('aria-pressed', String(c === cur));
-    b.onclick = () => { cur = c; tools.querySelectorAll('.chip').forEach(x => x.setAttribute('aria-pressed', String(x === b))); render(); };
-    tools.insertBefore(b, q);
+    b.onclick = () => { cur = c; filters.querySelectorAll('.chip').forEach(x => x.setAttribute('aria-pressed', String(x === b))); render(); };
+    filters.appendChild(b);
   });
   q.oninput = render;
-  function match(p) {
-    const k = q.value.trim().toLowerCase(); if (!k) return true;
-    return [p.title, p.intent, p.summary, ...(p.tags || []), ...(p.when || [])].join(' ').toLowerCase().includes(k);
-  }
+  addEventListener('keydown', e => { if (e.key === '/' && document.activeElement !== q) { e.preventDefault(); q.focus(); } if (e.key === 'Escape') q.blur(); });
+
   function render() {
-    const list = P.filter(p => (cur === '全部' || p.category === cur) && match(p));
-    if (!list.length) { main.innerHTML = '<p class="empty">没有找到，换个关键词试试。</p>'; return; }
-    main.innerHTML = cats.filter(c => list.some(p => p.category === c)).map(c => `<section class="sec"><h2>${esc(c)}</h2><div class="grid">${
-      list.filter(p => p.category === c).map(p => `<button class="card" type="button" data-id="${esc(p.id)}">
-        <div class="thumb${p.demo ? '' : ' none'}">${p.demo ? `<iframe src="${esc(p.demo)}" tabindex="-1" loading="lazy" title=""></iframe>` : '文字经验'}</div>
-        <div class="cb"><small>${esc(p.intent)}</small><h3>${esc(p.title)}${p.url ? '<span class="ref">外部参考</span>' : ''}</h3><p>${esc(p.summary)}</p></div></button>`).join('')
-    }</div></section>`).join('');
-    main.querySelectorAll('.card').forEach(c => c.onclick = () => open(c.dataset.id));
+    const k = q.value.trim().toLowerCase();
+    const list = P.filter(p => (cur === '全部' || p.category === cur) && (!k || [p.title, p.intent, p.summary, ...(p.tags || []), ...(p.pitfalls || [])].join(' ').toLowerCase().includes(k)));
+    io && io.disconnect && grid.querySelectorAll('.card').forEach(c => c._stop && c._stop()); io && io.disconnect();
+    grid.innerHTML = list.length ? list.map(p => `
+      <a class="card" href="view.html#${encodeURIComponent(p.id)}" data-demo="${esc(p.demo || '')}">
+        <div class="cover">${p.demo
+          ? `<img src="covers/${esc(base(p.demo))}.jpg" alt="" loading="lazy">`
+          : `<div class="txt"><small>文字经验 · ${esc(p.category)}</small><b>${esc(p.title)}</b></div>`}</div>
+        <div class="meta"><span class="no">#${p.no}</span><h3>${esc(p.title)}</h3><span class="cat">${esc(p.category)}</span></div>
+        <p class="intent">${esc(p.intent)}</p>
+      </a>`).join('') : '<p class="empty">没有找到，换个关键词试试。</p>';
+    grid.querySelectorAll('.card[data-demo]:not([data-demo=""])').forEach(c => { if (!window.LIVE || window.LIVE.includes(base(c.dataset.demo))) bind(c); });
   }
-  const dlg = document.getElementById('dlg'), pv = document.getElementById('pv'), info = document.getElementById('info');
-  const li = a => (a && a.length) ? `<ul>${a.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : '<ul><li>—</li></ul>';
-  const inl = t => esc(t).replace(/`([^`]+)`/g, (m, c) => { const h = c.match(/^#[0-9A-F]{6}/i); return `${h ? `<span class="sw" style="background:${h[0]}"></span>` : ''}<code>${c}</code>`; })
-    .replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>').replace(/&lt;(https?:[^&]+)&gt;/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
-  function md(src) {
-    const L = src.split('\n'), out = []; let i = 0;
-    while (i < L.length) {
-      const l = L[i];
-      if (/^```/.test(l)) { const b = []; i++; while (i < L.length && !/^```/.test(L[i])) b.push(L[i++]); i++; out.push(`<pre><code>${esc(b.join('\n'))}</code></pre>`); continue; }
-      const h = l.match(/^(#{1,3}) (.*)/); if (h) { out.push(`<h${h[1].length}>${inl(h[2])}</h${h[1].length}>`); i++; continue; }
-      if (/^---\s*$/.test(l)) { out.push('<hr>'); i++; continue; }
-      if (/^\|/.test(l)) { const rows = []; while (i < L.length && /^\|/.test(L[i])) rows.push(L[i++]); const cells = r => r.replace(/^\||\|$/g, '').split('|').map(c => c.trim());
-        out.push('<table><thead><tr>' + cells(rows[0]).map(c => `<th>${inl(c)}</th>`).join('') + '</tr></thead><tbody>' + rows.slice(2).map(r => '<tr>' + cells(r).map(c => `<td>${inl(c)}</td>`).join('') + '</tr>').join('') + '</tbody></table>'); continue; }
-      if (/^> /.test(l)) { out.push(`<blockquote>${inl(l.slice(2))}</blockquote>`); i++; continue; }
-      if (/^\s*(- |\d+\. )/.test(l)) { const ord = /^\d/.test(l.trim()); const it = []; while (i < L.length && /^\s*(- |\d+\. )/.test(L[i])) { const sub = /^\s{2,}/.test(L[i]); it.push(`<li${sub ? ' style="margin-left:16px;list-style:circle"' : ''}>${inl(L[i].replace(/^\s*(- |\d+\. )/, ''))}</li>`); i++; }
-        out.push(ord ? `<ol>${it.join('')}</ol>` : `<ul>${it.join('')}</ul>`); continue; }
-      if (!l.trim()) { i++; continue; }
-      const para = []; while (i < L.length && L[i].trim() && !/^(#|```|\||> |\s*- |\d+\. |---)/.test(L[i])) para.push(L[i++].replace(/\s+$/, '')); out.push(`<p>${para.map(inl).join('<br>')}</p>`);
-    }
-    return out.join('');
+
+  /* 卡片在视口里就自动循环播放步骤 */
+  const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting ? e.target._play() : e.target._stop()), {threshold: .35});
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function bind(card) {
+    if (reduce) return;
+    const cov = card.querySelector('.cover');
+    let wait, timer, fr;
+    const fit = () => { if (fr) fr.style.transform = `scale(${cov.clientWidth / 960})`; };
+    const stop = () => { clearTimeout(wait); clearTimeout(timer); cov.classList.remove('live'); if (fr) { const f = fr; fr = null; setTimeout(() => f.remove(), 350); } };
+    const start = () => {
+      fr = document.createElement('iframe'); fr.src = card.dataset.demo; fr.tabIndex = -1; fr.title = '';
+      cov.insertBefore(fr, cov.firstChild); fit();
+      fr.onload = () => {
+        const f = fr; if (!f) return;
+        const w = f.contentWindow, d = f.contentDocument;
+        try {
+          const st = d.createElement('style'); st.textContent = '.ctrl{display:none!important}.stage{bottom:0!important}'; d.head.appendChild(st);
+          const N = w.DEMO ? w.DEMO.N : 1;
+          let k = 0;
+          const show = () => { if (w.DEMO) w.DEMO.set(k); };
+          show(); cov.classList.add('live');
+          const tick = () => {
+            if (!fr) return;
+            if (k >= N - 1) {            // 播完一轮：淡出 → 回到第 1 步 → 淡入，继续循环
+              f.style.opacity = 0;
+              timer = setTimeout(() => { k = 0; show(); f.style.opacity = ''; timer = setTimeout(tick, 1400); }, 380);
+            } else { k++; show(); timer = setTimeout(tick, k >= N - 1 ? 2400 : 1400); }
+          };
+          timer = setTimeout(tick, 1400);
+        } catch (e) { cov.classList.add('live'); }
+      };
+    };
+    // 进入视口就自动循环播放，离开视口就停，不需要悬停
+    card._play = () => { if (!fr) { clearTimeout(wait); wait = setTimeout(start, 150 + Math.random() * 500); } };
+    card._stop = stop;
+    io.observe(card);
+    addEventListener('resize', fit);
   }
-  function open(id, push = true) {
-    const p = P.find(x => x.id === id); if (!p) return;
-    const D = (window.DESIGNS || {})[p.id] || '';
-    pv.innerHTML = p.demo ? `<iframe src="${esc(p.demo)}" title="${esc(p.title)} 样例"></iframe>` : '<div class="none">这条是文字经验，没有样例</div>';
-    const rel = (p.related || []).map(r => P.find(x => x.id === r)).filter(Boolean);
-    const about = `<small>${esc(p.category)}</small><h2 id="dt">${esc(p.title)}</h2><p class="intent">想说明：${esc(p.intent)}</p><p class="sum">${esc(p.summary)}</p>
-      <h4>适合什么时候用</h4>${li(p.when)}<h4>怎么做</h4>${li(p.how)}<h4>踩过的坑</h4><div class="pit">${li(p.pitfalls)}</div>
-      ${rel.length ? `<h4>相关</h4><div class="rel">${rel.map(r => `<button type="button" data-go="${esc(r.id)}">${esc(r.title)}</button>`).join('')}</div>` : ''}
-      <div class="tags">${(p.tags || []).map(t => `<span>${esc(t)}</span>`).join('')}</div>
-      ${p.url ? `<a class="ext" href="${esc(p.url)}" target="_blank" rel="noopener">看原始参考 ↗</a><br>` : ''}
-      ${p.demo ? `<a class="open" href="${esc(p.demo)}" target="_blank" rel="noopener">在新窗口打开样例 ↗</a>` : ''}
-      <p class="meta">来源：${esc(p.source || '—')}<br>收录：${esc(p.added || '—')}</p>`;
-    const design = D ? `<div class="mdbar"><button type="button" data-v="r" aria-pressed="true">渲染</button><button type="button" data-v="s" aria-pressed="false">源码</button><button type="button" data-copy>复制 .md</button><a href="designs/${esc(p.id)}.md" download="${esc(p.id)}.DESIGN.md">下载</a></div><div class="md" id="mdv">${md(D)}</div><pre class="src" id="mds" hidden>${esc(D)}</pre>` : '<p class="sum">暂无 DESIGN.md</p>';
-    info.innerHTML = `<div class="tabs" role="tablist"><button class="tab" role="tab" data-t="a" aria-selected="true">说明</button><button class="tab" role="tab" data-t="d" aria-selected="false">DESIGN.md</button></div><div data-p="a">${about}</div><div data-p="d" hidden>${design}</div>`;
-    info.querySelectorAll('.tab').forEach(t => t.onclick = () => { info.querySelectorAll('.tab').forEach(x => x.setAttribute('aria-selected', String(x === t))); info.querySelectorAll('[data-p]').forEach(x => x.hidden = x.dataset.p !== t.dataset.t); info.scrollTop = 0; });
-    info.querySelectorAll('[data-v]').forEach(b => b.onclick = () => { info.querySelectorAll('[data-v]').forEach(x => x.setAttribute('aria-pressed', String(x === b))); info.querySelector('#mdv').hidden = b.dataset.v !== 'r'; info.querySelector('#mds').hidden = b.dataset.v !== 's'; });
-    const cp = info.querySelector('[data-copy]'); if (cp) cp.onclick = async () => { try { await navigator.clipboard.writeText(D); cp.textContent = '已复制'; } catch (e) { const t = document.createElement('textarea'); t.value = D; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); cp.textContent = '已复制'; } setTimeout(() => cp.textContent = '复制 .md', 1500); };
-    info.querySelectorAll('[data-go]').forEach(b => b.onclick = () => open(b.dataset.go));
-    info.scrollTop = 0;
-    dlg.classList.add('on'); document.body.style.overflow = 'hidden';
-    if (push) history.replaceState(null, '', '#' + id);
-    setTimeout(() => { const f = pv.querySelector('iframe'); f && f.focus(); }, 300);
-  }
-  function close() { dlg.classList.remove('on'); pv.innerHTML = ''; document.body.style.overflow = ''; history.replaceState(null, '', location.pathname + location.search); }
-  document.getElementById('x').onclick = close;
-  dlg.addEventListener('click', e => { if (e.target === dlg) close(); });
-  addEventListener('keydown', e => { if (e.key === 'Escape' && dlg.classList.contains('on')) close(); });
   render();
-  if (location.hash) open(decodeURIComponent(location.hash.slice(1)), false);
+  // 兼容旧版链接 index.html#id → 详情页
+  const h = decodeURIComponent(location.hash.slice(1));
+  if (h && P.some(p => p.id === h)) location.replace('view.html#' + encodeURIComponent(h));
 })();
 </script>
 </body>

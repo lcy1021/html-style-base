@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="color-scheme" content="dark">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>样例 · HTML Style Base</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--paper:#15141c;--ink:#f3f1ff;--ink2:#c3bfd0;--mut:#86829a;--line:rgba(255,255,255,.09);--accent:#ff8a5b;--dw:min(460px,92vw);--serif:"Songti SC","Noto Serif SC","Source Han Serif SC","STSong",serif;--sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Helvetica Neue",sans-serif;--mono:"SF Mono",ui-monospace,Menlo,Consolas,monospace;--ease:cubic-bezier(.2,.7,.2,1)}
+html,body{height:100%;overflow:hidden}
+body{background:#0c0b12;font-family:var(--sans);-webkit-font-smoothing:antialiased;color:var(--ink)}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+a{color:inherit}
+
+/* 舞台：样例永远按完整视口渲染，固定模式下整体等比缩小 */
+#stage{position:fixed;left:0;top:0;width:100vw;height:100vh;border:0;transition:width .45s var(--ease)}
+.blank{position:fixed;inset:0;display:grid;place-items:center;color:#9a95a8;font-size:15px}
+
+/* 顶部细栏：鼠标靠近顶部或刚进入时出现 */
+.hud{position:fixed;left:0;right:0;top:0;height:52px;display:flex;align-items:center;gap:14px;padding:0 16px;font-size:13px;color:#f3f1ff;background:linear-gradient(rgba(12,11,18,.86),rgba(12,11,18,.55));backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transform:translateY(-100%);transition:transform .35s var(--ease);z-index:10}
+body.hud-on .hud{transform:none}
+.hud .back{display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:7px;text-decoration:none;color:#c9c5d4}
+.hud .back:hover{background:rgba(255,255,255,.08);color:#fff}
+.hud .no{font-family:var(--mono);font-size:12px;color:#ff8a65}
+.hud .tt{font-weight:600}
+.hud .stp{font-family:var(--mono);font-size:12px;color:#9a95a8;padding:3px 8px;border:1px solid rgba(255,255,255,.14);border-radius:99px}
+.hud .sp{flex:1}
+.hud .nav{display:flex;gap:4px}
+.hud .nav a{display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:7px;text-decoration:none;color:#c9c5d4}
+.hud .nav a:hover{background:rgba(255,255,255,.08);color:#fff}
+kbd{font-family:var(--mono);font-size:10.5px;line-height:1;padding:3px 5px;border-radius:4px;border:1px solid rgba(255,255,255,.2);color:#9a95a8}
+.hotzone{position:fixed;left:0;right:0;top:0;height:14px;z-index:9}
+
+/* 说明入口 */
+.fab{position:fixed;top:14px;right:16px;z-index:11;display:flex;align-items:center;gap:8px;height:38px;padding:0 8px 0 14px;border-radius:99px;font-size:13px;color:#f3f1ff;background:rgba(22,21,27,.72);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.12);box-shadow:0 8px 24px -8px rgba(0,0,0,.5);transition:transform .45s var(--ease),opacity .3s}
+.fab kbd{color:var(--mut);border-color:var(--line)}
+.fab:hover{transform:translateY(-1px)}
+body.open .fab{opacity:0;pointer-events:none;transform:translateX(20px)}
+.auto{position:fixed;top:14px;right:200px;z-index:11;display:flex;align-items:center;gap:8px;height:38px;padding:0 8px 0 12px;border-radius:99px;font-size:13px;color:#f3f1ff;background:rgba(22,21,27,.72);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.12);transition:right .45s var(--ease),opacity .3s}
+.auto .ic{width:16px;height:16px;display:grid;place-items:center}
+.auto .bar{width:44px;height:3px;border-radius:2px;background:rgba(255,255,255,.18);overflow:hidden}
+.auto .bar i{display:block;height:100%;width:0;background:var(--accent)}
+.auto.on .bar i{animation:fill var(--dur,1800ms) linear forwards}
+@keyframes fill{to{width:100%}}
+.auto kbd{color:#9a95a8}
+body.open .auto{right:calc(var(--dw) + 16px)}
+body.pinned .hud{right:var(--dw)}
+.hud{transition:transform .35s var(--ease),right .45s var(--ease)}
+#stage{transition:width .45s var(--ease),opacity .38s}
+.fab.ping{animation:ping 1.4s var(--ease) 2}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(228,87,46,.6),0 8px 24px -8px rgba(0,0,0,.5)}100%{box-shadow:0 0 0 14px rgba(228,87,46,0),0 8px 24px -8px rgba(0,0,0,.5)}}
+
+/* 抽屉 */
+.drawer{position:fixed;top:0;right:0;bottom:0;width:var(--dw);z-index:12;display:flex;flex-direction:column;background:var(--paper);border-left:1px solid rgba(255,255,255,.08);box-shadow:-30px 0 80px -30px rgba(0,0,0,.9);transform:translateX(102%);transition:transform .45s var(--ease)}
+body.open .drawer{transform:none}
+body.pinned .drawer{box-shadow:none;border-left:1px solid rgba(255,255,255,.06)}
+.dh{padding:18px 20px 0}
+.dh .row{display:flex;align-items:center;gap:8px}
+.dh .no{font-family:var(--mono);font-size:12px;color:var(--accent)}
+.dh .cat{font-size:12px;color:var(--mut)}
+.dh .sp{flex:1}
+.ib{width:32px;height:32px;display:grid;place-items:center;border-radius:8px;color:var(--ink2)}
+.ib:hover{background:rgba(255,255,255,.07);color:var(--ink)}
+.ib[aria-pressed=true]{background:var(--ink);color:var(--paper)}
+.dh h1{font-family:var(--serif);font-weight:900;font-size:30px;letter-spacing:-.01em;line-height:1.2;margin:10px 0 8px}
+.dh .intent{font-size:13.5px;color:var(--ink2);line-height:1.6}
+.tabs{display:flex;gap:20px;margin-top:18px;border-bottom:1px solid var(--line)}
+.tab{position:relative;padding:10px 0;font-size:13.5px;color:var(--mut)}
+.tab[aria-selected=true]{color:var(--ink);font-weight:600}
+.tab[aria-selected=true]::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--accent)}
+.tab kbd{color:var(--mut);border-color:var(--line);margin-left:4px}
+.db{flex:1;overflow:auto;padding:20px 20px 40px;scroll-behavior:smooth}
+.db::-webkit-scrollbar{width:8px}.db::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:8px}
+.sum{font-size:14px;line-height:1.8;color:var(--ink2);text-wrap:pretty}
+h4{font-size:12px;letter-spacing:.08em;color:var(--mut);font-weight:500;margin:26px 0 10px}
+h4:first-child{margin-top:0}#stepsWrap h4{margin-top:26px}
+
+/* 步骤：和样例同步 */
+.steps{list-style:none;counter-reset:s;border-left:1px solid var(--line);margin-left:9px}
+.steps li{position:relative;padding:8px 10px 8px 22px;font-size:13.5px;line-height:1.55;color:var(--mut);cursor:pointer;border-radius:0 8px 8px 0;transition:color .25s,background .25s}
+.steps li::before{counter-increment:s;content:counter(s);position:absolute;left:-10px;top:8px;width:19px;height:19px;border-radius:50%;display:grid;place-items:center;font-family:var(--mono);font-size:10.5px;background:var(--paper);border:1px solid var(--line);color:var(--mut);transition:all .25s}
+.steps li:hover{color:var(--ink2)}
+.steps li.done{color:var(--ink2)}
+.steps li.done::before{background:#34313f;border-color:#34313f;color:var(--ink2)}
+.steps li.cur{color:var(--ink);background:rgba(255,138,91,.12)}
+.steps li.cur::before{background:var(--accent);border-color:var(--accent);color:#1a0d06}
+.hint{font-size:12px;color:var(--mut);margin-top:10px}
+
+ul.l{list-style:none}
+ul.l li{position:relative;padding-left:16px;font-size:13.5px;line-height:1.7;color:var(--ink2);margin-bottom:6px;text-wrap:pretty}
+ul.l li::before{content:"";position:absolute;left:2px;top:.72em;width:5px;height:5px;border-radius:50%;background:var(--mut)}
+.pit li::before{background:var(--accent)!important}
+.src{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);font-size:12px;color:var(--mut);display:flex;flex-wrap:wrap;gap:6px 14px}
+.tags span{display:inline-block;font-size:11.5px;padding:2px 8px;border-radius:99px;background:rgba(255,255,255,.07);color:var(--ink2);margin-right:4px}
+
+/* DESIGN.md */
+.mdbar{position:sticky;top:-20px;z-index:1;display:flex;gap:8px;margin:-20px -20px 16px;padding:12px 20px;background:var(--paper);border-bottom:1px solid var(--line)}
+.btn{height:30px;padding:0 12px;border-radius:7px;font-size:12.5px;border:1px solid var(--line);display:inline-flex;align-items:center;text-decoration:none}
+.btn:hover{border-color:rgba(255,255,255,.4)}
+.btn.pri{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.md{font-size:13.5px;line-height:1.75;color:var(--ink2)}
+.md h1{font-family:var(--serif);font-size:22px;color:var(--ink);margin:0 0 10px}
+.md h2{font-size:15px;color:var(--ink);margin:26px 0 8px;padding-top:14px;border-top:1px solid var(--line)}
+.md h3{font-size:13.5px;color:var(--ink);margin:18px 0 6px}
+.md p,.md ul,.md ol{margin-bottom:10px}.md ul,.md ol{padding-left:18px}
+.md code{font-family:var(--mono);font-size:12px;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px}
+.md pre{background:#0b0a10;border:1px solid var(--line);color:#e8e6f0;border-radius:8px;padding:12px 14px;overflow:auto;margin-bottom:12px}
+.md pre code{background:none;color:inherit;padding:0}
+.md table{width:100%;border-collapse:collapse;font-size:12.5px;margin-bottom:12px}
+.md th,.md td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.md th{color:var(--ink);font-weight:600}
+.md blockquote{border-left:3px solid var(--accent);padding-left:12px;color:var(--ink2);margin-bottom:10px}
+.md hr{border:0;border-top:1px solid var(--line);margin:16px 0}
+.sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:-1px;box-shadow:0 0 0 1px rgba(255,255,255,.25)}
+
+/* 首次进入提示 */
+.toast{position:fixed;left:50%;bottom:76px;transform:translate(-50%,10px);opacity:0;z-index:13;display:flex;gap:16px;align-items:center;padding:10px 16px;border-radius:99px;font-size:13px;color:#f3f1ff;background:rgba(22,21,27,.9);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:all .4s var(--ease);pointer-events:none}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+body.open .toast{left:calc((100% - var(--dw)) / 2)}
+.toast span{display:flex;gap:6px;align-items:center}
+.copied{position:fixed;right:24px;bottom:24px;z-index:14;padding:8px 14px;border-radius:8px;background:var(--ink);color:var(--paper);font-size:13px;opacity:0;transition:opacity .25s}
+.copied.on{opacity:1}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body class="hud-on">
+<iframe id="stage" title="样例"></iframe>
+<div class="hotzone" id="hot"></div>
+
+<header class="hud" id="hud">
+  <a class="back" href="./">← 全部样例</a>
+  <span class="no" id="hNo"></span><span class="tt" id="hTitle"></span><span class="stp" id="hStep" hidden></span>
+  <span class="sp"></span>
+  <nav class="nav"><a id="prev" href="#"><kbd>[</kbd> 上一条</a><a id="next" href="#">下一条 <kbd>]</kbd></a></nav>
+  <span style="width:200px"></span>
+</header>
+
+<button class="auto" id="auto" type="button" hidden><span class="ic" id="autoIc">❚❚</span><span id="autoTx">自动播放</span><span class="bar"><i id="autoBar"></i></span><kbd>A</kbd></button>
+<button class="fab" id="fab" type="button" aria-controls="drawer" aria-expanded="false">ⓘ 说明 · DESIGN.md <kbd>I</kbd></button>
+
+<aside class="drawer" id="drawer" aria-label="说明">
+  <div class="dh">
+    <div class="row">
+      <span class="no" id="dNo"></span><span class="cat" id="dCat"></span><span class="sp"></span>
+      <button class="ib" id="pin" type="button" aria-pressed="false" title="固定在右侧（P）"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/></svg></button>
+      <button class="ib" id="close" type="button" title="关闭（Esc）"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <h1 id="dTitle"></h1>
+    <p class="intent" id="dIntent"></p>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" data-t="a" aria-selected="true">说明</button>
+      <button class="tab" role="tab" data-t="d" aria-selected="false">DESIGN.md <kbd>D</kbd></button>
+    </div>
+  </div>
+  <div class="db" id="body"></div>
+</aside>
+
+<div class="toast" id="toast"><span><kbd>←</kbd><kbd>→</kbd> 体验样例</span><span><kbd>I</kbd> 看说明</span><span><kbd>A</kbd> 暂停 / 继续</span><span><kbd>[</kbd><kbd>]</kbd> 换一条</span></div>
+<div class="copied" id="copied">已复制</div>
+
+<script src="data/patterns.js"></script>
+<script src="data/designs.js"></script>
+<script src="data/live.js"></script>
+<script>
+(() => {
+  const P = (window.PATTERNS || []).map((p, i) => ({...p, no: String(i + 1).padStart(2, '0')}));
+  const id = decodeURIComponent(location.hash.slice(1)) || new URLSearchParams(location.search).get('id') || (P.find(p => p.demo) || {}).id;
+  const i0 = Math.max(0, P.findIndex(p => p.id === id)), p = P[i0];
+  const $ = s => document.getElementById(s), B = document.body;
+  const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+  document.title = `#${p.no} ${p.title} · HTML Style Base`;
+
+  /* ---------- 元信息 ---------- */
+  $('hNo').textContent = $('dNo').textContent = '#' + p.no;
+  $('hTitle').textContent = $('dTitle').textContent = p.title;
+  $('dCat').textContent = p.category; $('dIntent').textContent = '想说明：' + p.intent;
+  const link = (el, d) => { const t = P[(i0 + d + P.length) % P.length]; el.href = 'view.html#' + encodeURIComponent(t.id); el.title = `#${t.no} ${t.title}`; };
+  link($('prev'), -1); link($('next'), 1);
+
+  /* ---------- 抽屉内容 ---------- */
+  const li = (a, c = '') => (a && a.length) ? `<ul class="l ${c}">${a.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : '';
+  const about = () => `
+    <p class="sum">${esc(p.summary)}</p>
+    <div id="stepsWrap" ${p.demo ? '' : 'hidden'}><h4>这段演示的步骤</h4><ol class="steps" id="steps"></ol><p class="hint">点任一步，样例会跳过去；在样例里按 ← → 也会同步到这里。</p></div>
+    <h4>适合什么时候用</h4>${li(p.when)}
+    <h4>怎么做</h4>${li(p.how)}
+    <h4>踩过的坑</h4>${li(p.pitfalls, 'pit')}
+    <div class="src"><span class="tags">${(p.tags || []).map(t => `<span>${esc(t)}</span>`).join('')}</span>${p.source ? `<span>来自：${esc(p.source)}</span>` : ''}${p.url ? `<a href="${esc(p.url)}" target="_blank" rel="noopener">原始参考 ↗</a>` : ''}${p.demo ? `<a href="${esc(p.demo)}" target="_blank" rel="noopener">单独打开样例 ↗</a>` : ''}</div>`;
+  const D = (window.DESIGNS || {})[p.id] || '';
+  const inl = t => esc(t).replace(/`([^`]+)`/g, (m, c) => { const h = c.match(/^#[0-9A-F]{6}/i); return `${h ? `<span class="sw" style="background:${h[0]}"></span>` : ''}<code>${c}</code>`; }).replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>').replace(/&lt;(https?:[^&]+)&gt;/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+  function md(src) {
+    const L = src.split('\n'), out = []; let i = 0;
+    while (i < L.length) {
+      const l = L[i];
+      if (/^```/.test(l)) { const b = []; i++; while (i < L.length && !/^```/.test(L[i])) b.push(L[i++]); i++; out.push(`<pre><code>${esc(b.join('\n'))}</code></pre>`); continue; }
+      const h = l.match(/^(#{1,3}) (.*)/); if (h) { out.push(`<h${h[1].length}>${inl(h[2])}</h${h[1].length}>`); i++; continue; }
+      if (/^---\s*$/.test(l)) { out.push('<hr>'); i++; continue; }
+      if (/^\|/.test(l)) { const rows = []; while (i < L.length && /^\|/.test(L[i])) rows.push(L[i++]); const cells = r => r.replace(/^\||\|$/g, '').split('|').map(c => c.trim());
+        out.push('<table><thead><tr>' + cells(rows[0]).map(c => `<th>${inl(c)}</th>`).join('') + '</tr></thead><tbody>' + rows.slice(2).map(r => '<tr>' + cells(r).map(c => `<td>${inl(c)}</td>`).join('') + '</tr>').join('') + '</tbody></table>'); continue; }
+      if (/^> /.test(l)) { out.push(`<blockquote>${inl(l.slice(2))}</blockquote>`); i++; continue; }
+      if (/^\s*(- |\d+\. )/.test(l)) { const ord = /^\d/.test(l.trim()); const it = []; while (i < L.length && /^\s*(- |\d+\. )/.test(L[i])) { it.push(`<li>${inl(L[i].replace(/^\s*(- |\d+\. )/, ''))}</li>`); i++; } out.push(ord ? `<ol>${it.join('')}</ol>` : `<ul>${it.join('')}</ul>`); continue; }
+      if (!l.trim()) { i++; continue; }
+      const para = []; while (i < L.length && L[i].trim() && !/^(#|```|\||> |\s*- |\d+\. |---)/.test(L[i])) para.push(L[i++].replace(/\s+$/, '')); out.push(`<p>${para.map(inl).join('<br>')}</p>`);
+    }
+    return out.join('');
+  }
+  const design = () => D ? `<div class="mdbar"><button class="btn pri" type="button" data-copy="all">复制 DESIGN.md</button><button class="btn" type="button" data-copy="prompt">复制给 AI 的提示词</button></div><div class="md">${md(D)}</div>` : '<p class="sum">这一条还没有 DESIGN.md。</p>';
+
+  let tab = 'a';
+  function setTab(t) {
+    tab = t; document.querySelectorAll('.tab').forEach(x => x.setAttribute('aria-selected', String(x.dataset.t === t)));
+    $('body').innerHTML = t === 'a' ? about() : design(); $('body').scrollTop = 0;
+    if (t === 'a') drawSteps();
+  }
+  document.querySelectorAll('.tab').forEach(x => x.onclick = () => setTab(x.dataset.t));
+  $('body').addEventListener('click', e => {
+    const c = e.target.closest('[data-copy]'); if (c) {
+      let txt = D; if (c.dataset.copy === 'prompt') { const m = D.match(/```text\n([\s\S]*?)```/); txt = m ? m[1].trim() : D; }
+      navigator.clipboard.writeText(txt).then(() => { $('copied').textContent = '已复制'; $('copied').classList.add('on'); setTimeout(() => $('copied').classList.remove('on'), 1200); }).catch(() => { $('copied').textContent = '浏览器拦截了复制'; $('copied').classList.add('on'); setTimeout(() => $('copied').classList.remove('on'), 1600); });
+    }
+    const s = e.target.closest('.steps li'); if (s && W && W.DEMO) { manual(); W.DEMO.set(+s.dataset.i); }
+  });
+
+  /* ---------- 抽屉开合 & 固定 ---------- */
+  const open = (v = !B.classList.contains('open')) => { B.classList.toggle('open', v); $('fab').setAttribute('aria-expanded', String(v)); if (!v && B.classList.contains('pinned')) pin(false); layout(); };
+  const pin = (v = !B.classList.contains('pinned')) => { B.classList.toggle('pinned', v); $('pin').setAttribute('aria-pressed', String(v)); if (v) B.classList.add('open'); layout(); };
+  $('fab').onclick = () => open(true); $('close').onclick = () => open(false); $('pin').onclick = () => pin();
+  function layout() {               // 固定后：样例区域直接变窄，让样例按新宽度重新排版（不是等比缩放）
+    const fr = $('stage'); if (!fr) return;
+    fr.style.transform = '';
+    fr.style.width = B.classList.contains('pinned') ? `calc(100vw - ${$('drawer').offsetWidth}px)` : '';
+  }
+  addEventListener('resize', layout);
+
+  /* ---------- 顶栏自动隐藏 ---------- */
+  let hudT; const hud = v => { clearTimeout(hudT); B.classList.toggle('hud-on', v); };
+  const hudLater = () => { clearTimeout(hudT); hudT = setTimeout(() => B.classList.remove('hud-on'), 1600); };
+  $('hot').onmouseenter = () => hud(true); $('hud').onmouseenter = () => hud(true); $('hud').onmouseleave = hudLater;
+  hudLater(); setTimeout(hudLater, 1200);
+
+  const go = h => { location.href = h; };
+  addEventListener('hashchange', () => location.reload());
+  /* ---------- 键盘（外层 + 样例内部都要监听） ---------- */
+  function keys(e) {
+    if (e.target.closest && e.target.closest('input,textarea')) return false;
+    const k = e.key.toLowerCase();
+    if (k === 'i') { open(); return true; }
+    if (k === 'd') { open(true); setTab(tab === 'd' ? 'a' : 'd'); return true; }
+    if (k === 'p') { pin(); return true; }
+    if (k === 'a') { toggleAuto(); return true; }
+    if (k === '[') { go($('prev').href); return true; }
+    if (k === ']') { go($('next').href); return true; }
+    if (k === 'escape') { if (B.classList.contains('open')) open(false); else location.href = './'; return true; }
+    return false;
+  }
+  addEventListener('keydown', e => { if (keys(e)) e.preventDefault(); else if (W && W.DEMO && ['ArrowRight', 'ArrowLeft', ' ', 'ArrowDown', 'ArrowUp'].includes(e.key)) { e.preventDefault(); manual(); W.DEMO.set(W.DEMO.get() + (['ArrowLeft', 'ArrowUp'].includes(e.key) ? -1 : 1)); } });
+
+  /* ---------- 样例 & 步骤同步 ---------- */
+  let W = null, caps = [], N = 0, K = 0;
+  function drawSteps() {
+    const ol = $('steps'); if (!ol || !N) return;
+    ol.innerHTML = Array.from({length: N}, (_, i) => `<li data-i="${i}">${esc(caps[i] || '第 ' + (i + 1) + ' 步')}</li>`).join('');
+    markStep(K, false);
+  }
+  function markStep(k, scroll = true) {
+    K = k; $('hStep').hidden = !N; $('hStep').textContent = `第 ${k + 1} / ${N} 步`;
+    const ol = $('steps'); if (!ol) return;
+    [...ol.children].forEach((x, i) => { x.classList.toggle('done', i < k); x.classList.toggle('cur', i === k); });
+    const c = ol.children[k]; if (scroll && c && B.classList.contains('open')) c.scrollIntoView({block: 'nearest', behavior: 'smooth'});
+  }
+  const fr = $('stage');
+  const live = !!p.demo && (!window.LIVE || window.LIVE.includes(p.demo.replace(/^demos\//, '').replace(/\.html$/, '')));
+  if (p.demo && !live) {
+    fr.remove(); B.insertAdjacentHTML('afterbegin', `<div class="blank" style="background:#0c0b12 url(covers/${p.demo.replace(/^demos\//, '').replace(/\.html$/, '')}.jpg) center/contain no-repeat"><span style="position:absolute;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(22,21,27,.9);padding:8px 14px;border-radius:99px;font-size:13px;color:#f3f1ff">原型只打包了 12 个可操作样例，这一条先显示封面</span></div>`);
+  } else if (p.demo) {
+    fr.src = p.demo;
+    fr.onload = () => {
+      try {
+        W = fr.contentWindow; const d = fr.contentDocument;
+        caps = (d.body.dataset.caps || '').split('|'); N = W.DEMO ? W.DEMO.N : 0;
+        const orig = W.onStep; W.onStep = k => { if (orig) orig(k); markStep(k); };
+        d.addEventListener('keydown', e => { if (keys(e)) { e.preventDefault(); e.stopImmediatePropagation(); } else manual(); }, true);
+        d.addEventListener('pointerdown', manual, true); d.addEventListener('wheel', manual, {capture: true, passive: true});
+        d.addEventListener('mousemove', e => { if (e.clientY < 14) hud(true); });
+        drawSteps(); markStep(W.DEMO ? W.DEMO.get() : 0, false);
+        fr.focus(); if (N > 1) { $('auto').hidden = false; startAuto(); }
+      } catch (e) { /* 跨域时只能看，不能同步 */ }
+    };
+  } else {
+    fr.remove(); B.insertAdjacentHTML('afterbegin', '<div class="blank">这一条是文字经验，没有可操作的样例 —— 说明已在右侧打开</div>');
+    setTimeout(() => open(true), 300);
+  }
+  setTab('a');
+
+  /* ---------- 自动循环播放 ---------- */
+  const STEP = 1800, HOLD = 3000, IDLE = 8000;   // 每步停留、最后一步多停、停手多久后继续
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let auto = false, aT, idleT;
+  function arm(ms) { const b = $('autoBar'); $('auto').classList.remove('on'); void b.offsetWidth; $('auto').style.setProperty('--dur', ms + 'ms'); $('auto').classList.add('on'); clearTimeout(aT); aT = setTimeout(tick, ms); }
+  function tick() {
+    if (!auto || !W || !W.DEMO) return;
+    const k = W.DEMO.get();
+    if (k >= N - 1) {               // 一轮结束：淡出 → 回到第 1 步 → 淡入，继续下一轮
+      fr.style.opacity = 0;
+      aT = setTimeout(() => { W.DEMO.set(0); fr.style.opacity = ''; arm(STEP); }, 400);
+    } else { W.DEMO.set(k + 1); arm(W.DEMO.get() >= N - 1 ? HOLD : STEP); }
+  }
+  function paint() { $('autoIc').textContent = auto ? '❚❚' : '▶'; $('autoTx').textContent = auto ? '自动播放' : '已暂停'; if (!auto) $('auto').classList.remove('on'); }
+  function startAuto() { if (reduce) { auto = false; paint(); return; } auto = true; paint(); arm(STEP); }
+  function stopAuto() { auto = false; clearTimeout(aT); fr.style.opacity = ''; paint(); }
+  function toggleAuto() { clearTimeout(idleT); auto ? stopAuto() : startAuto(); userPaused = !auto; }
+  let userPaused = false;
+  function manual() {               // 手动操作：先暂停；停手一段时间、且没打开说明时再继续
+    if (!$('auto') || $('auto').hidden) return;
+    stopAuto(); clearTimeout(idleT);
+    idleT = setTimeout(function again() { if (userPaused) return; if (B.classList.contains('open')) { idleT = setTimeout(again, IDLE); return; } startAuto(); }, IDLE);
+  }
+  $('auto').onclick = toggleAuto;
+
+  /* ---------- 首次提示 ---------- */
+  let seen = false; try { seen = localStorage.getItem('hsb-seen') === '1'; localStorage.setItem('hsb-seen', '1'); } catch (e) {}
+  if (!seen && live) { setTimeout(() => { $('toast').classList.add('on'); $('fab').classList.add('ping'); }, 1600); setTimeout(() => $('toast').classList.remove('on'), 6000); }
+  else setTimeout(() => $('fab').classList.add('ping'), 1200);
+})();
+</script>
+</body>
+</html>

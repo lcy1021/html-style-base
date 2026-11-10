@@ -193,6 +193,16 @@ with sync_playwright() as pw:
         md = md_for(p, d)
         (out/f"{p['id']}.md").write_text(md, encoding='utf-8')
         allmd[p['id']] = md
+    # 首页卡片封面：960×600 视口、最后一步、隐藏底部控制条
+    cov = ROOT/'covers'; cov.mkdir(exist_ok=True)
+    cp = b.new_page(viewport={'width':960,'height':600}, device_scale_factor=0.75)
+    for demo in sorted({p['demo'] for p in P if p.get('demo')}):
+        cp.goto((ROOT/demo).as_uri()); cp.wait_for_timeout(500)
+        cp.evaluate("()=>{ if(window.DEMO){ let i=0; const t=setInterval(()=>{ DEMO.set(++i); if(i>=DEMO.N-1) clearInterval(t) },120) } }")
+        cp.wait_for_timeout(2200)
+        cp.add_style_tag(content='.ctrl{display:none!important}.stage{bottom:0!important}')
+        cp.wait_for_timeout(200)
+        cp.screenshot(path=str(cov/(Path(demo).stem + '.jpg')), type='jpeg', quality=78)
     b.close()
 (ROOT/'data/designs.js').write_text('/* 自动生成：python3 tools/gen_design.py . 不要手改 */\nwindow.DESIGNS = ' + json.dumps(allmd, ensure_ascii=False) + ';\n', encoding='utf-8')
 print(len(allmd), 'designs')
