@@ -60,9 +60,13 @@ main{padding:32px 32px 120px}
 .cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top left;transition:opacity .35s}
 .cover iframe{position:absolute;left:0;top:0;width:960px;height:600px;border:0;transform-origin:0 0;pointer-events:none;opacity:0;transition:opacity .35s}
 .cover.live iframe{opacity:1}.cover.live img{opacity:0}
-.meta{display:flex;align-items:baseline;gap:12px;margin-top:13px}
+.meta{display:flex;align-items:baseline;gap:12px;margin-top:16px}
+.meta h3{font-family:var(--serif);font-size:21px;font-weight:900;letter-spacing:.01em;line-height:1.25;transition:color .25s}
+.meta h3::after{content:"→";display:inline-block;margin-left:8px;font-family:var(--sans);font-size:15px;font-weight:400;color:var(--tc);opacity:0;transform:translateX(-6px);transition:opacity .25s,transform .35s var(--ease)}
+.card:hover .meta h3::after,.card:focus-visible .meta h3::after{opacity:1;transform:none}
+.meta .tg{margin-left:auto;display:flex;gap:6px;flex:none}
+.meta .tg span{font-size:11.5px;line-height:1;padding:5px 8px;border-radius:99px;color:var(--mut);box-shadow:inset 0 0 0 1px var(--line)}
 .no{font-family:var(--mono);font-size:12px;color:var(--tc,var(--accent))}
-.meta h3{font-size:17px;font-weight:600;letter-spacing:-.01em}
 .line{margin-top:6px;font-size:13.5px;line-height:1.65;color:var(--ink2)}
 
 /* 紧凑卡（方法 / 规范 / 参考 / 工具） */
@@ -74,7 +78,7 @@ main{padding:32px 32px 120px}
 .mini .th img{width:100%;height:100%;object-fit:cover;object-position:top left;display:block}
 .mini .bd{flex:1;min-width:0;display:flex;flex-direction:column}
 .mini .hd{display:flex;align-items:baseline;gap:10px}
-.mini h3{font-size:15.5px;font-weight:600;letter-spacing:-.01em}
+.mini h3{font-family:var(--serif);font-size:17.5px;font-weight:900;letter-spacing:.01em;line-height:1.3}
 .mini .line{margin-top:5px;font-size:13px}
 .mini .do{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:12.5px;line-height:1.6;color:var(--mut);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .mini .do b{color:var(--ink2);font-weight:500;margin-right:6px}
@@ -223,7 +227,7 @@ main{padding:32px 32px 120px}
     if (p.category === '样式') return `
       <div class="card rv" ${attrs} data-demo="${esc(p.demo || '')}">
         <div class="cover">${p.demo ? `<img src="covers/${esc(base(p.demo))}.jpg" alt="" loading="lazy">` : ''}</div>
-        <div class="meta"><h3>${esc(p.title)}</h3></div>
+        <div class="meta"><h3>${esc(p.title)}</h3><div class="tg">${(p.tags || []).slice(0, 2).map(x => `<span>${esc(x)}</span>`).join('')}</div></div>
         <p class="line">${esc(p.card || p.intent)}</p>
       </div>`;
     const flow = p.category === '方法' && flowOf(p);
