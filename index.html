@@ -117,7 +117,7 @@ footer{padding:28px 48px 40px;border-top:1px solid var(--line);font-size:12px;co
 
   function render() {
     const k = q.value.trim().toLowerCase();
-    const list = P.filter(p => (cur === '全部' || p.category === cur) && (!k || [p.title, p.intent, p.summary, ...(p.tags || []), ...(p.pitfalls || [])].join(' ').toLowerCase().includes(k)));
+    const list = P.filter(p => (cur === '全部' || p.category === cur) && (!k || [p.title, p.card, p.intent, p.summary, ...(p.tags || []), ...(p.pitfalls || [])].join(' ').toLowerCase().includes(k)));
     io && io.disconnect && grid.querySelectorAll('.card').forEach(c => c._stop && c._stop()); io && io.disconnect();
     grid.innerHTML = list.length ? list.map(p => `
       <a class="card" href="view.html#${encodeURIComponent(p.id)}" data-demo="${esc(p.demo || '')}">
@@ -125,7 +125,7 @@ footer{padding:28px 48px 40px;border-top:1px solid var(--line);font-size:12px;co
           ? `<img src="covers/${esc(base(p.demo))}.jpg" alt="" loading="lazy">`
           : `<div class="txt"><small>${esc(p.category)}</small><b>${esc(p.title)}</b></div>`}</div>
         <div class="meta"><span class="no">#${p.no}</span><h3>${esc(p.title)}</h3><span class="cat">${esc(p.category)}</span></div>
-        <p class="intent">${esc(p.intent)}</p>
+        <p class="intent">${esc(p.card || p.intent)}</p>
       </a>`).join('') : '<p class="empty">没有找到，换个关键词试试。</p>';
     grid.querySelectorAll('.card[data-demo]:not([data-demo=""])').forEach(c => { if (!window.LIVE || window.LIVE.includes(base(c.dataset.demo))) bind(c); });
   }
