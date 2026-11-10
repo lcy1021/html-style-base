@@ -62,9 +62,8 @@ main{padding:36px 48px 96px}
 .intent{margin-top:6px;font-size:13.5px;line-height:1.65;color:var(--ink2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .card:focus-visible{outline:2px solid var(--accent);outline-offset:6px;border-radius:12px}
 .empty{padding:80px 0;text-align:center;color:var(--mut)}
-footer{padding:28px 48px 40px;border-top:1px solid var(--line);font-size:12px;color:var(--mut);display:flex;justify-content:space-between}
 
-@media (max-width:860px){.top,.hero,.filters,main,footer{padding-left:20px;padding-right:20px}.hero{grid-template-columns:1fr}.search{width:180px}.grid{grid-template-columns:1fr}}
+@media (max-width:860px){.top,.hero,.filters,main,.hero{grid-template-columns:1fr}.search{width:180px}.grid{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -87,7 +86,6 @@ footer{padding:28px 48px 40px;border-top:1px solid var(--line);font-size:12px;co
 
 <nav class="filters" id="filters" aria-label="分类"></nav>
 <main><div class="grid" id="grid"></div></main>
-<footer><span>样例内容均已去业务化 · 示意数据会在页面上标注</span><span>原型 v0.1</span></footer>
 
 <script src="data/patterns.js"></script>
 <script src="data/live.js"></script>
