@@ -44,8 +44,8 @@ kbd{font-family:var(--mono);font-size:10.5px;line-height:1;padding:3px 5px;borde
 .chip[aria-pressed=true] sup{color:rgba(14,13,20,.55)}
 
 /* 分段 */
-main{padding:8px 48px 120px}
-.sec{padding-top:44px}
+main{padding:40px 48px 120px}
+.sec+.sec{padding-top:48px}
 .sech{display:flex;align-items:baseline;gap:14px;margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid var(--line)}
 .sech h2{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-size:26px;font-weight:900;letter-spacing:-.01em}
 .sech h2 i{width:9px;height:9px;border-radius:50%;background:var(--tc)}
@@ -262,7 +262,7 @@ main{padding:8px 48px 120px}
         lastSec = p.category;
         const n = P.filter(x => x.category === lastSec).length, t = TYPES[lastSec];
         const sec = document.createElement('section'); sec.className = 'sec'; sec.style.setProperty('--tc', t.c);
-        sec.innerHTML = `<div class="sech"><h2><i></i>${esc(lastSec)}</h2><span class="n">${n} 条</span><p>${esc(t.d)}</p></div><div class="grid${lastSec === '样式' ? '' : ' sm'}"></div>`;
+        sec.innerHTML = `<div class="grid${lastSec === '样式' ? '' : ' sm'}"></div>`;   // 不加分段标题，类型看卡片上的色条和顶部筛选
         list.appendChild(sec); lastGrid = sec.lastElementChild;
       }
       lastGrid.insertAdjacentHTML('beforeend', cardHTML(p));
