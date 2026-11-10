@@ -119,11 +119,9 @@ main{padding:8px 48px 120px}
 .ob.ic{width:38px;padding:0;justify-content:center}
 .ox{width:38px;height:38px;display:grid;place-items:center;margin-left:4px;color:var(--ink2);transition:color .2s,transform .3s var(--ease)}
 .ox:hover{color:var(--ink);transform:rotate(90deg)}
-.ovpanel{position:absolute;left:28px;right:28px;top:68px;bottom:28px;border-radius:14px;transform-origin:0 0;will-change:transform}
-.ovpanel iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;background:transparent;opacity:0;transition:opacity .35s}
-.ovpanel.ready iframe{opacity:1}
-.ovsnap{position:absolute;inset:0;border-radius:inherit;background:#0c0b12 center top/cover no-repeat;box-shadow:0 40px 100px -20px rgba(0,0,0,.85),0 0 0 1px rgba(255,255,255,.12);transition:opacity .4s;pointer-events:none}
-.ovpanel.ready .ovsnap{opacity:0}
+.ovpanel{position:absolute;left:28px;right:28px;top:68px;bottom:28px;border-radius:14px;clip-path:inset(0 round 14px)}
+.ovpanel.loading{background:#0c0b12}
+.ovpanel iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;background:transparent}
 .ovbar{opacity:0;transform:translateY(-8px);transition:opacity .35s .15s,transform .35s .15s var(--ease)}
 .ov.on .ovbar{opacity:1;transform:none}
 
@@ -162,7 +160,7 @@ main{padding:8px 48px 120px}
     <a class="ob ic" id="ovFull" href="#" target="_blank" rel="noopener" title="在新窗口打开"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
     <button class="ox" id="ovClose" type="button" title="关闭（Esc）" aria-label="关闭"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
   </div>
-  <div class="ovpanel" id="ovp"><iframe id="ovf" title="样例详情"></iframe><div class="ovsnap" id="ovs"></div></div>
+  <div class="ovpanel" id="ovp"><iframe id="ovf" title="样例详情"></iframe></div>
 </div>
 
 <script src="data/patterns.js"></script>
@@ -339,43 +337,47 @@ main{padding:8px 48px 120px}
     history.replaceState(null, '', '#' + encodeURIComponent(id));
     document.title = `#${p.no} ${p.title} · HTML Style Base`;
   }
-  const ovp = $('ovp'), ovs = $('ovs');
+  const ovp = $('ovp');
   const EASE = 'cubic-bezier(.2,.8,.2,1)';
-  let from = null, loaded = false, grown = false;
-  function fromTransform(el) {
-    const keep = ovp.style.transform; ovp.style.transform = 'none';   // 先复位再量，避免上一次关闭留下的变形算错起点
-    const f = ovp.getBoundingClientRect(); ovp.style.transform = keep;
-    if (!el || !el.isConnected) return `translate(${f.width * .03}px, ${f.height * .03}px) scale(.94)`;
+  let from = null, revealT = 0;
+  // 用 clip-path 把可见区域从卡片的位置展开到整个弹层：里面的样例始终按原尺寸渲染，不会先糊后清
+  function fromClip(el) {
+    const f = ovp.getBoundingClientRect(), fallback = `inset(5% 5% 5% 5% round 14px)`;
+    if (!el || !el.isConnected) return fallback;
     const r = el.getBoundingClientRect();
-    if (!r.width || r.bottom < 0 || r.top > innerHeight) return `translate(${f.width * .03}px, ${f.height * .03}px) scale(.94)`;
-    return `translate(${r.left - f.left}px, ${r.top - f.top}px) scale(${r.width / f.width}, ${r.height / f.height})`;
+    if (!r.width || r.bottom < 0 || r.top > innerHeight) return fallback;
+    const c = v => Math.max(0, Math.round(v));
+    return `inset(${c(r.top - f.top)}px ${c(f.right - r.right)}px ${c(f.bottom - r.bottom)}px ${c(r.left - f.left)}px round 12px)`;
   }
-  const ready = () => { if (loaded && grown) ovp.classList.add('ready'); };
   function openOv(id, el) {
     if (!BY[id]) return;
     lastFocus = document.activeElement; from = el || null;
     stopAll();
-    meta(id); drawer(false); $('ovMode').hidden = true;
-    const p = BY[id];
-    ovs.style.backgroundImage = p.demo ? `url("covers/${base(p.demo)}.jpg")` : 'none';
-    ovp.classList.remove('ready'); loaded = grown = false;
+    meta(id); drawer(false); $('ovMode').hidden = true; $('ovInfo').hidden = false;
     ov.hidden = false; document.documentElement.style.overflow = 'hidden';
-    // 先停在卡片的位置和大小，再放大到弹层
-    ovp.style.transition = 'none'; ovp.style.transform = fromTransform(from); ovp.style.borderRadius = '12px';
+    ovp.style.transition = 'none'; ovp.style.clipPath = fromClip(from); ovp.classList.add('loading');
     ovp.getBoundingClientRect();
-    const dur = reduce ? 0 : 560;
-    ovp.style.transition = `transform ${dur}ms ${EASE}, border-radius ${dur}ms ${EASE}`;
-    requestAnimationFrame(() => { ov.classList.add('on'); ovp.style.transform = 'none'; ovp.style.borderRadius = '16px'; });
-    setTimeout(() => { grown = true; ready(); }, dur);
-    ovf.onload = () => { if (ovf.src.endsWith('about:blank')) return; loaded = true; ready(); try { ovf.contentWindow.focus(); } catch (e) {} };
+    requestAnimationFrame(() => ov.classList.add('on'));          // 毛玻璃背景马上出现，点击就有反馈
+    const dur = reduce ? 0 : 520;
+    let done = false;
+    const reveal = () => {                                        // 样例加载好（最多等 450ms）再展开
+      if (done) return; done = true; clearTimeout(revealT);
+      ovp.style.transition = `clip-path ${dur}ms ${EASE}`; ovp.style.clipPath = 'inset(0px 0px 0px 0px round 14px)';
+      setTimeout(() => ovp.classList.remove('loading'), dur);
+    };
+    revealT = setTimeout(reveal, 450);
+    ovf.onload = () => {
+      if (ovf.src.endsWith('about:blank')) return;
+      try { ovf.contentWindow.focus(); } catch (e) {}
+      requestAnimationFrame(() => requestAnimationFrame(reveal));  // 等第一帧画出来
+    };
     ovf.src = 'view.html?embed=1#' + encodeURIComponent(id);
   }
   function closeOv() {
     if (ov.hidden || !ov.classList.contains('on')) return;
+    clearTimeout(revealT);
     const dur = reduce ? 0 : 420;
-    ovp.classList.remove('ready');            // 先换回封面图，再缩回卡片
-    ovp.style.transition = `transform ${dur}ms ${EASE}, border-radius ${dur}ms ${EASE}`;
-    ovp.style.transform = fromTransform(from); ovp.style.borderRadius = '12px';
+    ovp.style.transition = `clip-path ${dur}ms ${EASE}`; ovp.style.clipPath = fromClip(from);
     ov.classList.remove('on');
     setTimeout(() => { ov.hidden = true; ovf.src = 'about:blank'; document.documentElement.style.overflow = ''; resumeAll(); }, dur);
     history.replaceState(null, '', location.pathname + location.search);
