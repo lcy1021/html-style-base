@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>经验库后台</title>
+<style>
+:root{color-scheme:dark;
+  --bg:#0c0b12;--surface-1:#16151d;--surface-2:#1d1c26;--line:rgba(255,255,255,.08);--grid:rgba(255,255,255,.06);
+  --text-primary:#f3f1ff;--text-secondary:#c3c0cf;--text-muted:#8d8899;--amber:#ffb547;
+  --series-1:#3987e5;--series-2:#d95926;--series-3:#199e70;
+  --good:#5ad08a;--bad:#ff8a8a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text-primary);font:14px/1.55 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}
+a{color:inherit}
+button,select,input{font:inherit;color:inherit}
+.wrap{max-width:1240px;margin:0 auto;padding:0 28px 80px}
+header{position:sticky;top:0;z-index:5;background:rgba(12,11,18,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;gap:14px;height:60px;padding-bottom:0}
+.eb{font-size:11px;letter-spacing:.14em;color:var(--amber);text-transform:uppercase}
+header h1{margin:0;font-size:16px;font-weight:500}
+.sp{flex:1}
+.seg{display:flex;border:1px solid var(--line);border-radius:99px;padding:2px}
+.seg button{border:0;background:none;padding:5px 12px;border-radius:99px;color:var(--text-muted);cursor:pointer}
+.seg button[aria-pressed=true]{background:rgba(255,255,255,.1);color:var(--text-primary)}
+.btn{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border:1px solid var(--line);border-radius:8px;background:rgba(255,255,255,.04);cursor:pointer;text-decoration:none;font-size:13px;white-space:nowrap}
+.btn:hover{background:rgba(255,255,255,.09)}
+.btn.pri{background:var(--text-primary);color:#111;border-color:var(--text-primary)}
+input[type=date],input[type=text],select{height:32px;padding:0 8px;border:1px solid var(--line);border-radius:8px;background:var(--surface-1)}
+:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.who{color:var(--text-muted);font-size:12px}
+h2{margin:40px 0 4px;font-size:15px;font-weight:500}
+.sub{margin:0 0 16px;color:var(--text-muted);font-size:12.5px}
+.panel{background:var(--surface-1);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+/* 概览卡片 */
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:24px}
+.card{background:var(--surface-1);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.card .k{color:var(--text-secondary);font-size:12.5px}
+.card .v{margin-top:4px;font-size:30px;font-weight:500;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.card .d{font-size:12px;color:var(--text-muted)}
+.card .d b{font-weight:500}
+.card .d b.up{color:var(--good)} .card .d b.down{color:var(--bad)}
+/* 趋势：三张小图，各自一根轴 */
+.multi{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.chart{position:relative}
+.chart h3{display:flex;align-items:center;gap:8px;margin:0 0 2px;font-size:13px;font-weight:500;color:var(--text-secondary)}
+.chart h3 i{width:14px;height:2px;border-radius:1px;background:var(--c)}
+.chart .tot{font-size:12px;color:var(--text-muted)}
+.chart svg{display:block;width:100%;height:150px;overflow:visible}
+.chart .ax{fill:var(--text-muted);font-size:10.5px}
+.tip{position:absolute;pointer-events:none;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:12px;white-space:nowrap;transform:translate(-50%,-100%);opacity:0;transition:opacity .1s}
+.tip b{font-size:14px;font-weight:600;font-variant-numeric:tabular-nums}
+.tip span{color:var(--text-muted);margin-left:6px}
+/* 表格 */
+.tbar{display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th,.tbl td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums}
+.tbl th:first-child,.tbl td:first-child,.tbl .l{text-align:left}
+.tbl th{color:var(--text-muted);font-weight:400;font-size:12px;cursor:pointer;user-select:none;white-space:nowrap}
+.tbl th[aria-sort]{color:var(--text-primary)}
+.tbl th[aria-sort=descending]::after{content:" ↓"} .tbl th[aria-sort=ascending]::after{content:" ↑"}
+.tbl tbody tr:hover{background:rgba(255,255,255,.03)}
+.tbl td.z{color:var(--text-muted)}
+.cat{display:inline-block;margin-left:8px;font-size:11px;color:var(--text-muted)}
+.no{color:var(--text-muted);margin-right:6px;font-size:12px}
+.scroll{max-height:560px;overflow:auto}
+/* 横向条 */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.bars{display:grid;gap:8px}
+.bar{display:grid;grid-template-columns:150px 1fr 48px;gap:10px;align-items:center;font-size:12.5px}
+.bar .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-secondary)}
+.bar .track{height:10px}
+.bar .fill{height:100%;background:var(--series-1);border-radius:0 4px 4px 0;min-width:2px}
+.bar .n{text-align:right;font-variant-numeric:tabular-nums}
+.empty{color:var(--text-muted);font-size:13px;padding:8px 0}
+code{font:12px ui-monospace,SFMono-Regular,Menlo,monospace;background:rgba(255,255,255,.06);padding:2px 6px;border-radius:5px}
+pre{margin:8px 0 0;padding:12px 14px;background:rgba(0,0,0,.3);border-radius:10px;overflow:auto;font:12px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--text-secondary)}
+.newtok{margin-top:12px;padding:14px;border:1px solid rgba(255,181,71,.4);border-radius:10px;background:rgba(255,181,71,.06)}
+.newtok p{margin:0 0 6px;font-size:13px}
+.st{font-size:12px} .st.off{color:var(--text-muted)}
+.lnk{background:none;border:0;padding:0;color:var(--text-secondary);text-decoration:underline;cursor:pointer;font-size:12.5px}
+@media (max-width:900px){.cards{grid-template-columns:repeat(2,1fr)}.multi,.two{grid-template-columns:1fr}.wrap{padding:0 16px 60px}header .wrap{flex-wrap:wrap;height:auto;padding:10px 16px}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div><div class="eb">HTML Style Base</div><h1>经验库后台</h1></div>
+  <div class="sp"></div>
+  <div class="seg" id="seg" role="group" aria-label="时间范围">
+    <button type="button" data-d="1">今天</button><button type="button" data-d="7">7 天</button><button type="button" data-d="30" aria-pressed="true">30 天</button><button type="button" data-d="90">90 天</button>
+  </div>
+  <input type="date" id="from" aria-label="开始日期"><span class="who">–</span><input type="date" id="to" aria-label="结束日期">
+  <a class="btn" id="csv" href="#">导出 CSV</a>
+  <span class="who" id="who"></span>
+  <a class="btn" href="/admin/logout">退出</a>
+</div></header>
+
+<div class="wrap">
+  <section class="cards" id="cards" aria-label="概览"></section>
+
+  <h2>趋势</h2>
+  <p class="sub">按天统计。三张图各自一根纵轴，只比较各自的走势，不互相比较大小。</p>
+  <div class="panel multi" id="trend"></div>
+
+  <h2>每条经验</h2>
+  <p class="sub">转化率 =（下载 + 复制全文 + 复制提示词）÷ 浏览。点表头排序。</p>
+  <div class="panel">
+    <div class="tbar">
+      <select id="catSel" aria-label="分类"><option value="">全部分类</option></select>
+      <input type="text" id="patQ" placeholder="按名称筛选" aria-label="按名称筛选">
+      <span class="sp"></span>
+      <label class="who"><input type="checkbox" id="hideZero"> 隐藏没有数据的条目</label>
+    </div>
+    <div class="scroll"><table class="tbl" id="pt"><thead><tr>
+      <th data-k="title">经验</th><th data-k="views">浏览</th><th data-k="uv">访客</th><th data-k="md_download">下载 .md</th><th data-k="md_copy">复制全文</th><th data-k="prompt_copy">复制提示词</th><th data-k="mcp">MCP 调用</th><th data-k="rate">转化率</th>
+    </tr></thead><tbody></tbody></table></div>
+  </div>
+
+  <h2>MCP</h2>
+  <p class="sub">同学用个人 token 接入。token 只在生成时显示一次，丢了就停用后重新生成。</p>
+  <div class="two">
+    <div class="panel"><h3 class="who" style="margin:0 0 12px">按工具</h3><div class="bars" id="tools"></div></div>
+    <div class="panel"><h3 class="who" style="margin:0 0 12px">按客户端</h3><div class="bars" id="clients"></div></div>
+  </div>
+  <div class="panel" style="margin-top:12px">
+    <div class="tbar">
+      <input type="text" id="tokName" placeholder="备注名，如：张三" maxlength="40" aria-label="token 备注名">
+      <button class="btn pri" type="button" id="tokNew">生成 token</button>
+      <span class="sp"></span><span class="who" id="mcpUrl"></span>
+    </div>
+    <div id="tokOut"></div>
+    <table class="tbl" id="tt"><thead><tr><th>备注名</th><th class="l">前缀</th><th class="l">最近客户端</th><th>最近使用</th><th>区间内调用</th><th>状态</th><th></th></tr></thead><tbody></tbody></table>
+  </div>
+
+  <h2>搜索词</h2>
+  <p class="sub">网页搜索框和 MCP 的 search / recommend 查询。零结果的查询，说明大家在找但库里还没有。</p>
+  <div class="two">
+    <div class="panel"><h3 class="who" style="margin:0 0 8px">热门查询</h3><table class="tbl" id="sTop"><thead><tr><th>查询</th><th class="l">来源</th><th>次数</th></tr></thead><tbody></tbody></table></div>
+    <div class="panel"><h3 class="who" style="margin:0 0 8px">零结果查询</h3><table class="tbl" id="sZero"><thead><tr><th>查询</th><th class="l">来源</th><th>次数</th></tr></thead><tbody></tbody></table></div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const h = (tag, attrs = {}, ...kids) => {
+    const el = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) { if (k === 'class') el.className = v; else if (k === 'style') el.style.cssText = v; else if (k.startsWith('on')) el[k] = v; else el.setAttribute(k, v); }
+    for (const k of kids.flat()) if (k != null) el.append(k instanceof Node ? k : document.createTextNode(String(k)));
+    return el;
+  };
+  const fmt = n => n == null ? '–' : Number(n).toLocaleString('zh-CN');
+  const pct = r => r == null ? '–' : (r * 100).toFixed(r < 0.1 ? 1 : 0) + '%';
+  const dt = ts => ts ? new Date(ts).toLocaleString('zh-CN', { hour12: false, month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '–';
+  const api = (p, opt) => fetch('/admin/api/' + p, opt).then(r => { if (r.status === 401) location.href = '/admin/login'; return r.json(); });
+
+  /* ---------- 时间范围 ---------- */
+  const dayStr = d => new Date(d.getTime() + 8 * 3600e3).toISOString().slice(0, 10);
+  const today = () => dayStr(new Date());
+  function setDays(n) { const t = new Date(); $('to').value = today(); $('from').value = dayStr(new Date(t.getTime() - (n - 1) * 86400e3)); }
+  const qs = () => `from=${$('from').value}&to=${$('to').value}`;
+  $('seg').onclick = e => { const b = e.target.closest('button'); if (!b) return; $('seg').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); setDays(+b.dataset.d); load(); };
+  $('from').onchange = $('to').onchange = () => { $('seg').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', 'false')); load(); };
+  setDays(30);
+
+  /* ---------- 概览 ---------- */
+  const CARDS = [['pv', '浏览量 PV'], ['uv', '访客 UV'], ['detail', '详情页浏览'], ['md_download', 'DESIGN.md 下载'], ['md_copy', 'DESIGN.md 复制全文'], ['prompt_copy', '提示词复制'], ['mcp_calls', 'MCP 调用'], ['mcp_users', 'MCP 使用人数']];
+  function drawCards(s) {
+    $('cards').replaceChildren(...CARDS.map(([k, label]) => {
+      const c = s.cur[k], p = s.prev[k];
+      let d;
+      if (!p) d = h('div', { class: 'd' }, c ? '上一周期无数据' : '暂无数据');
+      else { const r = (c - p) / p; d = h('div', { class: 'd' }, '较上一周期 ', h('b', { class: r >= 0 ? 'up' : 'down' }, (r >= 0 ? '+' : '') + (r * 100).toFixed(0) + '%')); }
+      return h('div', { class: 'card' }, h('div', { class: 'k' }, label), h('div', { class: 'v' }, fmt(c)), d);
+    }));
+  }
+
+  /* ---------- 趋势小图 ---------- */
+  const SERIES = [['pv', '浏览量', 'var(--series-1)'], ['take', '下载 + 复制', 'var(--series-2)'], ['mcp', 'MCP 调用', 'var(--series-3)']];
+  const NS = 'http://www.w3.org/2000/svg';
+  const s = (tag, a) => { const el = document.createElementNS(NS, tag); for (const k in a) el.setAttribute(k, a[k]); return el; };
+  function niceMax(m) { if (m <= 4) return 4; const p = 10 ** Math.floor(Math.log10(m)), f = m / p; return (f <= 2 ? 2 : f <= 5 ? 5 : 10) * p; }
+  function drawTrend(rows) {
+    $('trend').replaceChildren(...SERIES.map(([k, label, color]) => {
+      const W = 360, H = 150, L = 30, R = 8, T = 10, B = 22;
+      const vals = rows.map(r => r[k]), max = niceMax(Math.max(...vals, 0)), n = rows.length;
+      const x = i => L + (n === 1 ? (W - L - R) / 2 : i * (W - L - R) / (n - 1)), y = v => T + (H - T - B) * (1 - v / max);
+      const svg = s('svg', { viewBox: `0 0 ${W} ${H}`, preserveAspectRatio: 'none', role: 'img', 'aria-label': `${label}按天趋势` });
+      for (const t of [0, max / 2, max]) { svg.append(s('line', { x1: L, x2: W - R, y1: y(t), y2: y(t), stroke: 'var(--grid)', 'stroke-width': 1 })); const tx = s('text', { x: L - 6, y: y(t) + 3, 'text-anchor': 'end', class: 'ax' }); tx.textContent = fmt(t); svg.append(tx); }
+      [0, n - 1].filter((v, i, a) => a.indexOf(v) === i).forEach(i => { const tx = s('text', { x: x(i), y: H - 6, 'text-anchor': i === 0 && n > 1 ? 'start' : 'end', class: 'ax' }); tx.textContent = rows[i].day.slice(5); svg.append(tx); });
+      svg.append(s('path', { d: vals.map((v, i) => `${i ? 'L' : 'M'}${x(i)},${y(v)}`).join(''), fill: 'none', stroke: color, 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round', 'vector-effect': 'non-scaling-stroke' }));
+      const cross = s('line', { y1: T, y2: H - B, stroke: 'var(--text-muted)', 'stroke-width': 1, opacity: 0, 'vector-effect': 'non-scaling-stroke' });
+      const dot = s('circle', { r: 4, fill: color, stroke: 'var(--surface-1)', 'stroke-width': 2, opacity: 0 });
+      svg.append(cross, dot);
+      const tip = h('div', { class: 'tip' });
+      const box = h('div', { class: 'chart', style: `--c:${color}` }, h('h3', {}, h('i'), label), h('div', { class: 'tot' }, '合计 ' + fmt(vals.reduce((a, b) => a + b, 0))), svg, tip);
+      const show = i => { const px = x(i), py = y(vals[i]); cross.setAttribute('x1', px); cross.setAttribute('x2', px); cross.setAttribute('opacity', 1); dot.setAttribute('cx', px); dot.setAttribute('cy', py); dot.setAttribute('opacity', 1);
+        const r = svg.getBoundingClientRect(), b = box.getBoundingClientRect(); tip.style.left = (r.left - b.left + px / W * r.width) + 'px'; tip.style.top = (r.top - b.top + py / H * r.height - 10) + 'px';
+        tip.replaceChildren(h('b', {}, fmt(vals[i])), h('span', {}, rows[i].day)); tip.style.opacity = 1; };
+      const hide = () => { cross.setAttribute('opacity', 0); dot.setAttribute('opacity', 0); tip.style.opacity = 0; };
+      svg.addEventListener('pointermove', e => { const r = svg.getBoundingClientRect(); const vx = (e.clientX - r.left) / r.width * W; let i = n === 1 ? 0 : Math.round((vx - L) / ((W - L - R) / (n - 1))); show(Math.max(0, Math.min(n - 1, i))); });
+      svg.addEventListener('pointerleave', hide);
+      return box;
+    }));
+  }
+
+  /* ---------- 经验表 ---------- */
+  let PT = [], sortK = 'views', sortDir = -1;
+  function drawPatterns() {
+    const cat = $('catSel').value, q = $('patQ').value.trim().toLowerCase(), hz = $('hideZero').checked;
+    const rows = PT.filter(r => (!cat || r.category === cat) && (!q || r.title.toLowerCase().includes(q)) && (!hz || r.views || r.mcp || r.md_download || r.md_copy || r.prompt_copy))
+      .sort((a, b) => { const A = a[sortK], B = b[sortK]; if (typeof A === 'string') return A.localeCompare(B, 'zh') * sortDir; return ((A ?? -1) - (B ?? -1)) * sortDir; });
+    $('pt').querySelectorAll('th').forEach(th => th.dataset.k === sortK ? th.setAttribute('aria-sort', sortDir < 0 ? 'descending' : 'ascending') : th.removeAttribute('aria-sort'));
+    const td = v => h('td', { class: v ? '' : 'z' }, fmt(v));
+    $('pt').tBodies[0].replaceChildren(...rows.map(r => h('tr', {},
+      h('td', {}, h('span', { class: 'no' }, '#' + r.no), h('a', { href: SITE + 'view.html#' + encodeURIComponent(r.id), target: '_blank', rel: 'noopener' }, r.title), h('span', { class: 'cat' }, r.category)),
+      td(r.views), td(r.uv), td(r.md_download), td(r.md_copy), td(r.prompt_copy), td(r.mcp), h('td', { class: r.rate ? '' : 'z' }, pct(r.rate)))));
+    if (!rows.length) $('pt').tBodies[0].append(h('tr', {}, h('td', { colspan: 8, class: 'z' }, '没有符合条件的条目')));
+  }
+  $('pt').tHead.onclick = e => { const th = e.target.closest('th'); if (!th) return; if (sortK === th.dataset.k) sortDir = -sortDir; else { sortK = th.dataset.k; sortDir = th.dataset.k === 'title' ? 1 : -1; } drawPatterns(); };
+  $('catSel').onchange = $('patQ').oninput = $('hideZero').onchange = drawPatterns;
+
+  /* ---------- MCP ---------- */
+  const TOOL_CN = { recommend_form: '推荐形式', search_styles: '搜索', get_style: '完整内容', get_design_md: 'DESIGN.md', get_prompt: '提示词', get_demo_source: '样例源码', list_principles: '规范', resource_design_md: '资源 · DESIGN.md', prompt_make_presentation: '模板 · 做分享页' };
+  function bars(el, rows, key, labelOf) {
+    if (!rows.length) return el.replaceChildren(h('div', { class: 'empty' }, '暂无数据'));
+    const max = Math.max(...rows.map(r => r.n));
+    el.replaceChildren(...rows.map(r => h('div', { class: 'bar', title: `${labelOf(r)}：${r.n}` }, h('span', { class: 't' }, labelOf(r)), h('div', { class: 'track' }, h('div', { class: 'fill', style: `width:${r.n / max * 100}%` })), h('span', { class: 'n' }, fmt(r.n)))));
+  }
+  function drawMcp(m) {
+    bars($('tools'), m.tools, 'tool', r => TOOL_CN[r.tool] ? `${TOOL_CN[r.tool]}（${r.tool}）` : r.tool);
+    bars($('clients'), m.clients, 'client', r => r.client);
+    $('tt').tBodies[0].replaceChildren(...m.tokens.map(t => h('tr', {},
+      h('td', {}, t.name), h('td', { class: 'l' }, h('code', {}, t.prefix + '…')), h('td', { class: 'l' }, t.last_client || '–'), h('td', {}, dt(t.last_used)), h('td', {}, fmt(t.calls)),
+      h('td', { class: 'st' + (t.revoked ? ' off' : '') }, t.revoked ? '已停用' : '可用'),
+      h('td', {}, h('button', { class: 'lnk', type: 'button', onclick: () => toggleTok(t) }, t.revoked ? '恢复' : '停用')))));
+    if (!m.tokens.length) $('tt').tBodies[0].append(h('tr', {}, h('td', { colspan: 7, class: 'z' }, '还没有 token，在上面填备注名生成一个。')));
+  }
+  async function toggleTok(t) {
+    if (!t.revoked && !confirm(`停用「${t.name}」的 token？停用后他的 MCP 会立刻连不上。`)) return;
+    await api(`tokens/${t.id}/${t.revoked ? 'restore' : 'revoke'}`, { method: 'POST' }); load();
+  }
+  $('tokNew').onclick = async () => {
+    const name = $('tokName').value.trim(); if (!name) return $('tokName').focus();
+    const r = await api('tokens', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name }) });
+    if (r.error) return alert(r.error);
+    $('tokName').value = '';
+    const cmd = `claude mcp add --transport http style-base ${MCP} --header "Authorization: Bearer ${r.token}"`;
+    const json = JSON.stringify({ mcpServers: { 'style-base': { url: MCP, headers: { Authorization: `Bearer ${r.token}` } } } }, null, 2);
+    const copy = (t, b) => navigator.clipboard.writeText(t).then(() => { b.textContent = '已复制'; setTimeout(() => b.textContent = '复制', 1200); });
+    const b1 = h('button', { class: 'btn', type: 'button' }, '复制'), b2 = h('button', { class: 'btn', type: 'button' }, '复制');
+    b1.onclick = () => copy(cmd, b1); b2.onclick = () => copy(json, b2);
+    $('tokOut').replaceChildren(h('div', { class: 'newtok' },
+      h('p', {}, `已为「${r.name}」生成 token。它只显示这一次，请现在发给对方：`),
+      h('pre', {}, r.token),
+      h('p', { style: 'margin-top:12px' }, 'Claude Code：', b1), h('pre', {}, cmd),
+      h('p', { style: 'margin-top:12px' }, 'Cursor 等（mcp.json）：', b2), h('pre', {}, json)));
+    load();
+  };
+
+  /* ---------- 搜索词 ---------- */
+  const SRC = { web: '网页', mcp: 'MCP' };
+  function drawSearch(sq) {
+    for (const [id, rows] of [['sTop', sq.top], ['sZero', sq.zero]]) {
+      $(id).tBodies[0].replaceChildren(...rows.map(r => h('tr', {}, h('td', {}, r.query), h('td', { class: 'l' }, SRC[r.source] || r.source), h('td', {}, fmt(r.n)))));
+      if (!rows.length) $(id).tBodies[0].append(h('tr', {}, h('td', { colspan: 3, class: 'z' }, '暂无')));
+    }
+  }
+
+  /* ---------- 载入 ---------- */
+  let SITE = '', MCP = '';
+  async function load() {
+    $('csv').href = '/admin/api/export.csv?' + qs();
+    const [sm, tr, pt, m, sq] = await Promise.all(['summary', 'trend', 'patterns', 'mcp', 'search'].map(p => api(p + '?' + qs())));
+    drawCards(sm); drawTrend(tr); PT = pt; drawPatterns(); drawMcp(m); drawSearch(sq);
+  }
+  api('me').then(me => {
+    SITE = me.site; MCP = me.mcp; $('who').textContent = me.who === 'password' ? '密码登录' : me.who.replace(/^github:/, '@');
+    $('mcpUrl').replaceChildren('MCP 地址 ', h('code', {}, me.mcp));
+    return api('patterns?' + qs());
+  }).then(rows => {
+    [...new Set(rows.map(r => r.category))].forEach(c => $('catSel').append(h('option', { value: c }, c)));
+    load();
+  });
+})();
+</script>
+</body>
+</html>

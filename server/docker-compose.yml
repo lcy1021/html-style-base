@@ -1,0 +1,36 @@
+# 用法：在 server/ 目录下执行  docker compose up -d --build
+# 三个容器：app（埋点 / MCP / 后台）、caddy（HTTPS）、sync（每 5 分钟拉一次仓库内容）
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      SITE_DIR: /site
+      DATA_DIR: /data
+    volumes:
+      - ..:/site:ro              # 经验库仓库（读 data/、demos/）
+      - ./data:/data             # 数据库和每日备份
+    expose: ["8787"]
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    env_file: .env
+    ports: ["80:80", "443:443", "443:443/udp"]
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on: [app]
+
+  sync:
+    image: alpine/git
+    restart: unless-stopped
+    volumes:
+      - ..:/repo
+    entrypoint: ["/bin/sh", "-c", "git config --global --add safe.directory /repo; while true; do git -C /repo pull --ff-only -q || echo 'git pull 失败，5 分钟后重试'; sleep 300; done"]
+
+volumes:
+  caddy_data:
+  caddy_config:

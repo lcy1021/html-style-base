@@ -14,6 +14,7 @@ index.html          首页：按类型分段、滚动分批加载；样式卡片
 view.html           详情页：样例全屏、自动循环播放；右侧深色抽屉放“说明 / DESIGN.md”（首页弹层里嵌的就是它，也能单独打开）
 covers/<demo>.jpg   自动生成：首页卡片封面（样例最后一步的截图）
 data/live.js        临时下线某个样例用的开关（默认 null = 全部可用）
+data/track.js       匿名统计（浏览、DESIGN.md 下载 / 复制、提示词复制、搜索词），发到 server/
 data/patterns.js    全部经验条目（唯一要手动维护的数据文件）
 data/designs.js     自动生成：所有 DESIGN.md 的内容（双击 index.html 也能读）
 designs/<id>.md     自动生成：每条一个 DESIGN.md，可下载或交给 AI
@@ -21,6 +22,7 @@ tools/gen_design.py 用浏览器打开每个样例，量出实际样式，生成
 demos/              小样例，每个一个 HTML
 demos/demo.css      样例共用样式（深色 / 浅色舞台、字体层级）
 demos/demo.js       样例共用步进引擎（← → / 空格 / 滚轮 / 按钮）
+server/             服务端：埋点接收、远程 MCP、数据后台（见 server/README.md）
 ```
 
 ## 新增一条经验
@@ -108,3 +110,7 @@ demos/demo.js       样例共用步进引擎（← → / 空格 / 滚轮 / 按�
 ### 卡片图标（data/icons.js）
 每条经验标题前的圆形图标按内容单独画（首页卡片、弹层标题栏、详情抽屉、文字页都会显示），定义在 `data/icons.js`：`id: [底色, SVG 片段, 线条色(可省)]`，24×24 网格、线宽 1.8。
 新加的样式没有图标时，会用分类色圆底 + 标题首字代替。
+
+## MCP 与数据后台
+
+经验库可以作为远程 MCP 给同学的 AI 工具直接调用（推荐形式、取 DESIGN.md、取提示词等），并有一个只有管理员能进的数据后台，统计浏览、下载、复制和 MCP 调用。部署和接入方法见 [`server/README.md`](server/README.md)。

@@ -1,0 +1,16 @@
+{
+  "name": "html-style-base-server",
+  "version": "0.1.0",
+  "private": true,
+  "description": "设计经验库的服务端：埋点、远程 MCP、数据后台",
+  "type": "module",
+  "engines": { "node": ">=22.13" },
+  "scripts": {
+    "start": "node --experimental-sqlite --no-warnings=ExperimentalWarning src/index.js",
+    "dev": "SITE_DIR=.. DATA_DIR=./data-dev ADMIN_PASSWORD=dev SESSION_SECRET=dev-secret-dev-secret COOKIE_SECURE=0 MCP_REQUIRE_TOKEN=0 node --experimental-sqlite --no-warnings=ExperimentalWarning src/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "zod": "^4.6.7"
+  }
+}
