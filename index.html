@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HTML 设计经验库</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0c0b12;--fg:#f3f1ff;--mut:#9a95a8;--line:rgba(255,255,255,.1);--violet:#b9a8ff;--amber:#ffb547;--ease:cubic-bezier(.3,.8,.2,1)}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Helvetica Neue",sans-serif;background:var(--bg);color:var(--fg);-webkit-font-smoothing:antialiased;background-image:radial-gradient(rgba(255,255,255,.06) 1px,transparent 1px);background-size:28px 28px;min-height:100vh}
+a{color:var(--violet)}
+h1,h2,h3{text-wrap:balance}p,li{text-wrap:pretty}
+header{max-width:1240px;margin:0 auto;padding:64px 32px 20px}
+.eb{font-size:12px;letter-spacing:.14em;color:var(--amber)}
+header h1{margin-top:12px;font-size:clamp(32px,4.4vw,52px);font-weight:400;letter-spacing:-.04em;line-height:1.2}
+header h1 em{font-style:normal;color:var(--violet)}
+header p{margin-top:14px;max-width:720px;color:var(--mut);font-size:16px;line-height:1.8}
+.tools{position:sticky;top:0;z-index:5;background:rgba(12,11,18,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.tools .in{max-width:1240px;margin:0 auto;padding:14px 32px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.chip{all:unset;cursor:pointer;padding:7px 14px;border-radius:99px;border:1px solid var(--line);font-size:13px;color:var(--mut);transition:.2s}
+.chip:hover{color:var(--fg)}.chip[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.chip:focus-visible,.card:focus-visible,.x:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.chip b{font-weight:400;opacity:.6;margin-left:4px}
+.search{margin-left:auto;min-width:220px;padding:8px 14px;border-radius:99px;border:1px solid var(--line);background:transparent;color:var(--fg);font-size:13px}
+main{max-width:1240px;margin:0 auto;padding:26px 32px 80px}
+.sec{margin-top:26px}.sec h2{font-size:14px;font-weight:600;color:var(--mut);letter-spacing:.06em;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+.card{all:unset;cursor:pointer;display:flex;flex-direction:column;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid var(--line);overflow:hidden;transition:transform .3s var(--ease),border-color .2s}
+.card:hover{transform:translateY(-3px);border-color:rgba(185,168,255,.5)}
+.thumb{height:150px;position:relative;overflow:hidden;background:#15131d;border-bottom:1px solid var(--line)}
+.thumb iframe{position:absolute;left:0;top:0;width:1280px;height:720px;border:0;transform:scale(.22);transform-origin:0 0;pointer-events:none}
+.thumb.none{display:grid;place-items:center;color:var(--mut);font-size:13px}
+.cb{padding:14px 16px 16px}
+.cb small{font-size:11px;color:var(--amber);letter-spacing:.06em}
+.cb h3{margin-top:4px;font-size:18px;font-weight:600}
+.cb p{margin-top:6px;font-size:13px;line-height:1.6;color:var(--mut)}
+.empty{color:var(--mut);padding:40px 0}
+/* 详情 */
+.dlg{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.6);display:none}
+.dlg.on{display:block}
+.panel{position:absolute;inset:3vh 3vw;border-radius:18px;background:#14121c;border:1px solid var(--line);display:grid;grid-template-columns:minmax(0,1.5fr) minmax(320px,1fr);overflow:hidden}
+.pv{position:relative;background:#0c0b12}
+.pv iframe{width:100%;height:100%;border:0}
+.pv .none{position:absolute;inset:0;display:grid;place-items:center;color:var(--mut)}
+.info{overflow:auto;padding:26px 26px 40px;border-left:1px solid var(--line)}
+.info small{font-size:12px;color:var(--amber)}
+.info h2{margin-top:6px;font-size:26px;font-weight:500}
+.info .intent{margin-top:6px;color:var(--violet);font-size:14px}
+.info .sum{margin-top:14px;font-size:15px;line-height:1.8}
+.info h4{margin-top:20px;font-size:12px;letter-spacing:.08em;color:var(--mut)}
+.info ul{margin-top:6px;padding-left:1.2em;font-size:14px;line-height:1.8}
+.info .pit li::marker{color:#ff8a7a}
+.meta{margin-top:22px;font-size:12px;color:var(--mut);line-height:1.8}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}.tags span{font-size:11px;padding:2px 8px;border-radius:6px;background:rgba(185,168,255,.14);color:var(--violet)}
+.x{all:unset;cursor:pointer;position:absolute;right:14px;top:12px;z-index:2;padding:6px 12px;border-radius:99px;background:rgba(255,255,255,.1);font-size:13px}
+.open{display:inline-block;margin-top:16px;font-size:13px}
+footer{max-width:1240px;margin:0 auto;padding:0 32px 60px;color:var(--mut);font-size:13px;line-height:1.8}
+@media (max-width:860px){.panel{grid-template-columns:1fr;grid-template-rows:45vh 1fr}.info{border-left:0;border-top:1px solid var(--line)}.search{margin-left:0;width:100%}}
+</style>
+</head>
+<body>
+<header>
+  <p class="eb">UED · 设计经验库</p>
+  <h1>做 HTML 演示和分享页时，<br><em>先查一下这里。</em></h1>
+  <p>按“想说明什么”找展示形式；每条都有可以直接操作的小样例、适用场景和踩过的坑。样例为去业务化的示意内容，可直接改成自己的案例。</p>
+</header>
+<div class="tools"><div class="in" id="tools"><input class="search" id="q" type="search" placeholder="搜索：层级、对比、反例、过渡…" aria-label="搜索经验"></div></div>
+<main id="main"></main>
+<footer>新增经验：在 <code>data/patterns.js</code> 里加一条，并把小样例放进 <code>demos/</code>。说明见仓库 README。</footer>
+
+<div class="dlg" id="dlg" role="dialog" aria-modal="true" aria-labelledby="dt">
+  <div class="panel">
+    <button class="x" id="x" type="button">关闭 ✕</button>
+    <div class="pv" id="pv"></div>
+    <div class="info" id="info"></div>
+  </div>
+</div>
+
+<script src="data/patterns.js"></script>
+<script>
+(() => {
+  const P = window.PATTERNS || [], ORDER = ['案例展示', '页面过渡', '文字布局', '讲法', '工程与交付'];
+  const cats = ORDER.filter(c => P.some(p => p.category === c)).concat([...new Set(P.map(p => p.category))].filter(c => !ORDER.includes(c)));
+  const tools = document.getElementById('tools'), q = document.getElementById('q'), main = document.getElementById('main');
+  let cur = '全部';
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+  ['全部', ...cats].forEach(c => {
+    const b = document.createElement('button'); b.className = 'chip'; b.type = 'button';
+    b.innerHTML = `${c}<b>${c === '全部' ? P.length : P.filter(p => p.category === c).length}</b>`;
+    b.setAttribute('aria-pressed', String(c === cur));
+    b.onclick = () => { cur = c; tools.querySelectorAll('.chip').forEach(x => x.setAttribute('aria-pressed', String(x === b))); render(); };
+    tools.insertBefore(b, q);
+  });
+  q.oninput = render;
+  function match(p) {
+    const k = q.value.trim().toLowerCase(); if (!k) return true;
+    return [p.title, p.intent, p.summary, ...(p.tags || []), ...(p.when || [])].join(' ').toLowerCase().includes(k);
+  }
+  function render() {
+    const list = P.filter(p => (cur === '全部' || p.category === cur) && match(p));
+    if (!list.length) { main.innerHTML = '<p class="empty">没有找到，换个关键词试试。</p>'; return; }
+    main.innerHTML = cats.filter(c => list.some(p => p.category === c)).map(c => `<section class="sec"><h2>${esc(c)}</h2><div class="grid">${
+      list.filter(p => p.category === c).map(p => `<button class="card" type="button" data-id="${esc(p.id)}">
+        <div class="thumb${p.demo ? '' : ' none'}">${p.demo ? `<iframe src="${esc(p.demo)}" tabindex="-1" loading="lazy" title=""></iframe>` : '文字经验'}</div>
+        <div class="cb"><small>${esc(p.intent)}</small><h3>${esc(p.title)}</h3><p>${esc(p.summary)}</p></div></button>`).join('')
+    }</div></section>`).join('');
+    main.querySelectorAll('.card').forEach(c => c.onclick = () => open(c.dataset.id));
+  }
+  const dlg = document.getElementById('dlg'), pv = document.getElementById('pv'), info = document.getElementById('info');
+  const li = a => (a && a.length) ? `<ul>${a.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : '<ul><li>—</li></ul>';
+  function open(id, push = true) {
+    const p = P.find(x => x.id === id); if (!p) return;
+    pv.innerHTML = p.demo ? `<iframe src="${esc(p.demo)}" title="${esc(p.title)} 样例"></iframe>` : '<div class="none">这条是文字经验，没有样例</div>';
+    info.innerHTML = `<small>${esc(p.category)}</small><h2 id="dt">${esc(p.title)}</h2><p class="intent">想说明：${esc(p.intent)}</p><p class="sum">${esc(p.summary)}</p>
+      <h4>适合什么时候用</h4>${li(p.when)}<h4>怎么做</h4>${li(p.how)}<h4>踩过的坑</h4><div class="pit">${li(p.pitfalls)}</div>
+      <div class="tags">${(p.tags || []).map(t => `<span>${esc(t)}</span>`).join('')}</div>
+      ${p.demo ? `<a class="open" href="${esc(p.demo)}" target="_blank" rel="noopener">在新窗口打开样例 ↗</a>` : ''}
+      <p class="meta">来源：${esc(p.source || '—')}<br>收录：${esc(p.added || '—')}</p>`;
+    dlg.classList.add('on'); document.body.style.overflow = 'hidden';
+    if (push) history.replaceState(null, '', '#' + id);
+    setTimeout(() => { const f = pv.querySelector('iframe'); f && f.focus(); }, 300);
+  }
+  function close() { dlg.classList.remove('on'); pv.innerHTML = ''; document.body.style.overflow = ''; history.replaceState(null, '', location.pathname + location.search); }
+  document.getElementById('x').onclick = close;
+  dlg.addEventListener('click', e => { if (e.target === dlg) close(); });
+  addEventListener('keydown', e => { if (e.key === 'Escape' && dlg.classList.contains('on')) close(); });
+  render();
+  if (location.hash) open(decodeURIComponent(location.hash.slice(1)), false);
+})();
+</script>
+</body>
+</html>

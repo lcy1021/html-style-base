@@ -1,0 +1,21 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>论点页与案例舞台的过渡</title><link rel="stylesheet" href="demo.css">
+<style>
+canvas{position:fixed;inset:0;width:100%;height:100%;transition:opacity .6s}
+.mid{position:fixed;left:0;right:0;top:40%;text-align:center;transition:opacity .5s}.mid h2{font-size:32px;font-weight:400}.mid h2 em{font-style:normal;color:var(--violet)}
+.case{position:fixed;inset:0 0 56px;background:#f4f3ef;color:#1d2129;transform:translateY(100%);transition:transform .9s var(--ease);padding:40px}
+.case h3{font-size:24px}.case .ui{margin-top:24px;width:60%;height:55%;border-radius:14px;background:#fff;box-shadow:0 20px 40px rgba(0,0,0,.1)}
+.s1 .case{transform:none}
+.veil{position:fixed;inset:0;background:#000;opacity:0;pointer-events:none;transition:opacity .5s;display:grid;place-items:center;color:#fff;font-size:20px}
+.s2 .veil{opacity:1}
+</style></head>
+<body data-steps="3" data-caps="论点页：粒子只做氛围，不画 UI、不加标签|案例舞台从下方整块覆盖，粒子在被盖住后才隐藏|章节之间：黑场过渡">
+<canvas id="cv"></canvas>
+<div class="mid"><p class="eb">论点</p><h2>先回到<em>任务和目标。</em></h2></div>
+<div class="case"><p class="eb" style="color:#b5482b">案例 · 不透明舞台</p><h3>案例页里只有案例的 UI</h3><div class="ui"></div></div>
+<div class="veil">下一部分 →</div>
+<script src="demo.js"></script>
+<script>const c=cv,x=c.getContext('2d');let W,H;const P=Array.from({length:700},()=>({a:Math.random()*6.28,r:Math.pow(Math.random(),.6),c:['#ffad26','#8c4fff','#59ceb3'][Math.random()*3|0]}));
+function rs(){W=c.width=innerWidth;H=c.height=innerHeight}rs();addEventListener('resize',rs);
+(function d(t){x.clearRect(0,0,W,H);x.globalCompositeOperation='lighter';P.forEach(p=>{const a=p.a+t/4000,R=Math.min(W,H)*.32*p.r;x.globalAlpha=.6;x.fillStyle=p.c;x.fillRect(W/2+Math.cos(a)*R,H*.62+Math.sin(a)*R*.5,2,2)});requestAnimationFrame(d)})(0);
+window.onStep=k=>{setTimeout(()=>{c.style.opacity=k>=1?0:1},k>=1?900:0);};</script>
+</body></html>

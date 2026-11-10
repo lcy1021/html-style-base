@@ -1,0 +1,27 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>情景预演</title><link rel="stylesheet" href="demo.css">
+<style>
+.g{position:absolute;left:34px;right:34px;top:110px;bottom:120px;display:grid;grid-template-columns:.8fr 1.2fr;gap:18px}
+.c{position:relative;border-radius:18px;background:#fff;border:1px solid #e6e2da;padding:18px 20px;overflow:hidden}
+.c h5{font-size:12px;color:#86909c;letter-spacing:.08em}
+.hand{margin-top:16px;font-family:"Kaiti SC","STKaiti","KaiTi",serif;font-size:22px;line-height:1.6}
+.stamp{position:absolute;right:20px;bottom:24px;padding:4px 14px;border:4px solid #d93a3a;color:#d93a3a;font-size:24px;font-weight:800;opacity:0;transform:rotate(-8deg) scale(1.6);transition:opacity .25s,transform .35s cubic-bezier(.2,1.6,.4,1)}
+.stamp.on{opacity:1;transform:rotate(-8deg) scale(1)}.stamp.b{bottom:90px;border-color:#1d2129;color:#1d2129;font-size:17px}
+.list{margin-top:12px;border:1px solid #ebe8e2;border-radius:8px;overflow:hidden;width:60%}
+.list div{display:flex;justify-content:space-between;padding:7px 12px;font-size:13px}.list .all{background:#eaf1ff;color:#165dff;font-weight:600}.list .hid{color:#b8b4ac}
+.sum{margin-top:12px;font-size:28px;font-weight:700;transition:color .3s}
+.say{position:absolute;right:16px;top:14px;max-width:260px;padding:10px 14px;border-radius:12px;background:#1d2129;color:#fff;font-size:13px;line-height:1.5;opacity:0}.say.on{opacity:1}
+.split{position:absolute;left:34px;right:34px;bottom:62px;display:grid;grid-template-columns:1fr 1fr;border:2px solid #1d2129;border-radius:14px;overflow:hidden;opacity:0}
+.split.on{opacity:1}.split div{padding:10px 18px}.split b{display:block;font-size:19px}.split span{font-size:12px;color:#4e5969}.ok{background:#eaf6ec}.ok b{color:#2f8f46}.ng{background:#fdf0ef}.ng b{color:#d93a3a}
+</style></head>
+<body class="light" data-steps="4" data-caps="先看设计师的推理：逻辑上成立|盖章：照逻辑改了|用户照常操作，结果出乎意料|逻辑上对，场景上错 → 回退">
+<div class="stage"><p class="eb" style="color:#b5482b">示例 · 去业务化</p><h1>主动优化前，先在用户的场景里<em style="color:#5b3fd6">预演一遍。</em></h1></div>
+<div class="g">
+ <div class="c"><h5>设计师的逻辑</h5><p class="hand">“全部”就应该包含<br>所有项目，包括已归档的。</p><span class="stamp" data-s="1">改！</span><span class="stamp b" data-s="3">上线后回退</span></div>
+ <div class="c"><h5>用户的场景 · 示意</h5><div class="say" data-s="2-3">怎么混进了归档项目？我归档就是不想再看到它！</div>
+  <div class="list"><div class="all">全部</div><div>项目 A</div><div>项目 B</div><div class="hid" id="hid">旧项目（已归档）<span id="tag"></span></div></div>
+  <div class="sum" id="sum">2 个项目</div></div>
+</div>
+<div class="split" data-s="3"><div class="ok"><b>逻辑上对</b><span>“全部”字面上确实不严谨</span></div><div class="ng"><b>场景上错</b><span>用户归档，恰恰是不想在“全部”里看到它</span></div></div>
+<p class="note">内容为示意</p><script src="demo.js"></script>
+<script>window.onStep=k=>{document.getElementById('tag').textContent=k>=1?' → 计入':'';document.getElementById('hid').style.color=k>=1?'#1d2129':'';const s=document.getElementById('sum');s.textContent=k>=2?'3 个项目':'2 个项目';s.style.color=k>=2?'#d93a3a':'';};</script>
+</body></html>

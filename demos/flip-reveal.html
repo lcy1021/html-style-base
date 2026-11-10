@@ -1,0 +1,16 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>先猜再揭晓</title><link rel="stylesheet" href="demo.css">
+<style>
+.cards{position:absolute;left:34px;right:34px;top:140px;display:grid;grid-template-columns:1fr 1fr;gap:20px;perspective:1200px}
+.card{position:relative;height:220px;transform-style:preserve-3d;transition:transform .8s var(--ease);cursor:pointer}
+.card.flip{transform:rotateY(180deg)}
+.f,.b{position:absolute;inset:0;backface-visibility:hidden;border-radius:16px;padding:22px;display:flex;flex-direction:column;justify-content:center}
+.f{background:#fff;color:#1d2129}.f small{color:#86909c}.f h3{margin-top:8px;font-size:21px;line-height:1.4}
+.b{background:#1d2129;color:#fff;transform:rotateY(180deg)}.b b{color:var(--amber);font-size:14px}.b p{margin-top:8px;font-size:17px;line-height:1.6}
+</style></head>
+<body data-steps="3" data-caps="先请大家猜：这算在做判断吗？|揭晓第一张|揭晓第二张（卡片也可以直接点）">
+<div class="stage"><p class="eb">示例 · 去业务化</p><h1>先猜一下：这两种用法，<em>算是在做判断吗？</em></h1></div>
+<div class="cards"><div class="card" id="c1"><div class="f"><small>用法一</small><h3>模板五格都填满了</h3></div><div class="b"><b>不算</b><p>变成了填表：每一格都是猜的。</p></div></div>
+<div class="card" id="c2"><div class="f"><small>用法二</small><h3>评分 8 比 6 高，<br>先做 8 分的</h3></div><div class="b"><b>不算</b><p>把工具结果当结论：分数本来是自己估的。</p></div></div></div>
+<script src="demo.js"></script>
+<script>c1.onclick=()=>c1.classList.toggle('flip');c2.onclick=()=>c2.classList.toggle('flip');window.onStep=k=>{c1.classList.toggle('flip',k>=1);c2.classList.toggle('flip',k>=2);};</script>
+</body></html>

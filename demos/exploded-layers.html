@@ -1,0 +1,33 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>爆炸分层</title><link rel="stylesheet" href="demo.css">
+<style>
+.wrap{position:absolute;inset:96px 34px 20px;display:grid;grid-template-columns:1fr 1.2fr;gap:24px;align-items:center}
+.lg{list-style:none;display:grid;gap:12px}
+.lg li{display:grid;grid-template-columns:12px 1fr;gap:4px 12px;opacity:.3;transition:opacity .4s,transform .4s var(--ease);cursor:pointer}
+.lg i{width:10px;height:10px;border-radius:3px;background:var(--c);margin-top:6px}
+.lg b{font-size:17px;font-weight:500}.lg span{grid-column:2;font-size:13px;color:var(--mut)}
+.view{position:relative;height:100%}
+.stk{position:absolute;left:46%;top:78%;transform-style:preserve-3d}
+.pl{position:absolute;left:-120px;top:-72px;width:240px;height:144px;border-radius:14px;border:1.5px solid var(--c);background:color-mix(in srgb,var(--c) 16%,#12101c);transform:rotateX(60deg) rotateZ(-40deg) translateZ(var(--z0));transition:transform .9s var(--ease),opacity .4s,box-shadow .4s;display:grid;place-items:center;font-size:13px;color:var(--c)}
+[data-l="1"]{--c:#8b6cff;--z0:0px;--z:0px}[data-l="2"]{--c:#ffb547;--z0:8px;--z:80px}[data-l="3"]{--c:#3fd0e8;--z0:16px;--z:160px}[data-l="4"]{--c:#5ad08a;--z0:24px;--z:240px}
+body:not([data-step="0"]) .pl{transform:rotateX(60deg) rotateZ(-40deg) translateZ(var(--z))}
+body[data-step="1"] .pl,body[data-step="2"] .pl,body[data-step="3"] .pl,body[data-step="4"] .pl{opacity:.2}
+body[data-step="1"] [data-l="1"],body[data-step="2"] [data-l="2"],body[data-step="3"] [data-l="3"],body[data-step="4"] [data-l="4"]{opacity:1!important;transform:translateX(6px)}
+body[data-step="1"] .pl[data-l="1"],body[data-step="2"] .pl[data-l="2"],body[data-step="3"] .pl[data-l="3"],body[data-step="4"] .pl[data-l="4"]{transform:rotateX(60deg) rotateZ(-40deg) translateZ(calc(var(--z) + 24px));box-shadow:0 0 40px var(--c)}
+body[data-step="0"] .lg li,body[data-step="5"] .lg li{opacity:1}
+.tag{position:absolute;right:0;top:-2px;font-size:11px;padding:2px 8px;border-radius:99px;background:var(--amber);color:#2a1a00}
+</style></head>
+<body data-steps="6" data-caps="进场：四层叠在一起|功能／界面：最终落点|方案：诉求停在这里|任务：用户正在做的事|目标：真正关心的结果|四层一起看：往上补回">
+<div class="stage"><p class="eb">示例 · 去业务化</p><h1>同一句诉求，可以停在<em>不同的层级</em>上。</h1></div>
+<div class="wrap">
+ <ol class="lg">
+  <li data-l="4"><i></i><b>目标</b><span>月底按部门对账，按时交给财务</span></li>
+  <li data-l="3"><i></i><b>任务</b><span>每个部门拿到自己那份数据，核对后签字</span></li>
+  <li data-l="2" style="position:relative"><i></i><b>方案</b><span>“导出时每个部门生成一个文件”</span><em class="tag" data-s="2">诉求停在这里</em></li>
+  <li data-l="1"><i></i><b>功能／界面</b><span>导出弹窗里加一个“按部门拆分”选项</span></li>
+ </ol>
+ <div class="view"><div class="stk"><div class="pl" data-l="1">界面</div><div class="pl" data-l="2">方案</div><div class="pl" data-l="3">任务</div><div class="pl" data-l="4">目标</div></div></div>
+</div>
+<p class="note">内容为示意</p>
+<script src="demo.js"></script>
+<script>document.querySelectorAll('.lg li').forEach(li=>li.onclick=()=>DEMO.set(+li.dataset.l));</script>
+</body></html>

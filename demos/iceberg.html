@@ -1,0 +1,27 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>冰山下潜</title><link rel="stylesheet" href="demo.css">
+<style>
+body{background:#2d5576}
+.world{position:fixed;inset:0;height:220vh;background:linear-gradient(#eef5fa 0,#e2edf6 42vh,#9cc1da 42vh,#6e98b8 100vh,#2d5576 220vh);transition:transform 1.1s var(--ease)}
+.berg{position:absolute;left:30vw;width:40vw;top:0;height:220vh}
+.berg .u{fill:#fff;stroke:#8fb6d1}.berg .d{fill:rgba(255,255,255,.13);stroke:rgba(255,255,255,.5)}
+.tip{position:absolute;left:50%;top:42vh;transform:translate(-50%,-60%);padding:10px 20px;border-radius:12px;background:#fff;border:2px solid #1d2129;box-shadow:5px 5px 0 #1d2129;color:#1d2129;font-weight:700;white-space:nowrap}
+.ly{position:absolute;left:50%;width:min(520px,80vw);transform:translateX(-50%);text-align:center;color:#fff;opacity:.3;transition:opacity .5s}
+.ly h4{font-size:20px}.ly p{font-size:13px;opacity:.85;margin-top:6px}
+.stage{z-index:2}.stage h1{color:#1d2129}
+.rail{position:fixed;right:20px;top:50%;transform:translateY(-50%);display:grid;gap:8px;z-index:3}
+.rail button{all:unset;cursor:pointer;width:84px;padding:6px 0;text-align:center;border-radius:99px;border:2px solid #1d2129;background:rgba(255,255,255,.85);font-size:13px;color:#1d2129}
+.rail button.on{background:#1d2129;color:#fff}
+</style></head>
+<body data-steps="4" data-caps="水面：你拿到的只是方案|下潜一层：最初想解决什么问题|再下潜：哪些已定、哪些还能调|最深一层：方案里没写出来的假设">
+<div class="world" id="w"><svg class="berg" viewBox="0 0 100 220" preserveAspectRatio="none"><polygon class="u" points="50,30 60,42 40,42"/><polygon class="d" points="40,42 60,42 80,90 86,150 76,210 50,216 24,210 14,150 20,90"/></svg>
+ <div class="tip">“方案已经定了，出个高保真。”</div>
+ <div class="ly" style="top:70vh"><h4>这个方案最初想解决什么问题？</h4><p>谁在什么场景下遇到了什么麻烦</p></div>
+ <div class="ly" style="top:110vh"><h4>哪些已经定了，哪些还能调？</h4><p>先分清能讨论的空间</p></div>
+ <div class="ly" style="top:150vh"><h4>方案没写出来的：用户每一步怎么走？</h4><p>这一层要靠交互推演挖出来</p></div>
+</div>
+<div class="stage"><p class="eb" style="color:#b5482b">示例 · 去业务化</p><h1>拿到的方案，只是露出水面的一角。</h1></div>
+<nav class="rail" id="rail"><button>水面</button><button>↓ 问题</button><button>↓ 空间</button><button>↓ 假设</button></nav>
+<p class="note">内容为示意</p><script src="demo.js"></script>
+<script>const R=[...document.querySelectorAll('#rail button')],L=[...document.querySelectorAll('.ly')];R.forEach((b,i)=>b.onclick=()=>DEMO.set(i));
+window.onStep=k=>{document.getElementById('w').style.transform=`translateY(${[0,-34,-74,-114][k]}vh)`;R.forEach((b,i)=>b.classList.toggle('on',i===k));L.forEach((l,i)=>l.style.opacity=i+1===k?1:.3);document.querySelector('.stage').style.opacity=k?0:1;};</script>
+</body></html>

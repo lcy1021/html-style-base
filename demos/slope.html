@@ -1,0 +1,18 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>斜率图</title><link rel="stylesheet" href="demo.css">
+<style>
+.ch{position:absolute;left:12%;right:12%;top:120px;bottom:80px}
+.col{position:absolute;top:0;bottom:0;width:150px;font-size:13px}.col.l{left:0;text-align:right}.col.r{right:0}
+.col h5{font-size:12px;color:var(--mut);margin-bottom:6px}
+.it{position:absolute;left:0;right:0;transition:top .9s var(--ease),opacity .4s}
+svg{position:absolute;left:160px;right:160px;top:0;bottom:0;width:calc(100% - 320px);height:100%;overflow:visible}
+line{stroke-width:2;transition:all .9s var(--ease)}
+</style></head>
+<body data-steps="3" data-caps="先按我们的评分排|再看用户的排序：连线交叉|交叉越多，越要回头核对输入">
+<div class="stage"><p class="eb">示例 · 数据为示意</p><h1>同一批需求，两种排序<em>对不上。</em></h1></div>
+<div class="ch" id="ch"><div class="col l"><h5>内部评分</h5></div><svg id="sv"></svg><div class="col r"><h5 data-s="1">用户投票</h5></div></div>
+<p class="note">真实使用时只放真实数据</p><script src="demo.js"></script>
+<script>const A=['需求 A','需求 B','需求 C','需求 D','需求 E','需求 F'],B=['需求 D','需求 A','需求 F','需求 B','需求 E','需求 C'];
+const ch=document.getElementById('ch'),L=ch.querySelector('.l'),Rc=ch.querySelector('.r'),sv=document.getElementById('sv');
+A.forEach((t,i)=>{L.insertAdjacentHTML('beforeend',`<div class="it" style="top:${30+i*44}px">${t}</div>`);Rc.insertAdjacentHTML('beforeend',`<div class="it rr" style="top:${30+B.indexOf(t)*44}px;opacity:0">${t}</div>`);sv.insertAdjacentHTML('beforeend',`<line x1="0" x2="0" y1="${40+i*44}" y2="${40+i*44}" stroke="rgba(255,255,255,.3)"/>`);});
+window.onStep=k=>{const w=sv.getBoundingClientRect().width;[...sv.children].forEach((ln,i)=>{const j=B.indexOf(A[i]);ln.setAttribute('x2',k>=1?w:0);ln.setAttribute('y2',k>=1?40+j*44:40+i*44);const cross=Math.abs(i-j)>=2;ln.setAttribute('stroke',k>=2&&cross?'#ff8a3d':k>=1?'rgba(185,168,255,.8)':'rgba(255,255,255,.3)');});document.querySelectorAll('.rr').forEach(e=>e.style.opacity=k>=1?1:0);};</script>
+</body></html>

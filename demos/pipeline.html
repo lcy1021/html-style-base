@@ -1,0 +1,20 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>流程管线</title><link rel="stylesheet" href="demo.css">
+<style>
+.pipe{position:absolute;left:34px;right:34px;top:150px;display:flex;align-items:center}
+.st{flex:1;text-align:center;position:relative;opacity:.35;transition:opacity .4s}
+.st i{display:grid;place-items:center;width:44px;height:44px;margin:0 auto;border-radius:50%;border:2px solid var(--mut);font-style:normal;font-weight:600}
+.st.gate i{border-radius:10px;transform:rotate(45deg)}.st.gate i span{transform:rotate(-45deg)}
+.st b{display:block;margin-top:10px;font-size:13px}
+.st.on{opacity:1}.st.on i{border-color:var(--violet);background:rgba(185,168,255,.2)}
+.st.always i{border-style:solid}.st.flex i{border-style:dashed}
+.lg{position:absolute;left:34px;bottom:80px;font-size:13px;color:var(--mut);line-height:2}
+</style></head>
+<body data-steps="4" data-caps="每次都做的步骤|中间有一道闸门|闸门决定后面走多深|整条流程">
+<div class="stage"><p class="eb">示例 · 去业务化</p><h1>流程帮你不遗漏，<em>走多深按需求判断。</em></h1></div>
+<div class="pipe" id="pp"></div>
+<p class="lg">实线：每次都做　虚线：做多少由闸门决定</p>
+<script src="demo.js"></script>
+<script>const S=[['收集原始材料',1],['看清已知未知',1],['判断要不要深入',2],['确认关键未知',0],['写简短记录',1],['对齐',0],['上线回看',0]];
+pp.innerHTML=S.map((s,i)=>`<div class="st ${s[1]==2?'gate':s[1]?'always':'flex'}" data-t="${s[1]}"><i><span>${i+1}</span></i><b>${s[0]}</b></div>`).join('');
+window.onStep=k=>{[...pp.children].forEach(el=>{const t=+el.dataset.t;el.classList.toggle('on',(k===0&&t===1)||(k===1&&t===2)||(k===2&&t!==1)||k===3);});};</script>
+</body></html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>传话链</title><link rel="stylesheet" href="demo.css">
+<style>
+.lad{position:absolute;right:34px;top:30px;display:flex;gap:6px;font-size:12px}
+.lad b{padding:4px 10px;border-radius:8px;border:1px solid #d8d3c8;color:#a39d90;font-weight:500;transition:.4s}
+.chain{position:absolute;left:34px;right:34px;top:58%;height:110px}
+.line{position:absolute;left:8%;right:8%;top:28px;border-top:2px dashed #cbc5b8}
+.n{position:absolute;top:0;width:110px;margin-left:-55px;text-align:center;opacity:.4;transition:.4s}
+.n i{display:grid;place-items:center;width:56px;height:56px;margin:0 auto 8px;border-radius:50%;background:#fff;border:2px solid #ddd8cd;font-style:normal;font-size:22px}
+.n b{font-size:13px}
+.say{position:absolute;bottom:calc(100% + 14px);width:min(320px,40vw);transform:translateX(-50%);padding:12px 16px;border-radius:14px;background:#fff;border:2px solid #1d2129;font-size:15px;line-height:1.55;opacity:0}
+.say.on{opacity:1}.say small{display:block;margin-top:6px;font-size:12px;font-weight:600;color:#c2412d}
+</style></head>
+<body class="light" data-steps="4" data-caps="现场：说的是正在做的事（任务）|转一手：条件丢了，只剩评价|再转一手：变成了一个做法（方案）|到你手上：已经是一个界面交互">
+<div class="stage"><p class="eb" style="color:#b5482b">示例 · 去业务化</p><h1>每转一手，说法就可能<em style="color:#5b3fd6">换一个层级。</em></h1></div>
+<div class="lad" id="lad"><b>任务</b><b>评价</b><b>方案</b><b>界面</b></div>
+<div class="chain"><div class="line"></div>
+ <div class="n" style="left:8%"><i>🧑‍💼</i><b>一线用户</b></div><div class="n" style="left:36%"><i>🤝</i><b>客户经理</b></div><div class="n" style="left:64%"><i>📋</i><b>需求池</b></div><div class="n" style="left:92%"><i>🎨</i><b>设计师</b></div>
+ <div class="say" data-s="0-0" style="left:20%">“每月对账要把数据按部门拆开，十几个部门一个个筛。”<small>说的是任务</small></div>
+ <div class="say" data-s="1-1" style="left:36%">“用户说导出不太方便。”<small>只剩一句评价</small></div>
+ <div class="say" data-s="2-2" style="left:64%">“导出支持按部门拆分。”<small>变成了一个做法</small></div>
+ <div class="say" data-s="3" style="left:80%">“加一个拆分选项？”<small>到手已经是界面</small></div>
+</div>
+<p class="note">内容为示意</p><script src="demo.js"></script>
+<script>const C=['#2f8f46','#c2412d','#e08a00','#6a4cf0'];window.onStep=k=>{[...document.querySelectorAll('.n')].forEach((n,i)=>n.style.opacity=i<=k?1:.4);[...document.querySelectorAll('#lad b')].forEach((b,i)=>{const on=i===k;b.style.background=on?C[i]:'';b.style.color=on?'#fff':'';b.style.borderColor=on?C[i]:''});};</script>
+</body></html>

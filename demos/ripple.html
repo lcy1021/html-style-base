@@ -1,0 +1,24 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>涟漪层级</title><link rel="stylesheet" href="demo.css">
+<style>
+svg.rp{position:absolute;left:3vw;width:46vw;top:100px;bottom:64px;height:calc(100% - 164px)}
+.r circle{fill:none;stroke:var(--c);stroke-width:1.5;opacity:.3;transition:.4s}.r text{fill:var(--c);font-size:13px;text-anchor:middle;opacity:.5;paint-order:stroke;stroke:#0c0b12;stroke-width:6px}
+.r{cursor:pointer}.r.on circle{opacity:1;stroke-width:4}.r.on text{opacity:1}.r.seen circle{opacity:.7}
+.panel{position:absolute;left:52vw;right:34px;top:40%;transform:translateY(-50%)}
+.panel small{font-size:12px;color:var(--mut);letter-spacing:.1em}.panel h2{font-size:28px;font-weight:500;margin-top:4px}
+.panel p{margin-top:12px;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.06);border-left:3px solid var(--violet);font-size:14px;line-height:1.7}
+.ratio{position:absolute;left:52vw;right:34px;bottom:74px;font-size:11px;color:var(--mut)}
+.ratio b{position:relative;display:flex;justify-content:space-between;margin-top:6px;height:28px;border-radius:8px;overflow:hidden;background:#1d2238}
+.ratio i{position:absolute;inset:0 auto 0 0;width:var(--w,85%);background:#ffe4c2;transition:width .8s var(--ease)}
+.ratio em{position:relative;font-style:normal;font-size:12px;padding:0 10px;line-height:28px}.ratio em:first-of-type{color:#5a3300}
+</style></head>
+<body data-steps="4" data-caps="最内层：单个功能|往外：模块|再往外：路径|最外层：使用模式">
+<div class="stage"><p class="eb">示例 · 去业务化</p><h1>分析对象，<em>一圈一圈变大。</em></h1></div>
+<svg class="rp" viewBox="0 0 400 400" id="rp"></svg>
+<div class="panel"><small id="pn"></small><h2 id="pt"></h2><p id="pp"></p></div>
+<div class="ratio">越往外，越依赖没说出口的需求<b><i id="ri"></i><em>有人直接提</em><em style="color:#e6ecff">没人会直接提</em></b></div>
+<p class="note">内容为示意</p><script src="demo.js"></script>
+<script>const C=['#ff7a3d','#ffb547','#5ad08a','#4ea1ff'],T=['单个功能','模块','使用路径','使用模式'],D=['一个入口找不到：这一层能解决，就在这一层处理。','同一模块反复冒出单点诉求，修了一个又来一个。','用户在一条路径上多处将就、来回跳转。','这类用户的实际用法，和产品的默认假设不一样。'],R=[40,85,130,175];
+document.getElementById('rp').innerHTML=[3,2,1,0].map(i=>`<g class="r" data-i="${i}" style="--c:${C[i]}"><circle cx="200" cy="205" r="${R[i]}"/><text x="200" y="${205-R[i]+5}">${T[i]}</text></g>`).join('')+'<circle cx="200" cy="205" r="7" fill="#fff"/>';
+document.querySelectorAll('.r').forEach(g=>g.onclick=()=>DEMO.set(+g.dataset.i));
+window.onStep=k=>{document.querySelectorAll('.r').forEach(g=>{const i=+g.dataset.i;g.classList.toggle('on',i===k);g.classList.toggle('seen',i<k);});pn.textContent=`层级 0${k+1}`;pt.textContent=T[k];pt.style.color=C[k];pp.textContent=D[k];ri.style.setProperty('--w',[85,62,40,20][k]+'%');};</script>
+</body></html>

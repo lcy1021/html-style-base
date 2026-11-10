@@ -1,0 +1,19 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>文字层级与防单字换行</title><link rel="stylesheet" href="demo.css">
+<style>
+.cmp{position:absolute;left:34px;right:34px;top:120px;bottom:80px;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.box{border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:22px;overflow:hidden}
+.box>small{font-size:11px;color:var(--mut)}
+.bad h3,.good h3{margin-top:12px;font-size:30px;font-weight:700;width:330px;line-height:1.35}
+.good h3{font-weight:400;letter-spacing:-.03em;text-wrap:balance}.good h3 em{font-style:normal;color:var(--violet)}
+.bad h3{text-wrap:wrap}
+.good .e{margin-top:14px;font-size:11px;letter-spacing:.14em;color:var(--amber)}
+.good p,.bad p{margin-top:10px;font-size:14px;line-height:1.9;color:var(--mut);width:330px}
+.good p{text-wrap:pretty}
+</style></head>
+<body data-steps="2" data-caps="左：默认换行、粗体堆叠｜右：均衡换行 + 层级|关键句仍可手动断行">
+<div class="stage"><p class="eb">示例</p><h1>一屏一个观点，<em>标题就是这一屏要说的话。</em></h1></div>
+<div class="cmp">
+ <div class="box bad"><small>默认</small><h3>把方案里没写出来的假设暴露出来</h3><p>产品写方案时想的是要有什么功能，设计师要把用户的每一步操作都走一遍。</p></div>
+ <div class="box good"><small>改后</small><p class="e">设计师在需求分析里的价值</p><h3>把方案里<em>没写出来的假设</em><span data-s="1"><br></span>暴露出来。</h3><p>产品写方案时想的是“要有什么功能”；设计师要把用户的每一步操作都走一遍。</p></div>
+</div>
+<script src="demo.js"></script></body></html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>从一个到很多</title><link rel="stylesheet" href="demo.css">
+<style>
+.one{position:absolute;left:50%;top:56%;width:min(420px,70vw);transform:translate(-50%,-50%);padding:18px;border-radius:16px;background:#fff;box-shadow:0 20px 50px rgba(0,0,0,.12);transition:opacity .6s,transform .8s var(--ease)}
+.btns{display:flex;gap:8px;margin-top:10px}.btns span{width:var(--w,96px);padding:9px 0;border-radius:8px;background:#eef3ff;color:#165dff;font-size:13px;text-align:center;overflow:hidden;white-space:nowrap;text-overflow:clip;transition:width .6s var(--ease)}
+.s1 .btns span{--w:72px}
+.many{position:absolute;left:34px;right:34px;top:110px;bottom:70px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;opacity:0;transition:opacity .6s}
+.s2 .many{opacity:1}.s2 .one{opacity:0;transform:translate(-50%,-50%) scale(.9)}
+.many div{background:#fff;border-radius:10px;padding:10px;font-size:11px;color:#86909c}
+.many i{display:block;margin-top:6px;padding:6px 8px;border-radius:6px;background:#eef3ff;color:#165dff;font-style:normal;white-space:nowrap;overflow:hidden}.many i.cut{background:#ffece8;color:#d93a3a}
+.stamp{position:absolute;left:50%;top:50%;padding:8px 18px;border:3px solid #e2543b;color:#e2543b;background:#fff;font-weight:700;font-size:22px;border-radius:8px;transform:translate(-50%,-50%) rotate(-8deg) scale(1.5);opacity:0;transition:.4s}
+.stamp.on{opacity:1;transform:translate(-50%,-50%) rotate(-8deg) scale(1)}
+</style></head>
+<body class="light" data-steps="4" data-caps="一个页面里看|只是变窄一点，好像影响不大|放到所有用户的配置里看|结论：评估后决定不改">
+<div class="stage"><p class="eb" style="color:#b5482b">示例 · 去业务化</p><h1>外观上的小改动，也可能<em style="color:#5b3fd6">牵动大量存量配置。</em></h1></div>
+<div class="one"><small style="color:#86909c">首页 · 快捷入口</small><div class="btns"><span>销售日报</span><span>库存周报</span><span>客户回访清单</span></div></div>
+<div class="many" id="many"></div>
+<div class="stamp" data-s="3">最终决定：不改</div>
+<p class="note">内容为示意</p><script src="demo.js"></script>
+<script>const N=['销售日报','月度经营分析总览','库存','渠道费用明细核对','回款','区域目标达成跟踪表','采购','人员排班'];document.getElementById('many').innerHTML=Array.from({length:16},(_,i)=>`<div>用户 ${i+1} 的首页<i class="${N[i%8].length>5?'cut':''}">${N[i%8]}</i></div>`).join('');</script>
+</body></html>

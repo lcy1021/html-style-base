@@ -1,0 +1,25 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>划掉重写</title><link rel="stylesheet" href="demo.css">
+<style>
+body.light .card{background:#fff}
+.card{position:absolute;left:50%;top:120px;width:min(560px,86vw);transform:translateX(-50%);padding:22px 24px;border-radius:16px;box-shadow:0 20px 50px rgba(0,0,0,.1)}
+.k{font-size:12px;color:var(--mut);text-align:center;margin-bottom:12px}
+.from,.to{padding:13px 16px;border-radius:12px;font-size:17px}
+.from{border:1.5px solid #c9cdd4;transition:color .4s 1s,background .4s 1s,border-color .4s 1s}
+.ft{position:relative;display:inline-block}.ft::after{content:"";position:absolute;left:-4px;right:-4px;top:52%;height:2px;background:#e2543b;transform:scaleX(0);transform-origin:left;transition:transform .55s .7s cubic-bezier(.6,0,.2,1)}
+.s1 .from{color:#a0a6b0;background:#f2f3f5;border-color:transparent}.s1 .ft::after{transform:scaleX(1)}
+.to{margin-top:10px;background:#165dff;color:#fff;font-weight:600;opacity:0;max-height:0;padding-top:0;padding-bottom:0;overflow:hidden;transition:opacity .5s 1.6s,max-height .6s 1.4s,padding .6s 1.4s}
+.s1 .to{opacity:1;max-height:80px;padding-top:13px;padding-bottom:13px}
+.cells{position:absolute;left:34px;right:34px;bottom:90px;display:grid;grid-template-columns:repeat(8,1fr);gap:6px}
+.cells span{height:34px;border-radius:6px;display:grid;place-items:center;font-size:12px;font-weight:600;background:#fff3e8;color:#d25f00;transition:transform 1.2s var(--ease),background .4s 1.2s,color .4s 1.2s}
+.s2 .cells span{background:#e8ffea;color:#00a12a}
+</style></head>
+<body class="light" data-steps="3" data-caps="原来的设计问题|旧问题被划掉，换成新问题（按时间播完，不随滚动停在半途）|画面跟着新问题变化：顺序归位">
+<div class="stage"><p class="eb" style="color:#b5482b">示例 · 去业务化</p><h1>分析之后，<em style="color:#5b3fd6">设计问题变了。</em></h1></div>
+<div class="card"><p class="k">设计问题</p><div class="from"><span class="ft">怎样让批量拖动更快</span></div><div class="to">怎样减少反复恢复已有顺序的工作</div></div>
+<div class="cells" id="cells"></div>
+<p class="note">内容为示意</p><script src="demo.js"></script>
+<script>
+const SRC='ABCDEFGH'.split(''),SH='CAEBGDHF'.split(''),box=document.getElementById('cells');
+box.innerHTML=SH.map(c=>`<span data-c="${c}">${c}</span>`).join('');
+window.onStep=k=>{const w=box.getBoundingClientRect().width/8;[...box.children].forEach(el=>{const c=el.dataset.c,from=SH.indexOf(c),to=SRC.indexOf(c);el.style.transform=k>=2?`translateX(${(to-from)*w}px)`:'none';});};
+</script></body></html>
