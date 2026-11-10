@@ -120,7 +120,8 @@ main{padding:8px 48px 120px}
 .ox{width:38px;height:38px;display:grid;place-items:center;margin-left:4px;color:var(--ink2);transition:color .2s,transform .3s var(--ease)}
 .ox:hover{color:var(--ink);transform:rotate(90deg)}
 .ovpanel{position:absolute;left:28px;right:28px;top:68px;bottom:28px;border-radius:14px;clip-path:inset(0 round 14px)}
-.ovpanel.loading{background:#0c0b12}
+/* 卡片封面：打开时从卡片原位跟着窗口变大并淡出，关闭时反过来，落回卡片时画面一致 */
+.ovsnap{position:fixed;z-index:2;border-radius:12px;background:#0c0b12 left top/cover no-repeat;pointer-events:none;opacity:0}
 .ovpanel iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;background:transparent}
 .ovbar{opacity:0;transform:translateY(-8px);transition:opacity .35s .15s,transform .35s .15s var(--ease)}
 .ov.on .ovbar{opacity:1;transform:none}
@@ -161,6 +162,7 @@ main{padding:8px 48px 120px}
     <button class="ox" id="ovClose" type="button" title="关闭（Esc）" aria-label="关闭"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
   </div>
   <div class="ovpanel" id="ovp"><iframe id="ovf" title="样例详情"></iframe></div>
+  <div class="ovsnap" id="ovs"></div>
 </div>
 
 <script src="data/patterns.js"></script>
@@ -337,53 +339,66 @@ main{padding:8px 48px 120px}
     history.replaceState(null, '', '#' + encodeURIComponent(id));
     document.title = `#${p.no} ${p.title} · HTML Style Base`;
   }
-  const ovp = $('ovp');
+  const ovp = $('ovp'), ovs = $('ovs');
   const EASE = 'cubic-bezier(.2,.8,.2,1)';
-  let from = null, revealT = 0;
-  // 用 clip-path 把可见区域从卡片的位置展开到整个弹层：里面的样例始终按原尺寸渲染，不会先糊后清
-  function fromClip(el) {
-    const f = ovp.getBoundingClientRect(), fallback = `inset(5% 5% 5% 5% round 14px)`;
-    if (!el || !el.isConnected) return fallback;
+  let from = null, revealT = 0, revealFn = null;
+  const visRect = el => {
+    if (!el || !el.isConnected) return null;
     const r = el.getBoundingClientRect();
-    if (!r.width || r.bottom < 0 || r.top > innerHeight) return fallback;
-    const c = v => Math.max(0, Math.round(v));
+    return (!r.width || r.bottom < 0 || r.top > innerHeight) ? null : r;
+  };
+  // 窗口（clip-path）从卡片展开到整个弹层：里面的样例始终按原尺寸渲染，不会糊
+  function clipFor(r) {
+    if (!r) return 'inset(5% 5% 5% 5% round 14px)';
+    const f = ovp.getBoundingClientRect(), c = v => Math.max(0, Math.round(v));
     return `inset(${c(r.top - f.top)}px ${c(f.right - r.right)}px ${c(f.bottom - r.bottom)}px ${c(r.left - f.left)}px round 12px)`;
+  }
+  function snapTo(r, opacity, dur, opDur, opDelay) {
+    ovs.style.transition = dur ? `left ${dur}ms ${EASE}, top ${dur}ms ${EASE}, width ${dur}ms ${EASE}, height ${dur}ms ${EASE}, border-radius ${dur}ms ${EASE}, opacity ${opDur}ms linear ${opDelay}ms` : 'none';
+    Object.assign(ovs.style, {left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px', opacity: String(opacity)});
   }
   function openOv(id, el) {
     if (!BY[id]) return;
     lastFocus = document.activeElement; from = el || null;
-    stopAll();
+    const p = BY[id], r = visRect(from);
     meta(id); drawer(false); $('ovMode').hidden = true; $('ovInfo').hidden = false;
     ov.hidden = false; document.documentElement.style.overflow = 'hidden';
-    ovp.style.transition = 'none'; ovp.style.clipPath = fromClip(from); ovp.classList.add('loading');
+    // 1. 卡片原位叠一张同尺寸的封面（清晰），窗口先收在卡片里
+    const cover = p.demo ? `url("covers/${base(p.demo)}.jpg")` : 'none';
+    ovs.style.backgroundImage = cover;
+    if (r && p.demo) snapTo(r, 1, 0); else ovs.style.opacity = '0';
+    ovp.style.transition = 'none'; ovp.style.clipPath = clipFor(r); ovp.style.opacity = r ? '1' : '0';
     ovp.getBoundingClientRect();
-    requestAnimationFrame(() => ov.classList.add('on'));          // 毛玻璃背景马上出现，点击就有反馈
+    requestAnimationFrame(() => ov.classList.add('on'));          // 毛玻璃背景马上出现
+    stopAll();
     const dur = reduce ? 0 : 520;
     let done = false;
-    const reveal = () => {                                        // 样例加载好（最多等 450ms）再展开
+    revealFn = () => {                                            // 2. 样例画好了再展开；封面跟着变大并淡出
       if (done) return; done = true; clearTimeout(revealT);
-      ovp.style.transition = `clip-path ${dur}ms ${EASE}`; ovp.style.clipPath = 'inset(0px 0px 0px 0px round 14px)';
-      setTimeout(() => ovp.classList.remove('loading'), dur);
+      ovp.style.transition = `clip-path ${dur}ms ${EASE}, opacity ${dur / 2}ms`;
+      ovp.style.clipPath = 'inset(0px 0px 0px 0px round 14px)'; ovp.style.opacity = '1';
+      if (r && p.demo) snapTo(ovp.getBoundingClientRect(), 0, dur, dur * .45, 0);
     };
-    revealT = setTimeout(reveal, 450);
-    ovf.onload = () => {
-      if (ovf.src.endsWith('about:blank')) return;
-      try { ovf.contentWindow.focus(); } catch (e) {}
-      requestAnimationFrame(() => requestAnimationFrame(reveal));  // 等第一帧画出来
-    };
+    revealT = setTimeout(revealFn, 1500);                         // 网络很慢时最多等 1.5 秒
+    ovf.onload = () => { if (!ovf.src.endsWith('about:blank')) try { ovf.contentWindow.focus(); } catch (e) {} };
     ovf.src = 'view.html?embed=1#' + encodeURIComponent(id);
   }
   function closeOv() {
     if (ov.hidden || !ov.classList.contains('on')) return;
-    clearTimeout(revealT);
-    const dur = reduce ? 0 : 420;
-    ovp.style.transition = `clip-path ${dur}ms ${EASE}`; ovp.style.clipPath = fromClip(from);
+    clearTimeout(revealT); revealFn = null;
+    const dur = reduce ? 0 : 440, r = visRect(from), id = decodeURIComponent(location.hash.slice(1)), p = BY[id];
+    // 3. 窗口收回卡片，同时封面淡入：落回时显示的就是卡片自己的封面
+    const sameCard = r && p && from && from.closest && from.closest('[data-id]') && from.closest('[data-id]').dataset.id === id && p.demo;
+    if (sameCard) { snapTo(ovp.getBoundingClientRect(), 0, 0); ovs.getBoundingClientRect(); snapTo(r, 1, dur, dur * .5, dur * .35); }
+    ovp.style.transition = `clip-path ${dur}ms ${EASE}, opacity ${dur}ms`;
+    ovp.style.clipPath = clipFor(r); if (!r) ovp.style.opacity = '0';
     ov.classList.remove('on');
-    setTimeout(() => { ov.hidden = true; ovf.src = 'about:blank'; document.documentElement.style.overflow = ''; resumeAll(); }, dur);
+    setTimeout(() => { ov.hidden = true; ovf.src = 'about:blank'; ovs.style.opacity = '0'; document.documentElement.style.overflow = ''; resumeAll(); }, dur + 30);
     history.replaceState(null, '', location.pathname + location.search);
     document.title = 'HTML Style Base · 设计经验库';
     if (lastFocus && lastFocus.focus) lastFocus.focus({preventScroll: true});
   }
+  const ready = () => { if (revealFn) revealFn(); };
   function drawer(v) { $('ovInfo').innerHTML = `<span class="dot"></span>${v ? '收起详情' : '查看详情'} <kbd>I</kbd>`; $('ovInfo').setAttribute('aria-pressed', String(v)); }
   function mode(m) {
     const v = V(); $('ovMode').hidden = !(v && v.hasSteps && v.hasSteps());
@@ -400,7 +415,7 @@ main{padding:8px 48px 120px}
   }
   // 给弹层里的详情页调用
   function textOnly(v) { $('ovInfo').hidden = v; if (v) $('ovMode').hidden = true; }
-  window.HSB = {meta, drawer, mode, textOnly, close: closeOv};
+  window.HSB = {meta, drawer, mode, textOnly, ready, close: closeOv};
 
   render();
   // 链接带 #id：直接打开弹层（兼容旧链接）

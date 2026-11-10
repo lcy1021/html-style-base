@@ -192,7 +192,6 @@ body.open .toast{left:calc((100% - var(--dw)) / 2)}
 <div class="copied" id="copied">已复制</div>
 
 <script src="data/patterns.js"></script>
-<script src="data/designs.js"></script>
 <script src="data/live.js"></script>
 <script>
 (() => {
@@ -222,7 +221,12 @@ body.open .toast{left:calc((100% - var(--dw)) / 2)}
     <h4>怎么做</h4>${li(p.how)}
     <h4>踩过的坑</h4>${li(p.pitfalls, 'pit')}
     <div class="src"><span class="tags">${(p.tags || []).map(t => `<span>${esc(t)}</span>`).join('')}</span>${p.source ? `<span>来自：${esc(p.source)}</span>` : ''}${p.url ? `<a href="${esc(p.url)}" target="_blank" rel="noopener">原始参考 ↗</a>` : ''}${p.demo ? `<a href="${esc(p.demo)}" target="_blank" rel="noopener">单独打开样例 ↗</a>` : ''}</div>`;
-  const D = (window.DESIGNS || {})[p.id] || '';
+  let D = '';
+  let dLoading = null;
+  function loadDesigns() {            // 只有切到 DESIGN.md 标签时才加载（约 380KB），详情页打开更快
+    if (window.DESIGNS) return Promise.resolve();
+    return dLoading || (dLoading = new Promise(res => { const s = document.createElement('script'); s.src = 'data/designs.js'; s.onload = s.onerror = () => res(); document.head.appendChild(s); }));
+  }
   const inl = t => esc(t).replace(/`([^`]+)`/g, (m, c) => { const h = c.match(/^#[0-9A-F]{6}/i); return `${h ? `<span class="sw" style="background:${h[0]}"></span>` : ''}<code>${c}</code>`; }).replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>').replace(/&lt;(https?:[^&]+)&gt;/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
   function md(src) {
     const L = src.split('\n'), out = []; let i = 0;
@@ -245,6 +249,12 @@ body.open .toast{left:calc((100% - var(--dw)) / 2)}
   let tab = 'a';
   function setTab(t) {
     tab = t; document.querySelectorAll('.tab').forEach(x => x.setAttribute('aria-selected', String(x.dataset.t === t)));
+    if (t === 'd' && !window.DESIGNS) {
+      $('body').innerHTML = '<p class="sum">正在载入 DESIGN.md…</p>';
+      loadDesigns().then(() => { D = (window.DESIGNS || {})[p.id] || ''; if (tab === 'd') setTab('d'); });
+      return;
+    }
+    D = (window.DESIGNS || {})[p.id] || '';
     $('body').innerHTML = t === 'a' ? about() : design(); $('body').scrollTop = 0;
     if (t === 'a') drawSteps();
   }
@@ -321,6 +331,7 @@ body.open .toast{left:calc((100% - var(--dw)) / 2)}
         d.addEventListener('pointerdown', manual, true); d.addEventListener('wheel', manual, {capture: true, passive: true});
         d.addEventListener('mousemove', e => { if (e.clientY < 14) hud(true); });
         drawSteps(); markStep(W.DEMO ? W.DEMO.get() : 0, false);
+        if (HOST && HOST.ready) requestAnimationFrame(() => requestAnimationFrame(() => HOST.ready()));
         fr.focus(); if (N > 1) { $('auto').hidden = false; setMode(savedMode()); if (HOST && HOST.mode) HOST.mode(savedMode()); }
       } catch (e) { /* 跨域时只能看，不能同步 */ }
     };
@@ -377,7 +388,7 @@ body.open .toast{left:calc((100% - var(--dw)) / 2)}
     toggle: () => { if (p.demo) open(); }, isOpen: () => B.classList.contains('open'), setMode: m => setMode(m, true), hasSteps: () => N > 1,
     key: e => { if (keys(e)) return true; if (W && W.DEMO && ['ArrowRight', 'ArrowLeft', ' ', 'ArrowDown', 'ArrowUp'].includes(e.key)) { manual(); W.DEMO.set(W.DEMO.get() + (['ArrowLeft', 'ArrowUp'].includes(e.key) ? -1 : 1)); return true; } return false; },
   };
-  if (HOST) { HOST.meta(p.id); if (HOST.textOnly) HOST.textOnly(!p.demo); }
+  if (HOST) { HOST.meta(p.id); if (HOST.textOnly) HOST.textOnly(!p.demo); if (!p.demo && HOST.ready) requestAnimationFrame(() => HOST.ready()); }
 
   /* ---------- 首次提示 ---------- */
   let seen = false; try { seen = localStorage.getItem('hsb-seen') === '1'; localStorage.setItem('hsb-seen', '1'); } catch (e) {}
