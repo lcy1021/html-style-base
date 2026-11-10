@@ -164,7 +164,9 @@ function loginPage(gh, pw, msg = '') {
 const SEC = { 'X-Content-Type-Options': 'nosniff', 'Referrer-Policy': 'same-origin', 'X-Frame-Options': 'DENY' };
 const server = http.createServer(async (req, res) => {
   for (const [k, v] of Object.entries(SEC)) res.setHeader(k, v);
-  const url = new URL(req.url, 'http://x');
+  let url;
+  try { url = new URL('http://x' + (req.url.startsWith('/') ? req.url : '/' + req.url)); }   // 扫描器会发 //xx 之类的怪路径，不能当成主机名解析
+  catch { return send(res, 400, 'bad request'); }
   try {
     if (url.pathname === '/e') return await track(req, res);
     if (url.pathname === '/mcp') return await mcp(req, res, url);
@@ -184,3 +186,5 @@ setInterval(backup, 3600e3).unref();     // 每小时检查一次，当天没备
 server.listen(config.port, () => console.log(`[server] 监听 :${config.port}  站点目录 ${config.siteDir}  后台 ${config.publicUrl}/admin`));
 const stop = () => { server.close(); try { db.close(); } catch {} process.exit(0); };
 process.on('SIGTERM', stop); process.on('SIGINT', stop);
+process.on('uncaughtException', err => console.error('[uncaught]', err));        // 兜底：单个请求出错不让整个服务退出
+process.on('unhandledRejection', err => console.error('[unhandled]', err));
