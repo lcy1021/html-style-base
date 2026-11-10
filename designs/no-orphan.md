@@ -3,7 +3,7 @@
 > 标题 text-wrap: balance，正文 text-wrap: pretty；关键句手动断行，做完扫描一遍。
 
 **想说明：** 避免“假 / 设”这种一个字一行  
-**分类：** 文字布局  
+**分类：** 规范  
 **Theme：** 深色  
 **样例：** `demos/text-layout.html`  
 

@@ -6,7 +6,7 @@
 window.PATTERNS = [
   /* ---------------- 案例展示 ---------------- */
   {
-    id: 'exploded-layers', title: '爆炸分层', category: '案例展示',
+    id: 'exploded-layers', title: '爆炸分层', category: '样式',
     intent: '一句话 / 一个对象背后有好几层',
     summary: '斜放的层板，进场直接展开；讲者逐层聚焦，说明“诉求停在哪一层、要往上补回什么”。',
     when: ['目标 / 任务 / 方案 / 界面 这类层级关系', '组件的完整状态层', '“表面一层，背后还有几层”的观点'],
@@ -15,7 +15,7 @@ window.PATTERNS = [
     demo: 'demos/exploded-layers.html', tags: ['层级', '3D', '逐步讲解'], added: '2026-11-10', source: 'UED 需求分析分享（开场）'
   },
   {
-    id: 'case-intro', title: '三拍递进的案例开场', category: '案例展示',
+    id: 'case-intro', title: '三拍递进的案例开场', category: '样式',
     intent: '让听众先知道是什么案例，再看方案',
     summary: '案例背景 → 照字面理解（界面）→ 动手之前的追问。三拍都在同一页里推进。',
     when: ['任何要“拆”的需求案例的第一页', '听众不了解业务背景时'],
@@ -24,7 +24,7 @@ window.PATTERNS = [
     demo: 'demos/case-intro.html', tags: ['案例开场', '逐步讲解'], added: '2026-11-10', source: 'UED 需求分析分享（开场）'
   },
   {
-    id: 'relay-chain', title: '传话链', category: '案例展示',
+    id: 'relay-chain', title: '传话链', category: '样式',
     intent: '一句话经过多人转述后怎样变形',
     summary: '人物一字排开，对话框依次移动；角落标出这句话“现在停在哪一层”。',
     when: ['需求转述、信息传递', '多角色交接中信息的变化'],
@@ -33,7 +33,7 @@ window.PATTERNS = [
     demo: 'demos/relay-chain.html', tags: ['人物', '对话', '层级'], added: '2026-11-10', source: 'UED 需求分析分享（2.1）'
   },
   {
-    id: 'strike-rewrite', title: '划掉重写', category: '案例展示',
+    id: 'strike-rewrite', title: '划掉重写', category: '样式',
     intent: '分析之后，问题被重新定义',
     summary: '旧问题先出现 → 红线划掉 → 新问题展开 → 画面跟着新问题变化。',
     when: ['“从 A 问题变成 B 问题”的认知转变', '需求方案被重新表述'],
@@ -42,7 +42,7 @@ window.PATTERNS = [
     demo: 'demos/strike-rewrite.html', tags: ['认知转变', '动效'], added: '2026-11-10', source: 'UED 需求分析分享（2.1 字段排序）'
   },
   {
-    id: 'iceberg', title: '冰山下潜', category: '案例展示',
+    id: 'iceberg', title: '冰山下潜', category: '样式',
     intent: '一个现成方案背后还有哪些没问清的问题',
     summary: '方案露在水面上；每下潜一层是一个可以去确认的问题，右侧深度按钮可直接跳转。',
     when: ['拿到现成方案 / PRD 时的追问', '“看到的只是一角”的观点'],
@@ -51,7 +51,7 @@ window.PATTERNS = [
     demo: 'demos/iceberg.html', tags: ['深度', '追问'], added: '2026-11-10', source: 'UED 需求分析分享（2.4）'
   },
   {
-    id: 'rehearsal', title: '情景预演', category: '案例展示',
+    id: 'rehearsal', title: '情景预演', category: '样式',
     intent: '逻辑上对、场景上错的反例',
     summary: '左边设计师的逻辑，右边用户的场景；盖章“改！”→ 用户照常操作出错 → 盖章“回退”→ 底部“逻辑上对｜场景上错”。',
     when: ['主动优化前的验证', '上线后回退的复盘'],
@@ -60,7 +60,7 @@ window.PATTERNS = [
     demo: 'demos/rehearsal.html', tags: ['反例', '盖章'], added: '2026-11-10', source: 'UED 需求分析分享（2.5）'
   },
   {
-    id: 'checklist', title: '清单逐条打勾', category: '案例展示',
+    id: 'checklist', title: '清单逐条打勾', category: '样式',
     intent: '一套判断标准',
     summary: '标准逐条打勾，每条下面挂“本例”的事实，最后亮出结论。',
     when: ['“做到什么程度算够”', '评审 / 验收标准'],
@@ -69,7 +69,7 @@ window.PATTERNS = [
     demo: 'demos/checklist.html', tags: ['标准', '清单'], added: '2026-11-10', source: 'UED 需求分析分享（3.2）'
   },
   {
-    id: 'one-to-many', title: '从一个到很多', category: '案例展示',
+    id: 'one-to-many', title: '从一个到很多', category: '样式',
     intent: '一个小改动，放到所有人那里影响很大',
     summary: '先在一个界面里看改动，再散成很多用户的界面，问题被放大，最后盖章结论。',
     when: ['评估后放弃的决定', '存量配置、历史数据的影响'],
@@ -78,7 +78,7 @@ window.PATTERNS = [
     demo: 'demos/one-to-many.html', tags: ['视角切换', '盖章'], added: '2026-11-10', source: 'UED 需求分析分享（3.1）'
   },
   {
-    id: 'stageflow', title: '阶段曲线 stageflow', category: '案例展示',
+    id: 'stageflow', title: '阶段曲线 stageflow', category: '样式',
     intent: '不同阶段关注点不同',
     summary: '上方阶段曲线，下方左边构成 / 流向，右边本阶段问题 + 主要关注的需求；按阶段推进。',
     when: ['产品阶段、项目阶段、成长阶段'],
@@ -87,7 +87,7 @@ window.PATTERNS = [
     demo: 'demos/stageflow.html', tags: ['阶段', '曲线'], added: '2026-11-10', source: 'UED 需求分析分享（一、产品阶段）'
   },
   {
-    id: 'ripple', title: '涟漪层级', category: '案例展示',
+    id: 'ripple', title: '涟漪层级', category: '样式',
     intent: '对象 / 视野一圈一圈变大',
     summary: '同心圆可点，侧栏只显示当前层的信号和案例；底部比例条随层级变化。',
     when: ['分析对象逐层扩大', '影响范围、成长路径'],
@@ -96,7 +96,7 @@ window.PATTERNS = [
     demo: 'demos/ripple.html', tags: ['层级', '同心圆'], added: '2026-11-10', source: 'UED 需求分析分享（5.1）'
   },
   {
-    id: 'slope', title: '斜率图', category: '案例展示',
+    id: 'slope', title: '斜率图', category: '样式',
     intent: '两种排序 / 两种结果对不上',
     summary: '左右两列排序，连线交叉越多分歧越大；可再按分组重排。',
     when: ['两种工具 / 两类人给出的排序对比'],
@@ -105,7 +105,7 @@ window.PATTERNS = [
     demo: 'demos/slope.html', tags: ['数据', '对比'], added: '2026-11-10', source: 'UED 需求分析分享（4.2）'
   },
   {
-    id: 'flip-reveal', title: '先猜再揭晓', category: '案例展示',
+    id: 'flip-reveal', title: '先猜再揭晓', category: '样式',
     intent: '让听众参与判断',
     summary: '卡片正面是问题，先请大家猜，再翻面揭晓。',
     when: ['常见误区、两种做法对比', '现场互动'],
@@ -114,7 +114,7 @@ window.PATTERNS = [
     demo: 'demos/flip-reveal.html', tags: ['互动', '翻牌'], added: '2026-11-10', source: 'UED 需求分析分享（4.2）'
   },
   {
-    id: 'fill-record', title: '填入式记录', category: '案例展示',
+    id: 'fill-record', title: '填入式记录', category: '样式',
     intent: '好的产出长什么样',
     summary: '空白模板逐行填入案例事实，最后浓缩成一句话。',
     when: ['模板、记录、交付物示例'],
@@ -123,7 +123,7 @@ window.PATTERNS = [
     demo: 'demos/fill-record.html', tags: ['模板'], added: '2026-11-10', source: 'UED 需求分析分享（3.5）'
   },
   {
-    id: 'pipeline', title: '流程管线', category: '案例展示',
+    id: 'pipeline', title: '流程管线', category: '样式',
     intent: '一条流程里，哪些必做、哪些按需',
     summary: '步骤一字排开，必做实线、可选虚线，闸门步骤用菱形，逐组点亮。',
     when: ['日常操作流程', '人机分工'],
@@ -134,7 +134,7 @@ window.PATTERNS = [
 
   /* ---------------- 页面过渡 ---------------- */
   {
-    id: 'particle-vs-stage', title: '论点页与案例舞台分开', category: '页面过渡',
+    id: 'particle-vs-stage', title: '论点页与案例舞台分开', category: '规范',
     intent: '氛围和信息不打架',
     summary: '粒子 / 氛围只出现在论点页和章节首尾；案例用不透明舞台整块覆盖；章节之间黑场过渡。',
     when: ['长篇演示、多章节分享'],
@@ -143,7 +143,7 @@ window.PATTERNS = [
     demo: 'demos/transitions.html', tags: ['过渡', '粒子'], added: '2026-11-10', source: 'UED 需求分析分享'
   },
   {
-    id: 'step-control', title: '讲者掌握节奏的步进', category: '页面过渡',
+    id: 'step-control', title: '讲者掌握节奏的步进', category: '规范',
     intent: '多拍讲解的页面，讲者控制节奏',
     summary: '同一页里拦截方向键 / 滚轮 / 下一页按钮，先走完小步再翻页，可后退；进场前预先复位。',
     when: ['任何需要分步讲解的页面'],
@@ -152,7 +152,7 @@ window.PATTERNS = [
     demo: 'demos/case-intro.html', tags: ['交互', '节奏'], added: '2026-11-10', source: 'UED 需求分析分享'
   },
   {
-    id: 'morph', title: '同一元素变形', category: '页面过渡',
+    id: 'morph', title: '同一元素变形', category: '规范',
     intent: '状态变化看得出因果',
     summary: '让同一个元素移动 / 变色 / 伸缩，而不是淡出旧的、淡入新的。',
     when: ['排序变化、进度推进、层级聚焦'],
@@ -163,7 +163,7 @@ window.PATTERNS = [
 
   /* ---------------- 文字布局 ---------------- */
   {
-    id: 'one-idea', title: '一屏一个观点', category: '文字布局',
+    id: 'one-idea', title: '一屏一个观点', category: '规范',
     intent: '标题就是这一屏要说的话',
     summary: '眉题（12px 强调色 + 字距）→ 标题（细字重、负字距、关键词换色）→ 正文（1.8–1.95 行高）。结论跟在案例之后。',
     when: ['所有页面'],
@@ -172,7 +172,7 @@ window.PATTERNS = [
     demo: 'demos/text-layout.html', tags: ['层级', '排版'], added: '2026-11-10', source: 'UED 需求分析分享'
   },
   {
-    id: 'no-orphan', title: '防单字换行', category: '文字布局',
+    id: 'no-orphan', title: '防单字换行', category: '规范',
     intent: '避免“假 / 设”这种一个字一行',
     summary: '标题 text-wrap: balance，正文 text-wrap: pretty；关键句手动断行，做完扫描一遍。',
     when: ['中文大标题、窄卡片'],
@@ -181,7 +181,7 @@ window.PATTERNS = [
     demo: 'demos/text-layout.html', tags: ['排版'], added: '2026-11-10', source: 'UED 需求分析分享'
   },
   {
-    id: 'big-screen', title: '大屏适配', category: '文字布局',
+    id: 'big-screen', title: '大屏适配', category: '规范',
     intent: '投到大屏时不显得空、不显得远',
     summary: '宽度用 vw，面板紧跟说明卡；按断点放大字号；内容卡高度随内容。',
     when: ['会议室投屏、2K/4K 显示器'],
@@ -192,7 +192,7 @@ window.PATTERNS = [
 
   /* ---------------- 讲法 ---------------- */
   {
-    id: 'bridge-sentence', title: '每段第一句承接上一段', category: '讲法',
+    id: 'bridge-sentence', title: '每段第一句承接上一段', category: '方法',
     intent: '页与页之间连贯',
     summary: '例：“从零开始，是什么都没有。更常见的反而是另一种情况：方案已经有了。”',
     when: ['演讲稿、文字稿'],
@@ -201,7 +201,7 @@ window.PATTERNS = [
     demo: '', tags: ['演讲稿'], added: '2026-11-10', source: 'UED 需求分析分享'
   },
   {
-    id: 'one-case-through', title: '一个案例讲到底', category: '讲法',
+    id: 'one-case-through', title: '一个案例讲到底', category: '方法',
     intent: '少而深',
     summary: '一节只用一个案例从头讲到尾，比多个案例各讲一点更连贯；同一案例不在两处完整重讲，只回扣一句。',
     when: ['案例较多的分享'],
@@ -210,7 +210,7 @@ window.PATTERNS = [
     demo: '', tags: ['结构'], added: '2026-11-10', source: 'UED 需求分析分享'
   },
   {
-    id: 'speaker-cues', title: '演讲稿逐步标注', category: '讲法',
+    id: 'speaker-cues', title: '演讲稿逐步标注', category: '方法',
     intent: '讲者知道什么时候按键、按了会出现什么',
     summary: '▶ 按一次 + 画面变成什么；☞ 要用鼠标点哪里；【注】只给讲者看的来源 / 示意说明。',
     when: ['分步交互的演示'],
@@ -221,7 +221,7 @@ window.PATTERNS = [
 
   /* ---------------- 工程与交付 ---------------- */
   {
-    id: 'single-file', title: '单文件离线版', category: '工程与交付',
+    id: 'single-file', title: '单文件离线版', category: '工具与交付',
     intent: '别人双击就能看',
     summary: '各页内联 CSS/JS；外壳页用 Blob + iframe 切页，跳转和全屏经 postMessage 交给外壳（切章节不退出全屏）。',
     when: ['发群、发邮件、离线演示'],
@@ -230,7 +230,7 @@ window.PATTERNS = [
     demo: '', tags: ['交付'], added: '2026-11-10', source: 'UED 需求分析分享'
   },
   {
-    id: 'publish', title: '在线发布', category: '工程与交付',
+    id: 'publish', title: '在线发布', category: '工具与交付',
     intent: '不下载也能看',
     summary: 'GitHub Pages：加 .nojekyll，在 Settings → Pages 选 main / root；公开前确认内容可以公开。',
     when: ['长期分享'],
@@ -239,7 +239,7 @@ window.PATTERNS = [
     demo: '', tags: ['交付'], added: '2026-11-10', source: 'UED 需求分析分享'
   },
   {
-    id: 'verify', title: '逐页逐步截图验证', category: '工程与交付',
+    id: 'verify', title: '逐页逐步截图验证', category: '工具与交付',
     intent: '每轮改完都能发现重叠、截断、空白',
     summary: '用 Playwright 逐页逐步截图，拼成总览图检查；同时看控制台报错、动画中途状态、翻页链路。',
     when: ['每轮修改后'],
@@ -248,7 +248,7 @@ window.PATTERNS = [
     demo: '', tags: ['验证'], added: '2026-11-10', source: 'UED 需求分析分享'
   },
   {
-    id: 'facts', title: '不编造，标清示意', category: '工程与交付',
+    id: 'facts', title: '不编造，标清示意', category: '规范',
     intent: '内容可信',
     summary: '数字、金额、原话、比例都要能在材料里找到；没有就标示意或待补，页面上注明。',
     when: ['所有内容'],
@@ -257,131 +257,131 @@ window.PATTERNS = [
     demo: '', tags: ['内容'], added: '2026-11-10', source: 'UED 需求分析分享'
   },
   /* ---------------- 案例展示（形式库补充：A–Z 样板里缺的） ---------------- */
-  { id: 'scroll-story', title: '滚动叙事', category: '案例展示', intent: '一个界面从现状走到方案',
+  { id: 'scroll-story', title: '滚动叙事', category: '样式', intent: '一个界面从现状走到方案',
     summary: '画面固定在一侧，文字一段段经过；同一个画面依次标出问题、原地变成方案、写出完成标准。',
     when: ['单个界面的改版说明', '“现状 → 问题 → 方案 → 标准”的完整讲述'], how: ['画面只保留一个，状态在原位变化', '每段文字对应画面的一次变化', '最后一段写成用户能检查的结果'],
     pitfalls: ['每段都换一张新图，听众会失去参照', '方案段直接跳到高保真，看不出改了哪里'], demo: 'demos/scroll-story.html', related: ['time-machine', 'ref-column'], tags: ['前后对比', '界面', '逐步讲解'], added: '2026-11-10', source: '演示形式库 A' },
-  { id: 'annotate', title: '标注解读 + 前后滑块', category: '案例展示', intent: '每个细节为什么这样设计',
+  { id: 'annotate', title: '标注解读 + 前后滑块', category: '样式', intent: '每个细节为什么这样设计',
     summary: '在界面上点出编号热点，右侧逐条写理由；最后用可拖动的滑块看改版前后。',
     when: ['设计评审、交付说明', '细节多但每处理由都很短'], how: ['热点编号与右侧说明一一对应，可直接点', '滑块默认停在中间，讲者可拖', '前后两张图尺寸、位置完全对齐'],
     pitfalls: ['热点超过 5 个就该拆页', '前后图不对齐，滑块会显得在“抖”'], demo: 'demos/annotate.html', related: ['ref-briefly'], tags: ['标注', '前后对比', '交付'], added: '2026-11-10', source: '演示形式库 B' },
-  { id: 'clue-board', title: '线索板', category: '案例展示', intent: '多条证据拼出一个结论',
+  { id: 'clue-board', title: '线索板', category: '样式', intent: '多条证据拼出一个结论',
     summary: '证据像便签一样一张张钉到板上，红线把它们连起来，最后盖章给出结论。',
     when: ['结论来自几种不同来源的材料', '证据纠偏、复盘'], how: ['每张便签写清来源类型（反馈 / 观察 / 材料）', '先全部钉完再连线', '结论用一句话盖章'],
     pitfalls: ['编造的指标（如“流失 8 秒”）会让整板失去可信度', '线太多就变成装饰'], demo: 'demos/clue-board.html', related: ['ref-briefly'], tags: ['证据', '结论', '复盘'], added: '2026-11-10', source: '演示形式库 D' },
-  { id: 'time-machine', title: '版本时间机器', category: '案例展示', intent: '一个组件经历了几版演进',
+  { id: 'time-machine', title: '版本时间机器', category: '样式', intent: '一个组件经历了几版演进',
     summary: '拖动时间轴，同一个组件原地变形；每一版的改动用小标签标在变化的位置。',
     when: ['分阶段改版', '解释“为什么现在长这样”'], how: ['元素原地变形，不整张替换', '改动标签只在当前版本出现', '每版配一句改动理由'],
     pitfalls: ['把讨论过的方案说成已上线', '版本太多时只挑关键几版'], demo: 'demos/time-machine.html', related: ['scroll-story', 'morph'], tags: ['版本', '演进', '时间轴'], added: '2026-11-10', source: '演示形式库 E' },
-  { id: 'you-decide', title: '你来决策', category: '案例展示', intent: '让听众先判断，再揭晓真实选择',
+  { id: 'you-decide', title: '你来决策', category: '样式', intent: '让听众先判断，再揭晓真实选择',
     summary: '先给条件和几个选项，现场举手或点选；再揭晓最终选择并给出理由。',
     when: ['有争议的取舍', '“最终不改”这类反直觉结论'], how: ['条件写在选项之前', '选项都要像真的', '揭晓后讲理由，不讲对错'],
     pitfalls: ['把评估后放弃写成“上线后回滚”', '给选项计分会把讨论变成考试'], demo: 'demos/you-decide.html', related: ['flip-reveal'], tags: ['互动', '取舍', '决策'], added: '2026-11-10', source: '演示形式库 F' },
-  { id: 'chat-replay', title: '对话回放', category: '案例展示', intent: '需求怎样在对话里被问清楚',
+  { id: 'chat-replay', title: '对话回放', category: '样式', intent: '需求怎样在对话里被问清楚',
     summary: '群聊逐条回放，关键句高亮，右侧同步记下笔记和改写后的诉求。',
     when: ['讲追问方法', '沟通推进的示范'], how: ['只放推动理解的几句', '关键句高亮，笔记同步出现', '页面标明“示范，不是会议原话”'],
     pitfalls: ['把示范对话当成真实记录', '对话太长，听众跟不上'], demo: 'demos/chat-replay.html', related: ['case-intro'], tags: ['沟通', '追问', '示范'], added: '2026-11-10', source: '演示形式库 G' },
-  { id: 'route-map', title: '线路图', category: '案例展示', intent: '端到端流程、多角色交接',
+  { id: 'route-map', title: '线路图', category: '样式', intent: '端到端流程、多角色交接',
     summary: '线路一笔画出，点亮的站点依次经过；每到一站显示这一站的痛点和对设计的要求。',
     when: ['一份材料经过多个环节', '说明“为什么版式 / 字段这么重要”'], how: ['先画整条线，再逐站讲', '站点可点击跳转', '最后回到整条线下结论'],
     pitfalls: ['站点超过 6 个就分段', '不要把不同角色的工作硬画成一条顺序流程'], demo: 'demos/route-map.html', related: ['pipeline', 'role-lens'], tags: ['流程', '上下游', '任务还原'], added: '2026-11-10', source: '演示形式库 H' },
-  { id: 'zoom-levels', title: '逐级放大', category: '案例展示', intent: '从流程到按钮，每一级都说得通',
+  { id: 'zoom-levels', title: '逐级放大', category: '样式', intent: '从流程到按钮，每一级都说得通',
     summary: '同一张图逐级放大：流程 → 页面 → 表单 → 按钮，每一级配一句理由。',
     when: ['宏观与微观的一致性', '层级 / 视野的变化'], how: ['所有层级画在同一个坐标系里，用缩放推进', '当前层高亮', '每级只说一句'],
     pitfalls: ['缩放太快会晕', '层级之间没有因果，就只是动效'], demo: 'demos/zoom-levels.html', related: ['ripple'], tags: ['层级', '缩放'], added: '2026-11-10', source: '演示形式库 I' },
-  { id: 'tradeoff', title: '权衡模拟器', category: '案例展示', intent: '两个指标此消彼长',
+  { id: 'tradeoff', title: '权衡模拟器', category: '样式', intent: '两个指标此消彼长',
     summary: '滑块控制一个参数，两条曲线同时变化，右侧读数实时更新。',
     when: ['有真实分布数据的参数取舍'], how: ['坐标轴写清方向', '读数和曲线同时变', '没有真实数据时页面必须标“示意曲线”'],
     pitfalls: ['用拟合曲线冒充真实数据', '曲线太多读不过来'], demo: 'demos/tradeoff.html', related: ['slope'], tags: ['数据', '取舍', '滑块'], added: '2026-11-10', source: '演示形式库 J' },
-  { id: 'comic', title: '漫画分镜', category: '案例展示', intent: '用户的处境、情绪和时间压力',
+  { id: 'comic', title: '漫画分镜', category: '样式', intent: '用户的处境、情绪和时间压力',
     summary: '四格分镜依次弹出，最后一格翻转成“真正的问题”。',
     when: ['讲一个短的用户故事', '问题背景需要共情'], how: ['每格只有一个动作和一句话', '时间写在格子上', '最后一格换底色表示翻转'],
     pitfalls: ['补造客户对话或戏剧化情节', '格子太多变成连环画'], demo: 'demos/comic.html', related: ['ref-boat'], tags: ['故事', '用户', '共情'], added: '2026-11-10', source: '演示形式库 L' },
-  { id: 'playable', title: '可玩原型', category: '案例展示', intent: '让听众亲手做一遍',
+  { id: 'playable', title: '可玩原型', category: '样式', intent: '让听众亲手做一遍',
     summary: '给一个具体任务，请听众在原型上操作，计数器记录点击次数；再换改版后对比。',
     when: ['路径和返回问题', '“说不清，点一下就懂”的体验差异'], how: ['任务写成一句话', '只做任务需要的路径', '现状和改版用同一个任务'],
     pitfalls: ['原型做太全，现场容易迷路', '没有上线结果时不要说“效率提升 X%”'], demo: 'demos/playable.html', related: ['rehearsal'], tags: ['互动', '原型', '路径'], added: '2026-11-10', source: '演示形式库 M' },
-  { id: 'growth-tree', title: '需求生长图', category: '案例展示', intent: '范围怎么收敛到 MVP',
+  { id: 'growth-tree', title: '需求生长图', category: '样式', intent: '范围怎么收敛到 MVP',
     summary: '从一个诉求长出分支，再依次标记砍掉、延后，剩下的就是 MVP。',
     when: ['从零定义新模块', '讨论范围和优先级'], how: ['先让分支全部长出来，不急着评价', '砍掉 / 延后 / MVP 用三种样式', '根节点写诉求，不写功能'],
     pitfalls: ['没有真实案例时只能标“教学示意”'], demo: 'demos/growth-tree.html', related: ['block-tower'], tags: ['范围', 'MVP', '优先级'], added: '2026-11-10', source: '演示形式库 N' },
-  { id: 'role-lens', title: '角色镜头', category: '案例展示', intent: '同一个界面服务不同的人',
+  { id: 'role-lens', title: '角色镜头', category: '样式', intent: '同一个界面服务不同的人',
     summary: '同一条链路，用圆形镜头切换角色视角，各自关心的节点高亮并显示他们的问题。',
     when: ['操作者和负责人关注点不同', '多角色产品'], how: ['链路保持不动，只换高亮', '每个角色配一种颜色', '角色按钮可直接点'],
     pitfalls: ['把不同角色的任务强行画成顺序流程'], demo: 'demos/role-lens.html', related: ['route-map'], tags: ['角色', '视角', '任务还原'], added: '2026-11-10', source: '演示形式库 O' },
-  { id: 'terminal', title: '终端回放', category: '案例展示', intent: '工具 / AI 做了什么，哪些要自己核实',
+  { id: 'terminal', title: '终端回放', category: '样式', intent: '工具 / AI 做了什么，哪些要自己核实',
     summary: '命令逐行回放，# 注释解释每一步；右侧三色区分 AI 提醒、待核实和复盘证据。',
     when: ['介绍工具或 AI 工作流', '练习题'], how: ['命令和输出按步出现', '三种颜色固定含义', '工具名称必须和实际一致'],
     pitfalls: ['把 AI 输出直接当结论', '写错工具名称'], demo: 'demos/terminal.html', related: ['pipeline'], tags: ['AI', '工具', '工作流'], added: '2026-11-10', source: '演示形式库 P' },
-  { id: 'voice-wall', title: '声音墙', category: '案例展示', intent: '先打散，再归类',
+  { id: 'voice-wall', title: '声音墙', category: '样式', intent: '先打散，再归类',
     summary: '收集到的声音先漂浮铺开，再按“背后想完成的事”归成几列。',
     when: ['调研反馈汇总', '从零散诉求里找主题'], how: ['归类依据是想完成的事', '每张卡写原话或贴近原话', '归类后每列可再展开'],
     pitfalls: ['按来源分列，会和“入口不是互斥分类”冲突'], demo: 'demos/voice-wall.html', related: ['venn'], tags: ['归类', '调研', '反馈'], added: '2026-11-10', source: '演示形式库 Q' },
-  { id: 'venn', title: '叠加对比', category: '案例展示', intent: '多个样本里找共性',
+  { id: 'venn', title: '叠加对比', category: '样式', intent: '多个样本里找共性',
     summary: '样本一个个加入，条件自动落进对应的重叠区；三者都有的才是共性。',
     when: ['几个客户 / 场景的对照', '判断是不是普遍需求'], how: ['条目换成任务、数据结构、组织流程等条件', '一次只加一个样本', '只在一个样本里出现的条目单独标出'],
     pitfalls: ['样本少时不要说“大客户都这样”'], demo: 'demos/venn.html', related: ['voice-wall'], tags: ['对照', '共性', '样本'], added: '2026-11-10', source: '演示形式库 U' },
-  { id: 'block-tower', title: '假设积木塔', category: '案例展示', intent: '假设之间的依赖和验证顺序',
+  { id: 'block-tower', title: '假设积木塔', category: '样式', intent: '假设之间的依赖和验证顺序',
     summary: '方案搭在几层假设上；点掉一块，依赖它的跟着倒；按“带走多少”排验证顺序。',
     when: ['从零开始的方案', '讨论先验证什么'], how: ['底层放最基础的假设', '积木可以直接点', '最后给出验证顺序'],
     pitfalls: ['假设是教学示意时必须标出'], demo: 'demos/block-tower.html', related: ['growth-tree'], tags: ['假设', '风险', '验证'], added: '2026-11-10', source: '演示形式库 V' },
-  { id: 'diagnose', title: '诊断仪', category: '案例展示', intent: '分析到什么程度算够',
+  { id: 'diagnose', title: '诊断仪', category: '样式', intent: '分析到什么程度算够',
     summary: '几个信号各自用滑块调，指针给出“继续补 / 带着假设推进 / 可以推进”。',
     when: ['讲判断标准', '现场换一个需求试试'], how: ['信号名称用问题写', '刻度只帮助讨论', '允许多个未知同时存在'],
     pitfalls: ['只留一个筛子会和“多个未知共同阻断”冲突', '把刻度当成算法'], demo: 'demos/diagnose.html', related: ['checklist', 'fill-record'], tags: ['标准', '判断', '滑块'], added: '2026-11-10', source: '演示形式库 Y' },
 
   /* ---------------- 外部参考 ---------------- */
-  { id: 'ref-dala', title: 'Dala · 空间连续的开场', category: '外部参考', intent: '开场抓注意力，建立目的和价值',
+  { id: 'ref-dala', title: 'Dala · 空间连续的开场', category: '参考', intent: '开场抓注意力，建立目的和价值',
     summary: '大聚合体松开、移到中央、铺满全屏，文字真正经过视口。适合概念开场和章节交接，不适合整场都用。',
     when: ['开场', '章节之间的过渡'], how: ['同一组元素在转场中保留身份', '保留中间形态，不直接跳到结果', '阅读区亮度跟着文字变'],
     pitfalls: ['进入具体案例后还用粒子，会抢案例的戏'], demo: 'demos/transitions.html', url: 'https://dala.craftedbygc.com', related: ['particle-vs-stage'], tags: ['开场', '粒子', '转场'], added: '2026-11-09', source: '案例交互和样式参考汇总 · 01' },
-  { id: 'ref-pudding', title: 'The Pudding · 数据叙事', category: '外部参考', intent: '用数据回答一个问题',
+  { id: 'ref-pudding', title: 'The Pudding · 数据叙事', category: '参考', intent: '用数据回答一个问题',
     summary: '先提出数据能回答的问题，读懂一张图后再加维度；筛选、排序、变形都为了让差异被看见。',
     when: ['同一批对象在两种排序 / 方法下的差异', '有原始分布的取舍'], how: ['一次只引入一个维度', '保留数据含义、来源和方法', '让同一批点在不同排序之间移动'],
     pitfalls: ['没有真实数据就不做动态', '不要用在没有数据的个人档案类案例'], demo: 'demos/slope.html', url: 'https://pudding.cool', related: ['slope', 'tradeoff'], tags: ['数据', '排序'], added: '2026-11-09', source: '案例交互和样式参考汇总 · 02' },
-  { id: 'ref-column', title: 'Column · 结构概览 + 固定演示区', category: '外部参考', intent: '先理解整体关系，再逐段解释',
+  { id: 'ref-column', title: 'Column · 结构概览 + 固定演示区', category: '参考', intent: '先理解整体关系，再逐段解释',
     summary: '顶部一张结构图收拢一次；往下读时左边是短段文字，右边演示区位置不动、内容随段落换模型，整组讲完一起退出。',
     when: ['任务还原：人物、材料、上下游', '路径与状态的分段讲解'], how: ['左侧每个判断对应右侧一次变化', '演示区只在一个模块内固定', '同一容器可以换不同的示意模型', '窄屏改成“一段说明 + 一张图”纵向配对'],
     pitfalls: ['照搬深色细字，投影上看不清', '把产品链接做成像切换标签'], demo: 'demos/sticky-stage.html', url: 'https://column.com/', related: ['scroll-story'], tags: ['结构', '左文右图', '分段'], added: '2026-11-09', source: '案例交互和样式参考汇总 · 03' },
-  { id: 'ref-foudre', title: 'Agence Foudre · 叠卡递进', category: '外部参考', intent: '有先后关系的步骤和认知修正',
+  { id: 'ref-foudre', title: 'Agence Foudre · 叠卡递进', category: '参考', intent: '有先后关系的步骤和认知修正',
     summary: '一张卡先稳定可读，下一张从下方上来盖住它，旧卡留下边缘；并列内容改用横向浏览。',
     when: ['分析步骤递进', '初始假设 → 反例 → 修正'], how: ['短标题 + 大序号 + 一小段说明', '当前卡读完再让下一张进来', '并列用横向，递进用叠放'],
     pitfalls: ['需要同时比较细节时，叠卡会遮住前项', '不要整套搬品牌粉绿和夸张字体'], demo: 'demos/stack-cards.html', url: 'https://www.agencefoudre.com/', related: ['checklist'], tags: ['卡片', '步骤', '滚动'], added: '2026-11-09', source: '案例交互和样式参考汇总 · 04' },
-  { id: 'ref-editorial', title: 'Spotify × Instagram · 文字版网格', category: '外部参考', intent: '长篇案例、文字版的阅读排版',
+  { id: 'ref-editorial', title: 'Spotify × Instagram · 文字版网格', category: '参考', intent: '长篇案例、文字版的阅读排版',
     summary: '左侧短章节名定位，右侧正文保持合适行宽；图片需要时跨栏变宽，过程材料放在论证发生的位置。',
     when: ['分享的文字版', '完整的案例复盘页'], how: ['骨架：背景与任务 → 发现的问题 → 关键证据 → 分析与取舍 → 当前判断 → 后续验证', '同级章节间距一致', '强调色只标判断和证据'],
     pitfalls: ['每段换一种装饰', '把材料都堆到文末'], demo: 'demos/text-layout.html', url: 'https://www.jonwong.co/featured/spotify-instagram', related: ['one-idea'], tags: ['文字版', '排版', '网格'], added: '2026-11-09', source: '案例交互和样式参考汇总 · 05' },
-  { id: 'ref-boat', title: 'The Boat · 故事性案例', category: '外部参考', intent: '有人物、处境、转折的案例',
+  { id: 'ref-boat', title: 'The Boat · 故事性案例', category: '参考', intent: '有人物、处境、转折的案例',
     summary: '先让读者进入处境，文字随场景逐段出现；远景和局部分镜交替，节奏有松有紧。',
     when: ['有完整过程材料的案例：处境 → 卡点 → 新证据 → 改变判断 → 后续动作'], how: ['同一个人物 / 对象贯穿始终', '证据出现的位置就展示材料', '背景简短，转折留时间'],
     pitfalls: ['补造客户对话或戏剧化情节', '单纯的步骤清单不需要这种形式'], demo: 'demos/comic.html', url: 'https://www.sbs.com.au/theboat/', related: ['comic'], tags: ['故事', '叙事', '节奏'], added: '2026-11-09', source: '案例交互和样式参考汇总 · 06' },
-  { id: 'ref-briefly', title: 'SayBriefly · 判断与依据并排', category: '外部参考', intent: '让结论能被核对',
+  { id: 'ref-briefly', title: 'SayBriefly · 判断与依据并排', category: '参考', intent: '让结论能被核对',
     summary: '先用日常工作场景建立语境；判断放左边，原始材料放右边，关键差异用笔触高亮。',
     when: ['证据纠偏：原来的判断 → 材料片段 → 关键差异 → 修正后的判断'], how: ['高亮只指向引起判断变化的那几个字', '插图讲语境，界面材料讲具体行为', '不同来源的材料用同一套结构'],
     pitfalls: ['氛围插画代替真实证据', '材料没有去标识'], demo: 'demos/evidence-pair.html', url: 'https://saybriefly.com/', related: ['clue-board', 'annotate'], tags: ['证据', '并排', '高亮'], added: '2026-11-09', source: '案例交互和样式参考汇总 · 07' },
-  { id: 'ref-moah', title: 'Moah Studio · 原位展开', category: '外部参考', intent: '并列概念先概览，再在原位读解释',
+  { id: 'ref-moah', title: 'Moah Studio · 原位展开', category: '参考', intent: '并列概念先概览，再在原位读解释',
     summary: '三张等大卡片先给名称和一句话；展开时卡片不动，底色反转、图形由线变面、说明从下方分批进入。',
     when: ['方法的几种作用', '案例分类入口', '同一组件的几种状态'], how: ['展开后保留短标题', '分享现场用点击保持展开', '键盘可开关，减少动效时直接显示'],
     pitfalls: ['把完整案例塞进一张卡', '只靠悬停，指针一移开正文就没了'], demo: 'demos/inplace-expand.html', url: 'https://www.moah.studio/', related: ['flip-reveal'], tags: ['卡片', '概览', '展开'], added: '2026-11-09', source: '案例交互和样式参考汇总 · 08' },
 
   /* ---------------- 案例场景：按案例类型选讲法 ---------------- */
-  { id: 'type-task', title: '任务还原', category: '案例场景', intent: '把诉求放回人物、材料和上下游工作',
+  { id: 'type-task', title: '任务还原', category: '方法', intent: '把诉求放回人物、材料和上下游工作',
     summary: '典型场景：“导出时按部门拆文件”“上传后字段顺序乱了”“一份表要经过录入、汇总、审阅、归档”“同一条数据链路，开发者和负责人关心的不一样”。',
     when: ['收到的是实现方式，需要补回“为什么要这样”', '涉及多个角色或多个环节'], how: ['统一讲法：先给整体关系，再逐段补回人物、材料与上下游', '主讲形式：结构概览 + 固定演示区；故事完整时用故事性讲法', '现成样例：滚动叙事、线路图、角色镜头、三拍递进开场'],
     pitfalls: ['不要把不同角色的任务画成一条顺序流程', '未核实的关系标“待确认”，不画成已确认流程'], demo: 'demos/route-map.html', related: ['ref-column', 'scroll-story', 'route-map', 'role-lens', 'case-intro', 'ref-boat'], tags: ['场景', '任务', '上下游'], added: '2026-11-10', source: '案例与演示形式总表 · 五类案例' },
-  { id: 'type-evidence', title: '证据纠偏', category: '案例场景', intent: '初始假设被实际材料推翻或修正',
+  { id: 'type-evidence', title: '证据纠偏', category: '方法', intent: '初始假设被实际材料推翻或修正',
     summary: '典型场景：“编号字段本想区分重名，实际被填成了证件号”“下拉里的‘全部’在有隐藏项时含义变了”“搜索按空格拆词，但姓名本身带空格”。',
     when: ['复盘、走查', '“逻辑上对、场景里错”'], how: ['统一讲法：原有判断 → 材料片段 → 关键差异 → 修正后的判断', '主讲形式：判断与依据并排；认知逐步修正用叠卡', '现成样例：判断与依据并排、标注解读、情景预演、终端回放、线索板'],
     pitfalls: ['只展示整理后的漂亮结论，不给材料', '材料要去标识；没修复就不能说已修复'], demo: 'demos/evidence-pair.html', related: ['ref-briefly', 'annotate', 'rehearsal', 'terminal', 'clue-board', 'ref-foudre'], tags: ['场景', '证据', '复盘'], added: '2026-11-10', source: '案例与演示形式总表 · 五类案例' },
-  { id: 'type-path', title: '路径与状态', category: '案例场景', intent: '入口、状态变化和任务能不能接续',
+  { id: 'type-path', title: '路径与状态', category: '方法', intent: '入口、状态变化和任务能不能接续',
     summary: '典型场景：“手机上看完详情，返回后丢了列表位置”“从不同入口进来，返回去向不同”“删除一张表后，引用它的配置怎么快速重配”“已选的成员失效了怎么显示”。',
     when: ['返回、跳转、恢复', '一个对象有多种状态'], how: ['统一讲法：入口 → 状态变化 → 任务能否接续', '主讲形式：固定演示区；状态并列时用原位展开', '现成样例：可玩原型、爆炸分层（状态层）、冰山、线索板'],
     pitfalls: ['“删除后重配”讲的是任务接续，不是恢复数据', '未确定的处理方式不能写成已实现规则'], demo: 'demos/playable.html', related: ['ref-column', 'playable', 'exploded-layers', 'iceberg', 'ref-moah'], tags: ['场景', '路径', '状态'], added: '2026-11-10', source: '案例与演示形式总表 · 五类案例' },
-  { id: 'type-tradeoff', title: '方案取舍与适用范围', category: '案例场景', intent: '约束和证据怎样影响方案选择',
+  { id: 'type-tradeoff', title: '方案取舍与适用范围', category: '方法', intent: '约束和证据怎样影响方案选择',
     summary: '典型场景：“按钮文字限制要不要从 8 字改到 6 字，评估后决定不改”“成员选择器分阶段改版”“只来自一个客户的方案，要不要做成通用能力”。',
     when: ['有多个候选方案', '方案只在部分场景成立'], how: ['统一讲法：约束与证据 → 候选方案 → 取舍理由 → 适用边界', '需要比较时并排，不用叠卡', '现成样例：你来决策、版本时间机器、叠加对比、假设积木塔'],
     pitfalls: ['评估后放弃不是“上线后回滚”', '单个客户的场景不能说成“大客户都这样”'], demo: 'demos/you-decide.html', related: ['you-decide', 'time-machine', 'venn', 'block-tower', 'growth-tree', 'ref-column'], tags: ['场景', '取舍', '边界'], added: '2026-11-10', source: '案例与演示形式总表 · 五类案例' },
-  { id: 'type-data', title: '数据发现', category: '案例场景', intent: '用可追溯的数据呈现差异',
+  { id: 'type-data', title: '数据发现', category: '方法', intent: '用可追溯的数据呈现差异',
     summary: '典型场景：“同一批需求用两种优先级方法排出来不一样”“按钮名称长度的真实分布决定限制多少字”。',
     when: ['手里有原始数据和方法依据'], how: ['统一讲法：先提出数据能回答的问题，再让数据移动', '主讲形式：数据叙事', '现成样例：斜率图、权衡模拟器（仅限真实数据）'],
     pitfalls: ['没有原始分布不画图', '分数本身不能代替判断'], demo: 'demos/slope.html', related: ['ref-pudding', 'slope', 'tradeoff'], tags: ['场景', '数据'], added: '2026-11-10', source: '案例与演示形式总表 · 五类案例' },

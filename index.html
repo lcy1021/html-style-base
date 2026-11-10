@@ -94,7 +94,8 @@ footer{padding:28px 48px 40px;border-top:1px solid var(--line);font-size:12px;co
 <script>
 (() => {
   const P = (window.PATTERNS || []).map((p, i) => ({...p, no: String(i + 1).padStart(2, '0')}));
-  const ORDER = ['案例场景', '案例展示', '页面过渡', '文字布局', '讲法', '外部参考', '工程与交付'];
+  const ORDER = ['样式', '方法', '规范', '参考', '工具与交付'];   // 新类型不在这里也会自动排到最后
+  P.forEach(p => { if (!ORDER.includes(p.category)) ORDER.push(p.category); });
   const cats = ORDER.filter(c => P.some(p => p.category === c));
   const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
   const base = d => d ? d.replace(/^demos\//, '').replace(/\.html$/, '') : '';
@@ -122,7 +123,7 @@ footer{padding:28px 48px 40px;border-top:1px solid var(--line);font-size:12px;co
       <a class="card" href="view.html#${encodeURIComponent(p.id)}" data-demo="${esc(p.demo || '')}">
         <div class="cover">${p.demo
           ? `<img src="covers/${esc(base(p.demo))}.jpg" alt="" loading="lazy">`
-          : `<div class="txt"><small>文字经验 · ${esc(p.category)}</small><b>${esc(p.title)}</b></div>`}</div>
+          : `<div class="txt"><small>${esc(p.category)}</small><b>${esc(p.title)}</b></div>`}</div>
         <div class="meta"><span class="no">#${p.no}</span><h3>${esc(p.title)}</h3><span class="cat">${esc(p.category)}</span></div>
         <p class="intent">${esc(p.intent)}</p>
       </a>`).join('') : '<p class="empty">没有找到，换个关键词试试。</p>';

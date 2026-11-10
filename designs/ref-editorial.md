@@ -3,7 +3,7 @@
 > 左侧短章节名定位，右侧正文保持合适行宽；图片需要时跨栏变宽，过程材料放在论证发生的位置。
 
 **想说明：** 长篇案例、文字版的阅读排版  
-**分类：** 外部参考  
+**分类：** 参考  
 **Theme：** 深色  
 **原始参考：** <https://www.jonwong.co/featured/spotify-instagram>  
 **样例：** `demos/text-layout.html`  
