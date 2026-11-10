@@ -196,9 +196,13 @@ with sync_playwright() as pw:
     # 首页卡片封面：960×600 视口、最后一步、隐藏底部控制条
     cov = ROOT/'covers'; cov.mkdir(exist_ok=True)
     cp = b.new_page(viewport={'width':960,'height':600}, device_scale_factor=0.75)
+    # 默认截最后一步；条目里写了 coverStep 就截那一步（比如最后一步是黑场的样例）
+    step = {}
+    for p in P:
+        if p.get('demo') and 'coverStep' in p: step.setdefault(p['demo'], p['coverStep'])
     for demo in sorted({p['demo'] for p in P if p.get('demo')}):
         cp.goto((ROOT/demo).as_uri()); cp.wait_for_timeout(500)
-        cp.evaluate("()=>{ if(window.DEMO){ let i=0; const t=setInterval(()=>{ DEMO.set(++i); if(i>=DEMO.N-1) clearInterval(t) },120) } }")
+        cp.evaluate("(s)=>{ if(window.DEMO){ const end = s===null ? DEMO.N-1 : s; let i=0; if(end===0) return DEMO.set(0); const t=setInterval(()=>{ DEMO.set(++i); if(i>=end) clearInterval(t) },120) } }", step.get(demo))
         cp.wait_for_timeout(2200)
         cp.add_style_tag(content='.ctrl{display:none!important}.stage{bottom:0!important}')
         cp.wait_for_timeout(200)

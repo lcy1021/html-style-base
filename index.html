@@ -10,9 +10,9 @@
 :root{--paper:#0e0d14;--ink:#f3f1ff;--ink2:#b9b5c7;--mut:#7f7b8e;--line:rgba(255,255,255,.09);--accent:#ff8a5b;--serif:"Songti SC","Noto Serif SC","Source Han Serif SC","STSong",serif;--sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Helvetica Neue",sans-serif;--mono:"SF Mono",ui-monospace,Menlo,Consolas,monospace;--ease:cubic-bezier(.2,.7,.2,1)}
 html{scroll-behavior:smooth}
 body{background:var(--paper);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;background-image:radial-gradient(rgba(255,255,255,.045) 1px,transparent 1px);background-size:26px 26px}
-.hero{background:radial-gradient(60% 120% at 15% 0%,rgba(255,138,91,.10),transparent 60%),radial-gradient(50% 100% at 90% 10%,rgba(185,168,255,.10),transparent 60%)}
 a{color:inherit;text-decoration:none}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+kbd{font-family:var(--mono);font-size:10.5px;line-height:1;padding:3px 5px;border-radius:4px;border:1px solid rgba(255,255,255,.18);color:var(--mut)}
 
 /* 顶栏 */
 .top{display:flex;align-items:center;justify-content:space-between;padding:22px 48px;font-size:13px}
@@ -22,12 +22,11 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .search{display:flex;align-items:center;gap:10px;width:300px;height:38px;padding:0 12px 0 14px;border:1px solid var(--line);border-radius:99px;background:rgba(255,255,255,.04);transition:border-color .2s,background .2s}
 .search:focus-within{border-color:rgba(255,255,255,.35);background:rgba(255,255,255,.07)}
 .search input{flex:1;border:0;background:none;outline:0;font:inherit;font-size:13px;color:var(--ink)}
-.search kbd{font-family:var(--mono);font-size:11px;color:var(--mut);border:1px solid var(--line);border-radius:5px;padding:1px 6px}
 
 /* 头图 */
-.hero{display:grid;grid-template-columns:1fr 340px;gap:48px;align-items:end;padding:64px 48px 52px;border-bottom:1px solid var(--line)}
-.eb{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--accent);margin-bottom:22px}
-.hero h1{font-family:var(--serif);font-weight:900;font-size:clamp(44px,6.2vw,92px);line-height:1.04;letter-spacing:-.02em;text-wrap:balance}
+.hero{display:grid;grid-template-columns:1fr 340px;gap:48px;align-items:end;padding:56px 48px 46px;border-bottom:1px solid var(--line);background:radial-gradient(60% 120% at 15% 0%,rgba(255,138,91,.10),transparent 60%),radial-gradient(50% 100% at 90% 10%,rgba(185,168,255,.10),transparent 60%)}
+.eb{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--accent);margin-bottom:20px}
+.hero h1{font-family:var(--serif);font-weight:900;font-size:clamp(44px,6vw,88px);line-height:1.04;letter-spacing:-.02em;text-wrap:balance}
 .hero h1 em{font-style:normal;color:var(--accent)}
 .hero aside{font-size:14px;line-height:1.85;color:var(--ink2);text-wrap:pretty}
 .hero aside .stats{display:flex;gap:28px;margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
@@ -36,35 +35,91 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 
 /* 筛选 */
 .filters{position:sticky;top:0;z-index:5;display:flex;gap:6px;flex-wrap:wrap;padding:14px 48px;background:rgba(14,13,20,.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
-.chip{height:32px;padding:0 14px;border-radius:99px;font-size:13px;color:var(--ink2);border:1px solid transparent;transition:all .2s var(--ease)}
-.chip sup{font-family:var(--mono);font-size:10px;margin-left:4px;color:var(--mut)}
+.chip{display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 14px;border-radius:99px;font-size:13px;color:var(--ink2);border:1px solid transparent;transition:all .2s var(--ease)}
+.chip i{width:7px;height:7px;border-radius:50%;background:var(--tc,var(--mut))}
+.chip sup{font-family:var(--mono);font-size:10px;color:var(--mut);margin-left:-3px}
 .chip:hover{border-color:var(--line)}
 .chip[aria-pressed=true]{background:var(--ink);color:var(--paper)}
 .chip[aria-pressed=true] sup{color:rgba(14,13,20,.55)}
 
-/* 卡片网格 */
-main{padding:36px 48px 96px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:44px 26px}
-.card{display:block;position:relative}
+/* 分段 */
+main{padding:8px 48px 120px}
+.sec{padding-top:44px}
+.sech{display:flex;align-items:baseline;gap:14px;margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.sech h2{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-size:26px;font-weight:900;letter-spacing:-.01em}
+.sech h2 i{width:9px;height:9px;border-radius:50%;background:var(--tc)}
+.sech .n{font-family:var(--mono);font-size:12px;color:var(--mut)}
+.sech p{margin-left:auto;font-size:13px;color:var(--mut);text-align:right}
+
+/* 大卡片（样式） */
+.grid{display:grid;gap:40px 26px;grid-template-columns:repeat(auto-fill,minmax(360px,1fr))}
+.card{display:block;position:relative;cursor:pointer;outline:0}
 .cover{position:relative;aspect-ratio:16/10;border-radius:12px;overflow:hidden;background:#0c0b12;box-shadow:0 0 0 1px rgba(255,255,255,.08);transition:transform .45s var(--ease),box-shadow .45s var(--ease)}
-.card:hover .cover{transform:translateY(-4px);box-shadow:0 24px 48px -20px rgba(0,0,0,.8),0 0 0 1px rgba(255,255,255,.18)}
+.card:hover .cover,.card:focus-visible .cover{transform:translateY(-4px);box-shadow:0 24px 48px -20px rgba(0,0,0,.8),0 0 0 1px rgba(255,255,255,.18)}
 .cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top left;transition:opacity .35s}
 .cover iframe{position:absolute;left:0;top:0;width:960px;height:600px;border:0;transform-origin:0 0;pointer-events:none;opacity:0;transition:opacity .35s}
-.cover.live iframe{opacity:1}
-.cover.live img{opacity:0}
-.cover .txt{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;padding:24px;background:#1a1824;color:var(--ink)}
-.cover .txt b{font-family:var(--serif);font-size:30px;font-weight:900;line-height:1.15;letter-spacing:-.01em;text-wrap:balance}
-.cover .txt small{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--mut)}
+.cover.live iframe{opacity:1}.cover.live img{opacity:0}
 .meta{display:flex;align-items:baseline;gap:12px;margin-top:16px}
-.no{font-family:var(--mono);font-size:12px;color:var(--accent)}
+.no{font-family:var(--mono);font-size:12px;color:var(--tc,var(--accent))}
 .meta h3{font-size:17px;font-weight:600;letter-spacing:-.01em}
-.meta .cat{margin-left:auto;font-size:12px;color:var(--mut)}
-.intent{margin-top:6px;font-size:13.5px;line-height:1.65;color:var(--ink2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.card:focus-visible{outline:2px solid var(--accent);outline-offset:6px;border-radius:12px}
+.line{margin-top:6px;font-size:13.5px;line-height:1.65;color:var(--ink2)}
+
+/* 紧凑卡（方法 / 规范 / 参考 / 工具） */
+.grid.sm{gap:16px;grid-template-columns:repeat(auto-fill,minmax(330px,1fr))}
+.mini{position:relative;display:flex;gap:16px;padding:18px 18px 18px 20px;border-radius:12px;background:rgba(255,255,255,.028);box-shadow:inset 0 0 0 1px var(--line);overflow:hidden;transition:background .25s,box-shadow .25s,transform .35s var(--ease)}
+.mini::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:0 3px 3px 0;background:var(--tc)}
+.mini:hover,.mini:focus-visible{background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);transform:translateY(-2px)}
+.mini .th{flex:none;width:132px;aspect-ratio:16/10;border-radius:8px;overflow:hidden;background:#0c0b12;box-shadow:0 0 0 1px rgba(255,255,255,.08)}
+.mini .th img{width:100%;height:100%;object-fit:cover;object-position:top left;display:block}
+.mini .bd{flex:1;min-width:0;display:flex;flex-direction:column}
+.mini .hd{display:flex;align-items:baseline;gap:10px}
+.mini h3{font-size:15.5px;font-weight:600;letter-spacing:-.01em}
+.mini .line{margin-top:5px;font-size:13px}
+.mini .do{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:12.5px;line-height:1.6;color:var(--mut);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.mini .do b{color:var(--ink2);font-weight:500;margin-right:6px}
+.mini .ext{margin-left:auto;font-size:12px;color:var(--mut);padding:2px 8px;border-radius:99px;box-shadow:inset 0 0 0 1px var(--line);white-space:nowrap}
+.mini .ext:hover{color:var(--ink);box-shadow:inset 0 0 0 1px rgba(255,255,255,.3)}
+/* 方法卡：讲法链路 + 推荐样式 */
+.flow{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px 4px;align-items:center;font-size:12.5px;color:var(--ink2)}
+.flow span{padding:3px 9px;border-radius:6px;background:rgba(185,168,255,.10)}
+.flow em{font-style:normal;color:var(--mut);font-size:11px}
+.rec{margin-top:12px;display:flex;gap:8px;align-items:center}
+.rec small{font-size:11.5px;color:var(--mut);margin-right:2px}
+.rec button{width:62px;aspect-ratio:16/10;border-radius:5px;overflow:hidden;box-shadow:0 0 0 1px rgba(255,255,255,.12);transition:transform .2s,box-shadow .2s}
+.rec button:hover{transform:translateY(-2px);box-shadow:0 0 0 1.5px var(--tc)}
+.rec img{width:100%;height:100%;object-fit:cover;object-position:top left;display:block}
+
+/* 滚动加载：进入时淡入 */
+.rv{opacity:0;transform:translateY(18px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
+.rv.in{opacity:1;transform:none}
+#more{height:1px}
 .empty{padding:80px 0;text-align:center;color:var(--mut)}
 
-@media (max-width:860px){.top,.hero,.filters,main,.hero{grid-template-columns:1fr}.search{width:180px}.grid{grid-template-columns:1fr}}
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+/* 详情弹层：毛玻璃蒙层 + 顶部固定操作 */
+.ov{position:fixed;inset:0;z-index:50}
+.ov[hidden]{display:none}
+.ovbg{position:absolute;inset:0;background:rgba(10,9,15,.45);backdrop-filter:blur(22px) saturate(1.25);-webkit-backdrop-filter:blur(22px) saturate(1.25);opacity:0;transition:opacity .45s var(--ease)}
+.ov.on .ovbg{opacity:1}
+.ovbar{position:absolute;left:0;right:0;top:0;height:68px;display:flex;align-items:center;gap:10px;padding:0 28px}
+.ovt{display:flex;align-items:baseline;gap:12px;min-width:0}
+.ovt b{font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ovt .cat{font-size:12px;color:var(--mut)}
+.ovbar .sp{flex:1}
+.ob{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 10px 0 14px;border-radius:99px;font-size:13px;color:var(--ink);background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);transition:background .2s}
+.ob:hover{background:rgba(255,255,255,.14)}
+.ob.pri{background:var(--ink);color:var(--paper);box-shadow:none}
+.ob.pri kbd{color:rgba(14,13,20,.5);border-color:rgba(14,13,20,.2)}
+.ob.ic{width:38px;padding:0;justify-content:center}
+.ovpanel{position:absolute;left:28px;right:28px;top:68px;bottom:28px;border-radius:16px;overflow:hidden;background:#0c0b12;box-shadow:0 40px 100px -20px rgba(0,0,0,.85),0 0 0 1px rgba(255,255,255,.12);transform-origin:0 0;will-change:transform}
+.ovpanel iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;opacity:0;transition:opacity .35s}
+.ovpanel.ready iframe{opacity:1}
+.ovsnap{position:absolute;inset:0;background:#0c0b12 center top/cover no-repeat;transition:opacity .4s;pointer-events:none}
+.ovpanel.ready .ovsnap{opacity:0}
+.ovbar{opacity:0;transform:translateY(-8px);transition:opacity .35s .15s,transform .35s .15s var(--ease)}
+.ov.on .ovbar{opacity:1;transform:none}
+
+@media (max-width:860px){.top,.hero,.filters,main{padding-left:20px;padding-right:20px}.hero{grid-template-columns:1fr}.search{width:180px}.grid,.grid.sm{grid-template-columns:1fr}.sech p{display:none}.ovbar{padding:0 12px}.ovpanel{left:8px;right:8px;bottom:8px}.ob kbd{display:none}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}.rv{opacity:1;transform:none}}
 </style>
 </head>
 <body>
@@ -79,64 +134,158 @@ main{padding:36px 48px 96px}
     <h1>做 HTML 演示之前，<br>先来这里<em>看一眼</em>。</h1>
   </div>
   <aside>
-    按“想让听众明白什么”来找展示形式。卡片里的样例会自己循环演示；点进去可以亲手操作，按 <b>I</b> 看说明和 DESIGN.md。
-    <div class="stats"><div><b id="nAll">0</b>条经验</div><div><b id="nDemo">0</b>个样例</div><div><b id="nCat">0</b>个分类</div></div>
+    按“想让听众明白什么”来找展示形式。样式卡片会自己循环演示；点开在弹层里看完整效果，再点「查看详情」看说明和 DESIGN.md。
+    <div class="stats"><div><b id="nAll">0</b>条经验</div><div><b id="nDemo">0</b>个样例</div><div><b id="nCat">0</b>种类型</div></div>
   </aside>
 </section>
 
-<nav class="filters" id="filters" aria-label="分类"></nav>
-<main><div class="grid" id="grid"></div></main>
+<nav class="filters" id="filters" aria-label="类型"></nav>
+<main id="list"></main>
+<div id="more"></div>
+
+<div class="ov" id="ov" hidden role="dialog" aria-modal="true" aria-labelledby="ovTitle">
+  <div class="ovbg" id="ovbg"></div>
+  <div class="ovbar">
+    <div class="ovt"><span class="no" id="ovNo"></span><b id="ovTitle"></b><span class="cat" id="ovCat"></span></div>
+    <span class="sp"></span>
+    <button class="ob pri" id="ovInfo" type="button">查看详情 <kbd>I</kbd></button>
+    <a class="ob ic" id="ovFull" href="#" target="_blank" rel="noopener" title="在新窗口打开"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
+    <button class="ob" id="ovClose" type="button">关闭 <kbd>Esc</kbd></button>
+  </div>
+  <div class="ovpanel" id="ovp"><iframe id="ovf" title="样例详情"></iframe><div class="ovsnap" id="ovs"></div></div>
+</div>
 
 <script src="data/patterns.js"></script>
 <script src="data/live.js"></script>
 <script>
 (() => {
   const P = (window.PATTERNS || []).map((p, i) => ({...p, no: String(i + 1).padStart(2, '0')}));
-  const ORDER = ['样式', '方法', '规范', '参考', '工具与交付'];   // 新类型不在这里也会自动排到最后
-  P.forEach(p => { if (!ORDER.includes(p.category)) ORDER.push(p.category); });
+  const BY = Object.fromEntries(P.map(p => [p.id, p]));
+  const TYPES = {
+    '样式': {c: '#ff8a5b', d: '有可操作样例的展示形式'},
+    '方法': {c: '#b9a8ff', d: '怎么讲：五类案例的讲法和讲稿写法'},
+    '规范': {c: '#5ad0b3', d: '做页面时的通用规矩'},
+    '参考': {c: '#ffb547', d: '值得借鉴的外部网站'},
+    '工具与交付': {c: '#4ea1ff', d: '打包、发布、验证'},
+  };
+  const ORDER = Object.keys(TYPES);
+  P.forEach(p => { if (!ORDER.includes(p.category)) { ORDER.push(p.category); TYPES[p.category] = {c: '#9a95a8', d: ''}; } });
   const cats = ORDER.filter(c => P.some(p => p.category === c));
+  const $ = s => document.getElementById(s);
   const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
   const base = d => d ? d.replace(/^demos\//, '').replace(/\.html$/, '') : '';
-  document.getElementById('nAll').textContent = P.length;
-  document.getElementById('nDemo').textContent = new Set(P.filter(p => p.demo).map(p => p.demo)).size;
-  document.getElementById('nCat').textContent = cats.length;
+  const live = d => !!d && (!window.LIVE || window.LIVE.includes(base(d)));
+  $('nAll').textContent = P.length;
+  $('nDemo').textContent = new Set(P.filter(p => p.demo).map(p => p.demo)).size;
+  $('nCat').textContent = cats.length;
 
-  const filters = document.getElementById('filters'), grid = document.getElementById('grid'), q = document.getElementById('q');
+  /* 每个样例只在一张卡片上出现：样式优先，其次规范、参考；方法卡不放样例 */
+  const RANK = {'样式': 0, '规范': 1, '参考': 2, '工具与交付': 3};
+  const owner = {};
+  P.filter(p => p.demo && p.category !== '方法').sort((a, b) => (RANK[a.category] ?? 9) - (RANK[b.category] ?? 9)).forEach(p => { if (!owner[p.demo]) owner[p.demo] = p.id; });
+  const owns = p => p.demo && owner[p.demo] === p.id;
+
+  /* ---------- 筛选 & 搜索 ---------- */
+  const filters = $('filters'), list = $('list'), q = $('q');
   let cur = '全部';
   ['全部', ...cats].forEach(c => {
     const b = document.createElement('button'); b.className = 'chip'; b.type = 'button';
-    b.innerHTML = `${esc(c)}<sup>${c === '全部' ? P.length : P.filter(p => p.category === c).length}</sup>`;
+    if (c !== '全部') b.style.setProperty('--tc', TYPES[c].c);
+    b.innerHTML = `${c === '全部' ? '' : '<i></i>'}${esc(c)}<sup>${c === '全部' ? P.length : P.filter(p => p.category === c).length}</sup>`;
     b.setAttribute('aria-pressed', String(c === cur));
     b.onclick = () => { cur = c; filters.querySelectorAll('.chip').forEach(x => x.setAttribute('aria-pressed', String(x === b))); render(); };
     filters.appendChild(b);
   });
   q.oninput = render;
-  addEventListener('keydown', e => { if (e.key === '/' && document.activeElement !== q) { e.preventDefault(); q.focus(); } if (e.key === 'Escape') q.blur(); });
+  addEventListener('keydown', e => {
+    if (!$('ov').hidden) return ovKey(e);
+    if (e.key === '/' && document.activeElement !== q) { e.preventDefault(); q.focus(); }
+    if (e.key === 'Escape') q.blur();
+  });
 
-  function render() {
-    const k = q.value.trim().toLowerCase();
-    const list = P.filter(p => (cur === '全部' || p.category === cur) && (!k || [p.title, p.card, p.intent, p.summary, ...(p.tags || []), ...(p.pitfalls || [])].join(' ').toLowerCase().includes(k)));
-    io && io.disconnect && grid.querySelectorAll('.card').forEach(c => c._stop && c._stop()); io && io.disconnect();
-    grid.innerHTML = list.length ? list.map(p => `
-      <a class="card" href="view.html#${encodeURIComponent(p.id)}" data-demo="${esc(p.demo || '')}">
-        <div class="cover">${p.demo
-          ? `<img src="covers/${esc(base(p.demo))}.jpg" alt="" loading="lazy">`
-          : `<div class="txt"><small>${esc(p.category)}</small><b>${esc(p.title)}</b></div>`}</div>
-        <div class="meta"><span class="no">#${p.no}</span><h3>${esc(p.title)}</h3><span class="cat">${esc(p.category)}</span></div>
-        <p class="intent">${esc(p.card || p.intent)}</p>
-      </a>`).join('') : '<p class="empty">没有找到，换个关键词试试。</p>';
-    grid.querySelectorAll('.card[data-demo]:not([data-demo=""])').forEach(c => { if (!window.LIVE || window.LIVE.includes(base(c.dataset.demo))) bind(c); });
+  /* ---------- 卡片 ---------- */
+  const flowOf = p => { const h = (p.how || [])[0] || ''; return h.startsWith('统一讲法：') ? h.slice(5).split(/\s*→\s*/) : null; };
+  function cardHTML(p) {
+    const tc = TYPES[p.category].c, attrs = `data-id="${esc(p.id)}" tabindex="0" role="link" style="--tc:${tc}"`;
+    if (p.category === '样式') return `
+      <div class="card rv" ${attrs} data-demo="${esc(p.demo || '')}">
+        <div class="cover">${p.demo ? `<img src="covers/${esc(base(p.demo))}.jpg" alt="" loading="lazy">` : ''}</div>
+        <div class="meta"><span class="no">#${p.no}</span><h3>${esc(p.title)}</h3></div>
+        <p class="line">${esc(p.card || p.intent)}</p>
+      </div>`;
+    const flow = p.category === '方法' && flowOf(p);
+    const recs = (p.related || []).map(id => BY[id]).filter(r => r && r.demo && owns(r)).slice(0, 4);
+    const body = flow
+      ? `<div class="flow">${flow.map(s => `<span>${esc(s)}</span>`).join('<em>→</em>')}</div>
+         ${recs.length ? `<div class="rec"><small>推荐</small>${recs.map(r => `<button type="button" data-go="${esc(r.id)}" title="#${r.no} ${esc(r.title)}"><img src="covers/${esc(base(r.demo))}.jpg" alt="${esc(r.title)}" loading="lazy"></button>`).join('')}</div>` : ''}`
+      : ((p.how || [])[0] ? `<p class="do"><b>做法</b>${esc(p.how[0])}</p>` : '');
+    const th = owns(p) ? `<div class="th"><img src="covers/${esc(base(p.demo))}.jpg" alt="" loading="lazy"></div>` : '';
+    return `
+      <div class="mini rv" ${attrs}>${th}
+        <div class="bd">
+          <div class="hd"><span class="no">#${p.no}</span><h3>${esc(p.title)}</h3>${p.url ? `<a class="ext" href="${esc(p.url)}" target="_blank" rel="noopener" data-ext>原站 ↗</a>` : ''}</div>
+          <p class="line">${esc(p.card || p.intent)}</p>${body}
+        </div>
+      </div>`;
   }
 
-  /* 卡片在视口里就自动循环播放步骤 */
-  const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting ? e.target._play() : e.target._stop()), {threshold: .35});
+  /* ---------- 渲染：分段 + 滚动分批加载 ---------- */
+  let queue = [], lastSec = null, lastGrid = null;
+  const BATCH = 9;
+  function render() {
+    stopAll();
+    const k = q.value.trim().toLowerCase();
+    const hit = p => !k || [p.title, p.card, p.intent, p.summary, ...(p.tags || []), ...(p.how || []), ...(p.pitfalls || [])].join(' ').toLowerCase().includes(k);
+    queue = [];
+    (cur === '全部' ? cats : [cur]).forEach(c => P.filter(p => p.category === c && hit(p)).forEach(p => queue.push(p)));
+    list.innerHTML = queue.length ? '' : '<p class="empty">没有找到，换个关键词试试。</p>';
+    lastSec = lastGrid = null;
+    more();
+  }
+  function more() {
+    const batch = queue.splice(0, BATCH);
+    batch.forEach(p => {
+      if (p.category !== lastSec) {
+        lastSec = p.category;
+        const n = P.filter(x => x.category === lastSec).length, t = TYPES[lastSec];
+        const sec = document.createElement('section'); sec.className = 'sec'; sec.style.setProperty('--tc', t.c);
+        sec.innerHTML = `<div class="sech"><h2><i></i>${esc(lastSec)}</h2><span class="n">${n} 条</span><p>${esc(t.d)}</p></div><div class="grid${lastSec === '样式' ? '' : ' sm'}"></div>`;
+        list.appendChild(sec); lastGrid = sec.lastElementChild;
+      }
+      lastGrid.insertAdjacentHTML('beforeend', cardHTML(p));
+      const el = lastGrid.lastElementChild;
+      rvio.observe(el);
+      if (el.classList.contains('card') && live(p.demo)) bind(el);
+    });
+    // 一屏还没填满就继续补
+    if (queue.length && $('more').getBoundingClientRect().top < innerHeight + 600) requestAnimationFrame(more);
+  }
+  new IntersectionObserver(es => { if (es[0].isIntersecting && queue.length) more(); }, {rootMargin: '600px'}).observe($('more'));
+  const rvio = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); rvio.unobserve(e.target); } }), {rootMargin: '0px 0px -40px'});
+
+  /* 点击卡片打开弹层；按住 ⌘ / Ctrl 在新窗口打开整页 */
+  list.addEventListener('click', e => {
+    if (e.target.closest('[data-ext]')) return;
+    const go = e.target.closest('[data-go]'); if (go) { e.stopPropagation(); return openOv(go.dataset.go, go); }
+    const c = e.target.closest('[data-id]'); if (!c) return;
+    if (e.metaKey || e.ctrlKey) return window.open('view.html#' + c.dataset.id, '_blank');
+    openOv(c.dataset.id, c.querySelector('.cover,.th') || c);
+  });
+  list.addEventListener('keydown', e => { const c = e.target.closest('[data-id]'); if (c && e.key === 'Enter') openOv(c.dataset.id, c.querySelector('.cover,.th') || c); });
+
+  /* ---------- 样式卡：进入视口就自动循环播放 ---------- */
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const MAXPLAY = 6, playing = new Set(), waiting = new Set();
+  const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting ? e.target._play() : e.target._stop()), {threshold: .35});
+  const next = () => { for (const c of waiting) { if (playing.size >= MAXPLAY) break; c._play(); } };
+  function stopAll() { document.querySelectorAll('.card').forEach(c => c._stop && c._stop()); io.disconnect(); waiting.clear(); }
+  function resumeAll() { document.querySelectorAll('.card').forEach(c => c._play && io.observe(c)); }
   function bind(card) {
     if (reduce) return;
     const cov = card.querySelector('.cover');
     let wait, timer, fr;
     const fit = () => { if (fr) fr.style.transform = `scale(${cov.clientWidth / 960})`; };
-    const stop = () => { clearTimeout(wait); clearTimeout(timer); cov.classList.remove('live'); if (fr) { const f = fr; fr = null; setTimeout(() => f.remove(), 350); } };
+    const stop = () => { clearTimeout(wait); clearTimeout(timer); waiting.delete(card); if (playing.delete(card)) next(); cov.classList.remove('live'); if (fr) { const f = fr; fr = null; setTimeout(() => f.remove(), 350); } };
     const start = () => {
       fr = document.createElement('iframe'); fr.src = card.dataset.demo; fr.tabIndex = -1; fr.title = '';
       cov.insertBefore(fr, cov.firstChild); fit();
@@ -151,25 +300,93 @@ main{padding:36px 48px 96px}
           show(); cov.classList.add('live');
           const tick = () => {
             if (!fr) return;
-            if (k >= N - 1) {            // 播完一轮：淡出 → 回到第 1 步 → 淡入，继续循环
-              f.style.opacity = 0;
-              timer = setTimeout(() => { k = 0; show(); f.style.opacity = ''; timer = setTimeout(tick, 1400); }, 380);
-            } else { k++; show(); timer = setTimeout(tick, k >= N - 1 ? 2400 : 1400); }
+            if (k >= N - 1) { f.style.opacity = 0; timer = setTimeout(() => { k = 0; show(); f.style.opacity = ''; timer = setTimeout(tick, 1400); }, 380); }
+            else { k++; show(); timer = setTimeout(tick, k >= N - 1 ? 2400 : 1400); }
           };
           timer = setTimeout(tick, 1400);
         } catch (e) { cov.classList.add('live'); }
       };
     };
-    // 进入视口就自动循环播放，离开视口就停，不需要悬停
-    card._play = () => { if (!fr) { clearTimeout(wait); wait = setTimeout(start, 150 + Math.random() * 500); } };
+    card._play = () => {
+      if (fr || playing.has(card)) return;
+      if (playing.size >= MAXPLAY) { waiting.add(card); return; }
+      waiting.delete(card); playing.add(card);
+      clearTimeout(wait); wait = setTimeout(start, 150 + Math.random() * 500);
+    };
     card._stop = stop;
     io.observe(card);
     addEventListener('resize', fit);
   }
+
+  /* ---------- 详情弹层 ---------- */
+  const ov = $('ov'), ovf = $('ovf');
+  let lastFocus = null;
+  function meta(id) {
+    const p = BY[id]; if (!p) return;
+    $('ovNo').textContent = '#' + p.no; $('ovNo').style.setProperty('--tc', TYPES[p.category].c);
+    $('ovTitle').textContent = p.title; $('ovCat').textContent = p.category;
+    $('ovFull').href = 'view.html#' + encodeURIComponent(id);
+    history.replaceState(null, '', '#' + encodeURIComponent(id));
+    document.title = `#${p.no} ${p.title} · HTML Style Base`;
+  }
+  const ovp = $('ovp'), ovs = $('ovs');
+  const EASE = 'cubic-bezier(.2,.8,.2,1)';
+  let from = null, loaded = false, grown = false;
+  function fromTransform(el) {
+    const f = ovp.getBoundingClientRect();
+    if (!el || !el.isConnected) return `translate(${f.width * .03}px, ${f.height * .03}px) scale(.94)`;
+    const r = el.getBoundingClientRect();
+    if (!r.width || r.bottom < 0 || r.top > innerHeight) return `translate(${f.width * .03}px, ${f.height * .03}px) scale(.94)`;
+    return `translate(${r.left - f.left}px, ${r.top - f.top}px) scale(${r.width / f.width}, ${r.height / f.height})`;
+  }
+  const ready = () => { if (loaded && grown) ovp.classList.add('ready'); };
+  function openOv(id, el) {
+    if (!BY[id]) return;
+    lastFocus = document.activeElement; from = el || null;
+    stopAll();
+    meta(id); drawer(false);
+    const p = BY[id];
+    ovs.style.backgroundImage = p.demo ? `url("covers/${base(p.demo)}.jpg")` : 'none';
+    ovp.classList.remove('ready'); loaded = grown = false;
+    ov.hidden = false; document.documentElement.style.overflow = 'hidden';
+    // 先停在卡片的位置和大小，再放大到弹层
+    ovp.style.transition = 'none'; ovp.style.transform = fromTransform(from); ovp.style.borderRadius = '12px';
+    ovp.getBoundingClientRect();
+    const dur = reduce ? 0 : 560;
+    ovp.style.transition = `transform ${dur}ms ${EASE}, border-radius ${dur}ms ${EASE}`;
+    requestAnimationFrame(() => { ov.classList.add('on'); ovp.style.transform = 'none'; ovp.style.borderRadius = '16px'; });
+    setTimeout(() => { grown = true; ready(); }, dur);
+    ovf.onload = () => { if (ovf.src.endsWith('about:blank')) return; loaded = true; ready(); try { ovf.contentWindow.focus(); } catch (e) {} };
+    ovf.src = 'view.html?embed=1#' + encodeURIComponent(id);
+  }
+  function closeOv() {
+    if (ov.hidden || !ov.classList.contains('on')) return;
+    const dur = reduce ? 0 : 420;
+    ovp.classList.remove('ready');            // 先换回封面图，再缩回卡片
+    ovp.style.transition = `transform ${dur}ms ${EASE}, border-radius ${dur}ms ${EASE}`;
+    ovp.style.transform = fromTransform(from); ovp.style.borderRadius = '12px';
+    ov.classList.remove('on');
+    setTimeout(() => { ov.hidden = true; ovf.src = 'about:blank'; document.documentElement.style.overflow = ''; resumeAll(); }, dur);
+    history.replaceState(null, '', location.pathname + location.search);
+    document.title = 'HTML Style Base · 设计经验库';
+    if (lastFocus && lastFocus.focus) lastFocus.focus({preventScroll: true});
+  }
+  function drawer(v) { $('ovInfo').innerHTML = (v ? '收起详情' : '查看详情') + ' <kbd>I</kbd>'; }
+  const V = () => { try { return ovf.contentWindow.VIEW; } catch (e) { return null; } };
+  $('ovInfo').onclick = () => { const v = V(); if (v) v.toggle(); };
+  $('ovClose').onclick = closeOv;
+  $('ovbg').onclick = closeOv;
+  function ovKey(e) {
+    if (e.key === 'Escape') { e.preventDefault(); const v = V(); if (v && v.isOpen()) v.toggle(); else closeOv(); return; }
+    const v = V(); if (v && v.key(e)) e.preventDefault();
+  }
+  // 给弹层里的详情页调用
+  window.HSB = {meta, drawer, close: closeOv};
+
   render();
-  // 兼容旧版链接 index.html#id → 详情页
+  // 链接带 #id：直接打开弹层（兼容旧链接）
   const h = decodeURIComponent(location.hash.slice(1));
-  if (h && P.some(p => p.id === h)) location.replace('view.html#' + encodeURIComponent(h));
+  if (h && BY[h]) openOv(h);
 })();
 </script>
 </body>

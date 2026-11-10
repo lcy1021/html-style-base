@@ -45,6 +45,10 @@ body.open .fab{opacity:0;pointer-events:none;transform:translateX(20px)}
 @keyframes fill{to{width:100%}}
 .auto kbd{color:#9a95a8}
 body.open .auto{right:calc(var(--dw) + 16px)}
+body.embed .hud,body.embed .hotzone,body.embed .fab{display:none!important}
+body.embed .auto{right:16px}
+body.embed.open .auto{right:calc(var(--dw) + 16px)}
+body.embed .drawer{border-radius:0}
 body.pinned .hud{right:var(--dw)}
 .hud{transition:transform .35s var(--ease),right .45s var(--ease)}
 #stage{transition:width .45s var(--ease),opacity .38s}
@@ -156,7 +160,7 @@ body.open .toast{left:calc((100% - var(--dw)) / 2)}
   <div class="db" id="body"></div>
 </aside>
 
-<div class="toast" id="toast"><span><kbd>←</kbd><kbd>→</kbd> 体验样例</span><span><kbd>I</kbd> 看说明</span><span><kbd>A</kbd> 暂停 / 继续</span><span><kbd>[</kbd><kbd>]</kbd> 换一条</span></div>
+<div class="toast" id="toast"><span><kbd>←</kbd><kbd>→</kbd> 体验样例</span><span><kbd>I</kbd> 查看详情</span><span><kbd>A</kbd> 暂停 / 继续</span><span><kbd>[</kbd><kbd>]</kbd> 换一条</span></div>
 <div class="copied" id="copied">已复制</div>
 
 <script src="data/patterns.js"></script>
@@ -165,6 +169,9 @@ body.open .toast{left:calc((100% - var(--dw)) / 2)}
 <script>
 (() => {
   const P = (window.PATTERNS || []).map((p, i) => ({...p, no: String(i + 1).padStart(2, '0')}));
+  const EMBED = new URLSearchParams(location.search).has('embed');
+  const HOST = (() => { try { return EMBED && parent !== window && parent.HSB ? parent.HSB : null; } catch (e) { return null; } })();
+  if (EMBED) document.body.classList.add('embed');
   const id = decodeURIComponent(location.hash.slice(1)) || new URLSearchParams(location.search).get('id') || (P.find(p => p.demo) || {}).id;
   const i0 = Math.max(0, P.findIndex(p => p.id === id)), p = P[i0];
   const $ = s => document.getElementById(s), B = document.body;
@@ -175,7 +182,7 @@ body.open .toast{left:calc((100% - var(--dw)) / 2)}
   $('hNo').textContent = $('dNo').textContent = '#' + p.no;
   $('hTitle').textContent = $('dTitle').textContent = p.title;
   $('dCat').textContent = p.category; $('dIntent').textContent = '想说明：' + p.intent;
-  const link = (el, d) => { const t = P[(i0 + d + P.length) % P.length]; el.href = 'view.html#' + encodeURIComponent(t.id); el.title = `#${t.no} ${t.title}`; };
+  const link = (el, d) => { const t = P[(i0 + d + P.length) % P.length]; el.href = (EMBED ? 'view.html?embed=1#' : 'view.html#') + encodeURIComponent(t.id); el.title = `#${t.no} ${t.title}`; };
   link($('prev'), -1); link($('next'), 1);
 
   /* ---------- 抽屉内容 ---------- */
@@ -223,7 +230,7 @@ body.open .toast{left:calc((100% - var(--dw)) / 2)}
   });
 
   /* ---------- 抽屉开合 & 固定 ---------- */
-  const open = (v = !B.classList.contains('open')) => { B.classList.toggle('open', v); $('fab').setAttribute('aria-expanded', String(v)); if (!v && B.classList.contains('pinned')) pin(false); layout(); };
+  const open = (v = !B.classList.contains('open')) => { B.classList.toggle('open', v); $('fab').setAttribute('aria-expanded', String(v)); if (HOST) HOST.drawer(v); if (!v && B.classList.contains('pinned')) pin(false); layout(); };
   const pin = (v = !B.classList.contains('pinned')) => { B.classList.toggle('pinned', v); $('pin').setAttribute('aria-pressed', String(v)); if (v) B.classList.add('open'); layout(); };
   $('fab').onclick = () => open(true); $('close').onclick = () => open(false); $('pin').onclick = () => pin();
   function layout() {               // 固定后：样例区域直接变窄，让样例按新宽度重新排版（不是等比缩放）
@@ -251,7 +258,7 @@ body.open .toast{left:calc((100% - var(--dw)) / 2)}
     if (k === 'a') { toggleAuto(); return true; }
     if (k === '[') { go($('prev').href); return true; }
     if (k === ']') { go($('next').href); return true; }
-    if (k === 'escape') { if (B.classList.contains('open')) open(false); else location.href = './'; return true; }
+    if (k === 'escape') { if (B.classList.contains('open')) open(false); else if (HOST) HOST.close(); else location.href = './'; return true; }
     return false;
   }
   addEventListener('keydown', e => { if (keys(e)) e.preventDefault(); else if (W && W.DEMO && ['ArrowRight', 'ArrowLeft', ' ', 'ArrowDown', 'ArrowUp'].includes(e.key)) { e.preventDefault(); manual(); W.DEMO.set(W.DEMO.get() + (['ArrowLeft', 'ArrowUp'].includes(e.key) ? -1 : 1)); } });
@@ -317,6 +324,13 @@ body.open .toast{left:calc((100% - var(--dw)) / 2)}
     idleT = setTimeout(function again() { if (userPaused) return; if (B.classList.contains('open')) { idleT = setTimeout(again, IDLE); return; } startAuto(); }, IDLE);
   }
   $('auto').onclick = toggleAuto;
+
+  /* ---------- 嵌在首页弹层里时，给外层调用 ---------- */
+  window.VIEW = {
+    toggle: () => open(), isOpen: () => B.classList.contains('open'),
+    key: e => { if (keys(e)) return true; if (W && W.DEMO && ['ArrowRight', 'ArrowLeft', ' ', 'ArrowDown', 'ArrowUp'].includes(e.key)) { manual(); W.DEMO.set(W.DEMO.get() + (['ArrowLeft', 'ArrowUp'].includes(e.key) ? -1 : 1)); return true; } return false; },
+  };
+  if (HOST) HOST.meta(p.id);
 
   /* ---------- 首次提示 ---------- */
   let seen = false; try { seen = localStorage.getItem('hsb-seen') === '1'; localStorage.setItem('hsb-seen', '1'); } catch (e) {}
