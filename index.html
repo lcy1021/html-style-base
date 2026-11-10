@@ -107,6 +107,7 @@ main{padding:8px 48px 120px}
 .ovbar .sp{flex:1}
 .ob{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 10px 0 14px;border-radius:99px;font-size:13px;color:var(--ink);background:rgba(18,17,24,.82);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14),0 8px 24px -10px rgba(0,0,0,.6);transition:background .2s,box-shadow .2s}
 .ob:hover{background:rgba(32,30,42,.92);box-shadow:inset 0 0 0 1px rgba(255,255,255,.26),0 8px 24px -10px rgba(0,0,0,.6)}
+.ob[hidden]{display:none}
 .ob[aria-pressed=true]{box-shadow:inset 0 0 0 1px rgba(255,138,91,.7),0 8px 24px -10px rgba(0,0,0,.6)}
 .ob .dot{width:6px;height:6px;border-radius:50%;background:var(--mut);transition:background .2s}
 .ob[aria-pressed=true] .dot{background:var(--accent)}
@@ -396,7 +397,8 @@ main{padding:8px 48px 120px}
     const v = V(); if (v && v.key(e)) e.preventDefault();
   }
   // 给弹层里的详情页调用
-  window.HSB = {meta, drawer, mode, close: closeOv};
+  function textOnly(v) { $('ovInfo').hidden = v; if (v) $('ovMode').hidden = true; }
+  window.HSB = {meta, drawer, mode, textOnly, close: closeOv};
 
   render();
   // 链接带 #id：直接打开弹层（兼容旧链接）

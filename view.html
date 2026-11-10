@@ -16,6 +16,29 @@ a{color:inherit}
 /* 舞台：样例永远按完整视口渲染，固定模式下整体等比缩小 */
 #stage{position:fixed;left:0;top:0;width:100vw;height:100vh;border:0;transition:width .45s var(--ease)}
 .blank{position:fixed;inset:0;display:grid;place-items:center;color:#9a95a8;font-size:15px}
+/* 文字条目：不放样例，主体直接排成一页文字版（左栏标签、右栏正文） */
+.article{position:fixed;inset:0;overflow:auto;background:#0c0b12;background-image:radial-gradient(rgba(255,255,255,.04) 1px,transparent 1px);background-size:26px 26px;color:#f3f1ff}
+body.embed .article{border-radius:14px;box-shadow:0 40px 100px -20px rgba(0,0,0,.85),0 0 0 1px rgba(255,255,255,.12)}
+.article .wrap{max-width:1040px;margin:0 auto;padding:clamp(40px,8vh,88px) clamp(28px,6vw,72px) 96px}
+.article .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--tc,#ff8a5b)}
+.article h1{margin-top:18px;font-family:var(--serif);font-weight:900;font-size:clamp(40px,5vw,64px);line-height:1.08;letter-spacing:-.02em;text-wrap:balance}
+.article .lead{margin-top:22px;max-width:760px;font-size:clamp(17px,1.6vw,20px);line-height:1.75;color:#c9c5d6;text-wrap:pretty}
+.article .rows{margin-top:clamp(36px,6vh,64px);border-top:1px solid rgba(255,255,255,.12)}
+.article .row{display:grid;grid-template-columns:200px 1fr;gap:32px;padding:26px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+.article .row h2{font-size:13px;font-weight:500;letter-spacing:.08em;color:#9a95a8;padding-top:3px}
+.article .row h2 b{display:block;margin-top:6px;font-family:var(--serif);font-size:22px;font-weight:900;letter-spacing:0;color:#f3f1ff}
+.article ol{list-style:none;counter-reset:a}
+.article li{position:relative;padding:0 0 14px 36px;font-size:16px;line-height:1.75;color:#e4e1ee;text-wrap:pretty}
+.article li:last-child{padding-bottom:0}
+.article li::before{counter-increment:a;content:counter(a,decimal-leading-zero);position:absolute;left:0;top:2px;font-family:var(--mono);font-size:12px;color:var(--tc,#ff8a5b)}
+.article .pit li::before{content:"";left:4px;top:11px;width:8px;height:8px;border-radius:50%;background:#ff6b5a;box-shadow:0 0 0 4px rgba(255,107,90,.16)}
+.auto[hidden]{display:none!important}
+.article .foot{margin-top:28px;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;font-size:12.5px;color:#9a95a8}
+.article .foot span.t{padding:3px 10px;border-radius:99px;background:rgba(255,255,255,.07);color:#c9c5d6}
+.article .foot a{color:#c9c5d6;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.2)}
+.article .foot a:hover{color:#fff}
+@media (max-width:760px){.article .row{grid-template-columns:1fr;gap:10px}}
+body.textonly .fab,body.textonly .drawer{display:none!important}
 
 /* 顶部细栏：鼠标靠近顶部或刚进入时出现 */
 .hud{position:fixed;left:0;right:0;top:0;height:52px;display:flex;align-items:center;gap:14px;padding:0 16px;font-size:13px;color:#f3f1ff;background:linear-gradient(rgba(12,11,18,.86),rgba(12,11,18,.55));backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transform:translateY(-100%);transition:transform .35s var(--ease);z-index:10}
@@ -258,6 +281,7 @@ body.open .toast{left:calc((100% - var(--dw)) / 2)}
   function keys(e) {
     if (e.target.closest && e.target.closest('input,textarea')) return false;
     const k = e.key.toLowerCase();
+    if (!p.demo && ['i', 'd', 'p'].includes(k)) return true;
     if (k === 'i') { open(); return true; }
     if (k === 'd') { open(true); setTab(tab === 'd' ? 'a' : 'd'); return true; }
     if (k === 'p') { pin(); return true; }
@@ -301,8 +325,18 @@ body.open .toast{left:calc((100% - var(--dw)) / 2)}
       } catch (e) { /* 跨域时只能看，不能同步 */ }
     };
   } else {
-    fr.remove(); B.insertAdjacentHTML('afterbegin', '<div class="blank">这一条是文字经验，没有可操作的样例 —— 说明已在右侧打开</div>');
-    setTimeout(() => open(true), 300);
+    fr.remove(); B.classList.add('textonly');
+    const TC = {'样式': '#ff8a5b', '方法': '#b9a8ff', '规范': '#5ad0b3', '参考': '#ffb547', '工具与交付': '#4ea1ff'}[p.category] || '#ff8a5b';
+    const ol = (a, c = '') => `<ol class="${c}">${a.map(x => `<li>${esc(x)}</li>`).join('')}</ol>`;
+    const row = (k, sub, a, c) => a && a.length ? `<section class="row"><h2>${k}<b>${sub}</b></h2>${ol(a, c)}</section>` : '';
+    const rel = (p.related || []).map(id => P.find(x => x.id === id)).filter(Boolean);
+    B.insertAdjacentHTML('afterbegin', `<article class="article" style="--tc:${TC}"><div class="wrap">
+      <div class="eyebrow">#${p.no} · ${esc(p.category)} · 想说明：${esc(p.intent)}</div>
+      <h1>${esc(p.title)}</h1>
+      <p class="lead">${esc(p.summary)}</p>
+      <div class="rows">${row('WHEN', '什么时候用', p.when)}${row('HOW', '怎么做', p.how)}${row('PITFALLS', '踩过的坑', p.pitfalls, 'pit')}</div>
+      <div class="foot">${(p.tags || []).map(x => `<span class="t">${esc(x)}</span>`).join('')}${p.source ? `<span>来自：${esc(p.source)}</span>` : ''}${rel.map(r => `<a href="${EMBED ? 'view.html?embed=1#' : 'view.html#'}${encodeURIComponent(r.id)}">相关：${esc(r.title)}</a>`).join('')}</div>
+    </div></article>`);
   }
   setTab('a');
 
@@ -340,10 +374,10 @@ body.open .toast{left:calc((100% - var(--dw)) / 2)}
 
   /* ---------- 嵌在首页弹层里时，给外层调用 ---------- */
   window.VIEW = {
-    toggle: () => open(), isOpen: () => B.classList.contains('open'), setMode: m => setMode(m, true), hasSteps: () => N > 1,
+    toggle: () => { if (p.demo) open(); }, isOpen: () => B.classList.contains('open'), setMode: m => setMode(m, true), hasSteps: () => N > 1,
     key: e => { if (keys(e)) return true; if (W && W.DEMO && ['ArrowRight', 'ArrowLeft', ' ', 'ArrowDown', 'ArrowUp'].includes(e.key)) { manual(); W.DEMO.set(W.DEMO.get() + (['ArrowLeft', 'ArrowUp'].includes(e.key) ? -1 : 1)); return true; } return false; },
   };
-  if (HOST) HOST.meta(p.id);
+  if (HOST) { HOST.meta(p.id); if (HOST.textOnly) HOST.textOnly(!p.demo); }
 
   /* ---------- 首次提示 ---------- */
   let seen = false; try { seen = localStorage.getItem('hsb-seen') === '1'; localStorage.setItem('hsb-seen', '1'); } catch (e) {}
