@@ -74,7 +74,7 @@ export function mcp(r) {
   return {
     tools: all(`SELECT tool, COUNT(*) n FROM events WHERE day BETWEEN ? AND ? AND type = 'mcp_call' GROUP BY tool ORDER BY n DESC`, r.from, r.to),
     clients: all(`SELECT COALESCE(client, '未知') client, COUNT(*) n FROM events WHERE day BETWEEN ? AND ? AND type = 'mcp_call' GROUP BY 1 ORDER BY n DESC`, r.from, r.to),
-    tokens: all(`SELECT t.id, t.name, t.prefix, t.created, t.last_used, t.last_client, t.revoked,
+    tokens: all(`SELECT t.id, t.name, t.email, t.prefix, t.created, t.last_used, t.last_client, t.revoked,
         (SELECT COUNT(*) FROM events e WHERE e.visitor = 't' || t.id AND e.type = 'mcp_call' AND e.day BETWEEN ? AND ?) calls
       FROM tokens t ORDER BY t.revoked, t.created DESC`, r.from, r.to),
   };

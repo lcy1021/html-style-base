@@ -11,7 +11,7 @@ export const config = {
   // 数据库与备份目录
   dataDir: path.resolve(env.DATA_DIR || '/data'),
   // 经验库网页地址（MCP 返回的链接、访问根路径时跳转）
-  siteUrl: (env.SITE_URL || 'https://lcy1021.github.io/html-style-base/').replace(/\/?$/, '/'),
+  siteUrl: (env.SITE_URL || (env.DOMAIN ? `https://${env.DOMAIN}/` : 'https://lcy1021.github.io/html-style-base/')).replace(/\/?$/, '/'),
   // 允许发送埋点的网页来源
   allowedOrigins: list(env.ALLOWED_ORIGINS || 'https://lcy1021.github.io,http://localhost:8000,http://127.0.0.1:8000'),
   // 后台登录：GitHub OAuth（推荐）或独立密码（备用）
@@ -26,6 +26,8 @@ export const config = {
   publicUrl: (env.PUBLIC_URL || (env.DOMAIN ? `https://${env.DOMAIN}` : `http://localhost:${env.PORT || 8787}`)).replace(/\/$/, ''),
   // MCP 是否必须带 token（默认必须）
   mcpRequireToken: env.MCP_REQUIRE_TOKEN !== '0',
+  // MCP 申请：只接受这些邮箱后缀（逗号分隔，写在 .env 里，不进公开仓库）
+  applyDomains: list(env.APPLY_EMAIL_DOMAINS).map(s => s.toLowerCase().replace(/^@/, '')),
   backupKeepDays: +(env.BACKUP_KEEP_DAYS || 14),
 };
 

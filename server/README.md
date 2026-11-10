@@ -8,7 +8,8 @@
 | `/mcp` | 远程 MCP（Streamable HTTP，无状态），同学用个人 token 接入 |
 | `/admin` | 数据后台，只有管理员能登录（GitHub 白名单或独立密码） |
 | `/health` | 健康检查 |
-| `/` | 跳转到经验库网页 |
+| `/apply` | MCP 申请（首页弹窗提交）和申请人查询进度 / 领取 token 的页面 |
+| 其他路径 | 经验库网页本身（Caddy 直接从仓库副本提供，`server/`、`.git` 和隐藏文件不对外） |
 
 技术：Node 22 内置 SQLite（`node:sqlite`），没有需要编译的依赖；Caddy 自动 HTTPS；数据库每天自动备份到 `data/backup/`，保留 14 天。
 
@@ -44,7 +45,16 @@ cd /opt/html-style-base/server && git pull && docker compose up -d --build
 
 只有 `ADMIN_GITHUB_LOGINS` 里的账号（默认 `lcy1021`）能进后台。
 
-## 给同学接入 MCP
+## 同学申请 MCP
+
+1. 同学在经验库首页点右上角「接入 MCP」，填公司邮箱提交（只接受 `.env` 里 `APPLY_EMAIL_DOMAINS` 的后缀）；
+2. 提交后拿到一个专属查询链接（`/apply/status#…`）；
+3. 管理员在后台「MCP 申请」里点通过 / 拒绝（有待审核时标题和浏览器标签会显示数量）；
+4. 同学打开查询链接，审核通过就能看到 token 和接入配置——**只显示一次**，之后再打开显示“已领取”。
+
+目前没有验证“邮箱确实是本人的”，审核时请核对姓名和邮箱。以后接入发信服务后，可以改成把 token 直接发到公司邮箱（代码里 `apply.js` 的 `decide()` 已留位置）。
+
+## 给同学接入 MCP（手动）
 
 后台「MCP」区域填备注名 → 生成 token，页面会给出现成的配置，复制发给对方：
 

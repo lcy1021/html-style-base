@@ -79,6 +79,10 @@ pre{margin:8px 0 0;padding:12px 14px;background:rgba(0,0,0,.3);border-radius:10p
 .newtok{margin-top:12px;padding:14px;border:1px solid rgba(255,181,71,.4);border-radius:10px;background:rgba(255,181,71,.06)}
 .newtok p{margin:0 0 6px;font-size:13px}
 .st{font-size:12px} .st.off{color:var(--text-muted)}
+.badge{display:inline-block;min-width:18px;height:18px;margin-left:6px;padding:0 6px;border-radius:99px;background:var(--amber);color:#111;font-size:11px;line-height:18px;text-align:center;vertical-align:2px}
+.tbl td.r{max-width:260px;text-align:left;color:var(--text-secondary);white-space:normal}
+.acts{display:flex;gap:6px;justify-content:flex-end}
+.acts .btn{height:28px;padding:0 10px}
 .lnk{background:none;border:0;padding:0;color:var(--text-secondary);text-decoration:underline;cursor:pointer;font-size:12.5px}
 @media (max-width:900px){.cards{grid-template-columns:repeat(2,1fr)}.multi,.two{grid-template-columns:1fr}.wrap{padding:0 16px 60px}header .wrap{flex-wrap:wrap;height:auto;padding:10px 16px}}
 </style>
@@ -99,6 +103,12 @@ pre{margin:8px 0 0;padding:12px 14px;background:rgba(0,0,0,.3);border-radius:10p
 <div class="wrap">
   <section class="cards" id="cards" aria-label="概览"></section>
 
+  <h2>MCP 申请<span class="badge" id="pendN" hidden></span></h2>
+  <p class="sub">同学在首页点「接入 MCP」用公司邮箱申请。通过后，他用自己的查询链接领取 token（只显示一次）。<span id="applyHint"></span></p>
+  <div class="panel">
+    <table class="tbl" id="at"><thead><tr><th>姓名</th><th class="l">邮箱</th><th class="l">用途</th><th>申请时间</th><th>状态</th><th></th></tr></thead><tbody></tbody></table>
+  </div>
+
   <h2>趋势</h2>
   <p class="sub">按天统计。三张图各自一根纵轴，只比较各自的走势，不互相比较大小。</p>
   <div class="panel multi" id="trend"></div>
@@ -118,7 +128,7 @@ pre{margin:8px 0 0;padding:12px 14px;background:rgba(0,0,0,.3);border-radius:10p
   </div>
 
   <h2>MCP</h2>
-  <p class="sub">同学用个人 token 接入。token 只在生成时显示一次，丢了就停用后重新生成。</p>
+  <p class="sub">申请通过并领取后，token 会出现在下面的列表里。也可以手动给某人生成。token 只显示一次，丢了就停用后重新生成。</p>
   <div class="two">
     <div class="panel"><h3 class="who" style="margin:0 0 12px">按工具</h3><div class="bars" id="tools"></div></div>
     <div class="panel"><h3 class="who" style="margin:0 0 12px">按客户端</h3><div class="bars" id="clients"></div></div>
@@ -232,7 +242,7 @@ pre{margin:8px 0 0;padding:12px 14px;background:rgba(0,0,0,.3);border-radius:10p
     bars($('tools'), m.tools, 'tool', r => TOOL_CN[r.tool] ? `${TOOL_CN[r.tool]}（${r.tool}）` : r.tool);
     bars($('clients'), m.clients, 'client', r => r.client);
     $('tt').tBodies[0].replaceChildren(...m.tokens.map(t => h('tr', {},
-      h('td', {}, t.name), h('td', { class: 'l' }, h('code', {}, t.prefix + '…')), h('td', { class: 'l' }, t.last_client || '–'), h('td', {}, dt(t.last_used)), h('td', {}, fmt(t.calls)),
+      h('td', {}, t.name, t.email ? h('div', { class: 'who' }, t.email) : null), h('td', { class: 'l' }, h('code', {}, t.prefix + '…')), h('td', { class: 'l' }, t.last_client || '–'), h('td', {}, dt(t.last_used)), h('td', {}, fmt(t.calls)),
       h('td', { class: 'st' + (t.revoked ? ' off' : '') }, t.revoked ? '已停用' : '可用'),
       h('td', {}, h('button', { class: 'lnk', type: 'button', onclick: () => toggleTok(t) }, t.revoked ? '恢复' : '停用')))));
     if (!m.tokens.length) $('tt').tBodies[0].append(h('tr', {}, h('td', { colspan: 7, class: 'z' }, '还没有 token，在上面填备注名生成一个。')));
@@ -259,6 +269,30 @@ pre{margin:8px 0 0;padding:12px 14px;background:rgba(0,0,0,.3);border-radius:10p
     load();
   };
 
+
+  /* ---------- MCP 申请 ---------- */
+  const AST = { pending: ['待审核', 'var(--amber)'], approved: ['已通过 · 待领取', 'var(--text-secondary)'], issued: ['已领取', 'var(--good)'], rejected: ['已拒绝', 'var(--text-muted)'] };
+  function drawApps(a) {
+    $('pendN').hidden = !a.pending; $('pendN').textContent = a.pending;
+    document.title = a.pending ? `(${a.pending}) 经验库后台` : '经验库后台';
+    $('at').tBodies[0].replaceChildren(...a.list.map(x => {
+      const [label, c] = AST[x.status] || [x.status, 'var(--text-muted)'];
+      const acts = x.status === 'pending' ? h('div', { class: 'acts' },
+        h('button', { class: 'btn', type: 'button', onclick: () => decide(x, false) }, '拒绝'),
+        h('button', { class: 'btn pri', type: 'button', onclick: () => decide(x, true) }, '通过')) : '';
+      return h('tr', {}, h('td', {}, x.name), h('td', { class: 'l' }, x.email, x.active_tokens ? h('div', { class: 'who' }, `已有 ${x.active_tokens} 个可用 token`) : null),
+        h('td', { class: 'r' }, x.reason || '–'), h('td', {}, dt(x.created)), h('td', { style: `color:${c}` }, label), h('td', {}, acts));
+    }));
+    if (!a.list.length) $('at').tBodies[0].append(h('tr', {}, h('td', { colspan: 6, class: 'z' }, '还没有申请')));
+  }
+  async function decide(x, ok) {
+    if (!ok && !confirm(`拒绝 ${x.name}（${x.email}）的申请？`)) return;
+    const r = await api(`applications/${x.id}/${ok ? 'approve' : 'reject'}`, { method: 'POST' });
+    if (r.error) alert(r.error);
+    loadApps(); if (ok) load();
+  }
+  const loadApps = () => api('applications').then(drawApps);
+  setInterval(loadApps, 60e3);
   /* ---------- 搜索词 ---------- */
   const SRC = { web: '网页', mcp: 'MCP' };
   function drawSearch(sq) {
@@ -274,10 +308,12 @@ pre{margin:8px 0 0;padding:12px 14px;background:rgba(0,0,0,.3);border-radius:10p
     $('csv').href = '/admin/api/export.csv?' + qs();
     const [sm, tr, pt, m, sq] = await Promise.all(['summary', 'trend', 'patterns', 'mcp', 'search'].map(p => api(p + '?' + qs())));
     drawCards(sm); drawTrend(tr); PT = pt; drawPatterns(); drawMcp(m); drawSearch(sq);
+    loadApps();
   }
   api('me').then(me => {
     SITE = me.site; MCP = me.mcp; $('who').textContent = me.who === 'password' ? '密码登录' : me.who.replace(/^github:/, '@');
     $('mcpUrl').replaceChildren('MCP 地址 ', h('code', {}, me.mcp));
+    $('applyHint').replaceChildren(' 只接受 ', me.domains.map(d => '@' + d).join(' / '), ' 邮箱。');
     return api('patterns?' + qs());
   }).then(rows => {
     [...new Set(rows.map(r => r.category))].forEach(c => $('catSel').append(h('option', { value: c }, c)));

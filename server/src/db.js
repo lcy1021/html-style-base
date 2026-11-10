@@ -37,7 +37,20 @@ CREATE TABLE IF NOT EXISTS tokens (
   last_client TEXT,
   revoked INTEGER NOT NULL DEFAULT 0
 );
+CREATE TABLE IF NOT EXISTS applications (
+  id INTEGER PRIMARY KEY,
+  name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  reason TEXT,
+  created INTEGER NOT NULL,
+  status TEXT NOT NULL DEFAULT 'pending',   -- pending 待审核 / approved 已通过未领取 / issued 已领取 / rejected 已拒绝
+  code_hash TEXT NOT NULL UNIQUE,           -- 查询码的哈希，原文只给申请人
+  decided INTEGER,
+  token_id INTEGER,
+  iph TEXT
+);
 `);
+try { db.exec('ALTER TABLE tokens ADD COLUMN email TEXT'); } catch { /* 已有这一列 */ }
 
 export const dayOf = ts => new Date(ts + 8 * 3600e3).toISOString().slice(0, 10);   // 北京时间
 
@@ -53,9 +66,9 @@ export function logEvent(e) {
 
 /* ---------- token ---------- */
 export const hashToken = t => crypto.createHash('sha256').update(t).digest('hex');
-export function createToken(name) {
+export function createToken(name, email = null) {
   const token = 'hsb_' + crypto.randomBytes(16).toString('hex');
-  const r = db.prepare('INSERT INTO tokens (name, hash, prefix, created) VALUES (?,?,?,?)').run(name, hashToken(token), token.slice(0, 8), Date.now());
+  const r = db.prepare('INSERT INTO tokens (name, hash, prefix, created, email) VALUES (?,?,?,?,?)').run(name, hashToken(token), token.slice(0, 8), Date.now(), email);
   return { id: Number(r.lastInsertRowid), token };
 }
 const findTok = db.prepare('SELECT * FROM tokens WHERE hash = ? AND revoked = 0');

@@ -10,6 +10,7 @@ import { content } from './content.js';
 import { handleMcp } from './mcp.js';
 import { isAdmin, sessionCookie, clearCookie, githubStart, githubFinish, passwordLogin } from './auth.js';
 import * as stats from './stats.js';
+import * as apply from './apply.js';
 
 const PUB = path.join(path.dirname(fileURLToPath(import.meta.url)), '../public');
 const page = f => fs.readFileSync(path.join(PUB, f), 'utf8');
@@ -40,15 +41,16 @@ const recent = new Map();      // 去重：同一访客短时间内重复的浏�
 const perIp = new Map();       // 防刷：每个 IP 每分钟最多 120 条
 setInterval(() => { const t = Date.now(); for (const [k, v] of recent) if (t - v > 60e3) recent.delete(k); perIp.clear(); }, 60e3).unref();
 
+const originOk = o => config.allowedOrigins.includes(o) || o === config.publicUrl;   // 本域名（网页和服务同域）总是允许
 function cors(req) {
   const o = req.headers.origin;
-  return o && config.allowedOrigins.includes(o) ? { 'Access-Control-Allow-Origin': o, 'Vary': 'Origin', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' } : {};
+  return o && originOk(o) ? { 'Access-Control-Allow-Origin': o, 'Vary': 'Origin', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' } : {};
 }
 async function track(req, res) {
   const h = cors(req);
   if (req.method === 'OPTIONS') return send(res, 204, '', h);
   const origin = req.headers.origin;
-  if (origin && !config.allowedOrigins.includes(origin)) return send(res, 403, 'origin', h);
+  if (origin && !originOk(origin)) return send(res, 403, 'origin', h);
   const iph = ipHash(req);
   const n = (perIp.get(iph) || 0) + 1; perIp.set(iph, n);
   if (n > 120) return send(res, 429, 'slow down', h);
@@ -94,6 +96,29 @@ async function mcp(req, res, url) {
   await handleMcp(req, res, body, ctx);
 }
 
+/* ---------- MCP 申请（公开页面） ---------- */
+async function applyRoute(req, res, url) {
+  const p = url.pathname.replace(/\/$/, '');
+  const fill = f => page(f).replaceAll('{{DOMAINS}}', config.applyDomains.map(d => '@' + d).join(' / '));
+  if (p === '/apply' && req.method === 'GET') return html(res, fill('apply.html'));
+  if (p === '/apply/status' && req.method === 'GET') return html(res, fill('apply-status.html'));
+  const h = cors(req);               // 首页（含 GitHub Pages 备用地址）里的申请框会跨站提交
+  if (req.method === 'OPTIONS') return send(res, 204, '', h);
+  if (req.method !== 'POST') return send(res, 405, 'POST only', h);
+  const o = req.headers.origin;
+  if (o && !originOk(o)) return send(res, 403, { error: 'origin' }, h);
+  let b = {}; try { b = JSON.parse(await readBody(req, 8 * 1024)); } catch { return send(res, 400, { error: '请求格式不对' }, h); }
+  if (p === '/apply') {
+    const r = apply.submit(b, ipHash(req));
+    return send(res, r.error ? 400 : 200, r, h);
+  }
+  if (p === '/apply/check') {
+    const r = apply.check(b.code);
+    return send(res, r.error ? 404 : 200, r, h);
+  }
+  return send(res, 404, { error: 'not found' }, h);
+}
+
 /* ---------- 后台 ---------- */
 async function admin(req, res, url) {
   const p = url.pathname;
@@ -128,7 +153,8 @@ async function admin(req, res, url) {
   }
   const r = stats.range(url);
   switch (p) {
-    case '/admin/api/me': return send(res, 200, { who, site: config.siteUrl, mcp: `${config.publicUrl}/mcp`, requireToken: config.mcpRequireToken });
+    case '/admin/api/me': return send(res, 200, { who, site: config.siteUrl, mcp: `${config.publicUrl}/mcp`, requireToken: config.mcpRequireToken, applyUrl: `${config.publicUrl}/apply`, domains: config.applyDomains });
+    case '/admin/api/applications': return send(res, 200, { list: apply.list(), pending: apply.pendingCount() });
     case '/admin/api/summary': return send(res, 200, stats.summary(r));
     case '/admin/api/trend': return send(res, 200, stats.trend(r));
     case '/admin/api/patterns': return send(res, 200, stats.patterns(r));
@@ -143,6 +169,8 @@ async function admin(req, res, url) {
       return send(res, 200, { ...createToken(name), name });
     }
   }
+  const ma = p.match(/^\/admin\/api\/applications\/(\d+)\/(approve|reject)$/);
+  if (ma && req.method === 'POST') { const r = apply.decide(+ma[1], ma[2] === 'approve'); return send(res, r.error ? 400 : 200, r); }
   const m = p.match(/^\/admin\/api\/tokens\/(\d+)\/(revoke|restore)$/);
   if (m && req.method === 'POST') {
     db.prepare('UPDATE tokens SET revoked = ? WHERE id = ?').run(m[2] === 'revoke' ? 1 : 0, +m[1]);
@@ -171,6 +199,7 @@ const server = http.createServer(async (req, res) => {
     if (url.pathname === '/e') return await track(req, res);
     if (url.pathname === '/mcp') return await mcp(req, res, url);
     if (url.pathname === '/admin' || url.pathname.startsWith('/admin/')) return await admin(req, res, url);
+    if (url.pathname === '/apply' || url.pathname.startsWith('/apply/')) return await applyRoute(req, res, url);
     if (url.pathname === '/health') return send(res, 200, 'ok');
     if (url.pathname === '/') return redirect(res, config.siteUrl);
     send(res, 404, 'not found');
