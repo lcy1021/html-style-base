@@ -62,9 +62,10 @@ main{padding:32px 32px 120px}
 .cover.live iframe{opacity:1}.cover.live img{opacity:0}
 .meta{display:flex;align-items:center;gap:10px;margin-top:14px}
 .meta h3{font-size:16px;font-weight:600;letter-spacing:-.01em;line-height:1.3}
-.gl{flex:none;width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:color-mix(in srgb,var(--gc) 16%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--gc) 35%,transparent);transition:transform .4s var(--ease)}
-.gl svg{width:14px;height:14px;display:block;fill:var(--gc);stroke:var(--gc)}
-.card:hover .gl{transform:rotate(-8deg) scale(1.08)}
+.gl{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--gb);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14),0 6px 14px -8px var(--gb);transition:transform .4s var(--ease)}
+.gl svg{width:17px;height:17px;display:block;fill:none;stroke:var(--gf);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.gl.txt{font-size:13px;font-weight:600;color:#fff}
+.card:hover .gl{transform:rotate(-10deg) scale(1.06)}
 .meta .tg{margin-left:auto;display:flex;gap:6px;flex:none}
 .meta .tg span{font-size:11.5px;line-height:1;padding:5px 8px;border-radius:99px;color:var(--mut);box-shadow:inset 0 0 0 1px var(--line)}
 .line{margin-top:6px;font-size:13.5px;line-height:1.65;color:var(--ink2)}
@@ -173,6 +174,7 @@ main{padding:32px 32px 120px}
 </div>
 
 <script src="data/patterns.js"></script>
+<script src="data/icons.js"></script>
 <script src="data/live.js"></script>
 <script>
 (() => {
@@ -222,12 +224,10 @@ main{padding:32px 32px 120px}
 
   /* ---------- 卡片 ---------- */
   const flowOf = p => { const h = (p.how || [])[0] || ''; return h.startsWith('统一讲法：') ? h.slice(5).split(/\s*→\s*/) : null; };
-  /* 标题前的小图形：每个样式卡分到不同的“形状 × 颜色”组合，方便一眼区分 */
-  const GS = ['<circle cx="7" cy="7" r="6"/>', '<rect x="1.5" y="1.5" width="11" height="11" rx="2" transform="rotate(45 7 7)"/>', '<path d="M7 1 13 12.5H1Z"/>', '<path d="M1 8a6 6 0 0 1 12 0Z"/>', '<circle cx="7" cy="7" r="4.6" fill="none" stroke-width="2.6"/>', '<path d="M5.4 1h3.2v4.4H13v3.2H8.6V13H5.4V8.6H1V5.4h4.4Z"/>', '<circle cx="4" cy="7" r="3"/><circle cx="10" cy="7" r="3" opacity=".55"/>', '<path d="M1 13V1a12 12 0 0 1 12 12Z"/>'];
-  const GC = ['#ff8a5b', '#b9a8ff', '#5ad0b3', '#ffb547', '#4ea1ff', '#ff6b9a', '#9be15d', '#e8e4ff'];
-  let GI = {};
-  const glyph = p => { if (!(p.id in GI)) GI[p.id] = Object.keys(GI).length; const i = GI[p.id]; return `<span class="gl" style="--gc:${GC[(i + Math.floor(i / 8)) % 8]}"><svg viewBox="0 0 14 14">${GS[i % 8]}</svg></span>`; };
-  P.filter(p => p.category === '样式').forEach(p => glyph(p));
+  /* 标题前的圆形图标：按内容画，定义在 data/icons.js；没有定义的用标题首字 */
+  const glyph = p => { const ic = (window.ICONS || {})[p.id], tc = TYPES[p.category].c;
+    return ic ? `<span class="gl" style="--gb:${ic[0]};--gf:${ic[2] || '#fff'}"><svg viewBox="0 0 24 24">${ic[1]}</svg></span>`
+              : `<span class="gl txt" style="--gb:${tc}">${esc(p.title.slice(0, 1))}</span>`; };
   function cardHTML(p) {
     const tc = TYPES[p.category].c, attrs = `data-id="${esc(p.id)}" tabindex="0" role="link" style="--tc:${tc}"`;
     if (p.category === '样式') return `

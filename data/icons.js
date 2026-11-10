@@ -1,0 +1,41 @@
+/*
+ * 样式卡标题前的圆形图标：每条一个，按内容画（24×24 网格，线宽统一）。
+ * 加新样式时在这里加一行：id: [底色, 图形, 线条色(可省，默认白)]。
+ * 图形写 SVG 片段；默认是描边，需要填充的元素自己写 fill。
+ */
+window.ICONS = {
+  'exploded-layers': ['#3f3dbd', '<path d="M4 8.5 12 4.5l8 4-8 4z"/><path d="M4 12.5l8 4 8-4"/><path d="M4 16.5l8 4 8-4"/>'],
+  'case-intro':      ['#ff7a45', '<path d="M6 18v-3M12 18v-7M18 18V6"/>'],
+  'relay-chain':     ['#1f9d74', '<circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2" stroke-dasharray="2 1.6"/><path d="M7 12h3M14 12h3"/>'],
+  'strike-rewrite':  ['#e5484d', '<path d="M5 8h14"/><path d="M4 8.6 20 7.4" opacity=".55"/><path d="M5 14h9"/><path d="M5 18h6"/><path d="m15 18 4-4 1.5 1.5-4 4H15z"/>'],
+  'iceberg':         ['#2f7fc1', '<path d="M3 11h18"/><path d="m9 11 3-6 3 6"/><path d="m8 13.5-1.5 5h11l-1.5-5" stroke-dasharray="2 1.8"/>'],
+  'rehearsal':       ['#8b5cf6', '<rect x="4" y="5" width="16" height="12" rx="2"/><path d="m10.5 8.5 4 2.5-4 2.5z" fill="#fff"/><path d="M9 20h6"/>'],
+  'checklist':       ['#16a34a', '<path d="m4.5 7 1.5 1.5L9 5.5M12 7h7.5M4.5 13l1.5 1.5L9 11.5M12 13h7.5M5 18.5h3M12 18.5h7.5"/>'],
+  'one-to-many':     ['#f59e0b', '<circle cx="5.5" cy="12" r="2"/><path d="M7.5 12h4M7.5 11 17 6M7.5 13l9.5 5"/><circle cx="18.5" cy="5.5" r="1.6"/><circle cx="18.5" cy="12" r="1.6"/><circle cx="18.5" cy="18.5" r="1.6"/>'],
+  'stageflow':       ['#6d5bd0', '<path d="M3 17.5c4 0 4.5-6 9-6s5-5 9-5"/><circle cx="3.5" cy="17.5" r="1.4" fill="#fff"/><circle cx="12" cy="11.5" r="1.4" fill="#fff"/><circle cx="20.5" cy="6.5" r="1.4" fill="#fff"/>'],
+  'ripple':          ['#0ea5b7', '<circle cx="12" cy="12" r="2.2" fill="#fff"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="9" opacity=".55"/>'],
+  'slope':           ['#ff6a3d', '<path d="M5 4.5v15M19 4.5v15M5 8l14 8M5 16l14-8"/>'],
+  'flip-reveal':     ['#db2777', '<rect x="6.5" y="4" width="11" height="16" rx="2"/><path d="M10.2 10a1.9 1.9 0 1 1 2.8 1.6c-.7.4-1 .8-1 1.6M12 16.3v.1"/>'],
+  'fill-record':     ['#5b6b82', '<rect x="5.5" y="4" width="13" height="16" rx="2"/><path d="M9 9h6M9 12.5h6M9 16h3"/>'],
+  'pipeline':        ['#4f46e5', '<path d="M3 12h18"/><circle cx="5.5" cy="12" r="1.8" fill="#4f46e5"/><path d="m12 9 3 3-3 3-3-3z" fill="#4f46e5"/><circle cx="18.5" cy="12" r="1.8" fill="#4f46e5"/>'],
+  'scroll-story':    ['#0f8a7e', '<rect x="7" y="3.5" width="10" height="17" rx="5"/><path d="M12 7.5v3"/>'],
+  'annotate':        ['#f97316', '<path d="M12 20.5s-5.5-5-5.5-9.5a5.5 5.5 0 0 1 11 0c0 4.5-5.5 9.5-5.5 9.5z"/><path d="M11 9h1.3v4"/>'],
+  'clue-board':      ['#a8622a', '<path d="M7 7 17 17" stroke="#ffd0c4" stroke-width="2.2"/><rect x="3.5" y="3.5" width="7" height="6" rx="1" fill="#a8622a"/><rect x="13.5" y="14.5" width="7" height="6" rx="1" fill="#a8622a"/><circle cx="7" cy="6.5" r="1.2" fill="#ffd0c4" stroke="none"/><circle cx="17" cy="17.5" r="1.2" fill="#ffd0c4" stroke="none"/>'],
+  'time-machine':    ['#0b8fb3', '<path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3"/><path d="M4 4.5v3.5h3.5"/><path d="M12 8v4l2.8 1.8"/>'],
+  'you-decide':      ['#f5c518', '<path d="M12 20v-6M12 14 6.5 6.5M12 14l5.5-7.5M6 6h3.5M6 6v3.5M18 6h-3.5M18 6v3.5"/>', '#1d1d1f'],
+  'chat-replay':     ['#3b82f6', '<path d="M4 5.5h11v7.5H8.5L4 16z"/><path d="M15 9.5h5v8.5l-3-2.5h-6.5v-2.5"/>'],
+  'route-map':       ['#15a34a', '<path d="M4 18.5 9 9.5h6l5-4"/><circle cx="4" cy="18.5" r="1.8" fill="#15a34a"/><circle cx="9" cy="9.5" r="1.8" fill="#15a34a"/><circle cx="15" cy="9.5" r="1.8" fill="#15a34a"/><circle cx="20" cy="5.5" r="1.8" fill="#15a34a"/>'],
+  'zoom-levels':     ['#2446a8', '<circle cx="10.5" cy="10.5" r="6"/><path d="m15 15 5 5M10.5 7.8v5.4M7.8 10.5h5.4"/>'],
+  'tradeoff':        ['#0d9488', '<path d="M4 15.5 20 8.5"/><path d="M12 12v7.5M9 19.5h6"/><circle cx="5.5" cy="13" r="1.6" fill="#fff"/><circle cx="18.5" cy="7.5" r="2.4" fill="#fff"/>'],
+  'comic':           ['#ffd23f', '<path d="m12 3 1.8 4.4 4.6-1.6-1.9 4.4 4.5 2-4.6 1.5 1.3 4.7-4.3-2.4L12 21l-1.4-4.6-4.3 2.4 1.3-4.7L3 12.6l4.5-2-1.9-4.4 4.6 1.6z"/>', '#1d1d1f'],
+  'playable':        ['#9be15d', '<path d="m6.5 4.5 11 5.5-4.8 1.5-1.7 5.2z"/><path d="m13 12 4.5 4.5"/>', '#14121f'],
+  'growth-tree':     ['#5f9e1a', '<path d="M12 20.5v-8.5M12 12 7 7M12 12l5-5M12 15.5 8 13.5M12 9.5l3-1.5"/><circle cx="7" cy="6.5" r="1.6" fill="#fff"/><circle cx="17" cy="6.5" r="1.6" fill="#fff"/><circle cx="8" cy="13.5" r="1.3" fill="#fff"/>'],
+  'role-lens':       ['#c2410c', '<path d="M2.5 12S6 6.5 12 6.5 21.5 12 21.5 12 18 17.5 12 17.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/>'],
+  'terminal':        ['#16211a', '<path d="m5.5 8 4 4-4 4M11.5 16.5H18"/>', '#4ade80'],
+  'voice-wall':      ['#ec4899', '<rect x="3.5" y="5" width="7" height="4.5" rx="1.5"/><rect x="13" y="4" width="7.5" height="5" rx="1.5"/><rect x="5" y="12.5" width="8" height="4.5" rx="1.5"/><rect x="15" y="12" width="5.5" height="5" rx="1.5"/><path d="M8 19.5h8" opacity=".6"/>'],
+  'venn':            ['#a855f7', '<circle cx="9" cy="9.5" r="5"/><circle cx="15" cy="9.5" r="5"/><circle cx="12" cy="14.5" r="5"/>'],
+  'block-tower':     ['#ea580c', '<rect x="4" y="15" width="7" height="4.5" rx="1"/><rect x="13" y="15" width="7" height="4.5" rx="1"/><rect x="7.5" y="9.5" width="9" height="4.5" rx="1"/><rect x="9.5" y="3.5" width="7" height="4.5" rx="1" transform="rotate(14 13 6)" stroke-dasharray="2 1.6"/>'],
+  'diagnose':        ['#059669', '<path d="M4 16.5a8 8 0 0 1 16 0"/><path d="m12 16.5 4.2-5"/><circle cx="12" cy="16.5" r="1.4" fill="#fff"/>'],
+  'chapters':        ['#5b3fd6', '<rect x="3.5" y="6" width="7" height="12" rx="1.5"/><rect x="13.5" y="6" width="7" height="12" rx="1.5" opacity=".55"/>'],
+  'inbox-radar':     ['#0284c7', '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5" opacity=".55"/><path d="M12 12 18 6"/><circle cx="16.5" cy="9.5" r="1.2" fill="#fff"/>'],
+};
