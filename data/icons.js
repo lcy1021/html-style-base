@@ -71,6 +71,10 @@ window.ICONS = {
 };
 
 /* 生成图标 HTML（首页卡片、弹层标题、详情页共用）。样式类名 .gl，CSS 写在各页面里。 */
+window.iconColor = function (p, fallback) {
+  const ic = window.ICONS[p.id]; if (!ic) return fallback || '#ff8a5b';
+  return ic[2] && ic[2] !== '#1d1d1f' && ic[2] !== '#14121f' ? ic[2] : ic[0];
+};
 window.iconHTML = function (p, fallbackColor) {
   const ic = window.ICONS[p.id];
   const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));

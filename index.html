@@ -57,9 +57,9 @@ main{padding:32px 32px 120px}
 .card{display:block;position:relative;cursor:pointer;outline:0}
 .cover{position:relative;aspect-ratio:16/10;border-radius:12px;overflow:hidden;background:#0c0b12;box-shadow:0 0 0 1px rgba(255,255,255,.08);transition:transform .45s var(--ease),box-shadow .45s var(--ease)}
 .card:hover .cover,.card:focus-visible .cover{transform:translateY(-4px);box-shadow:0 24px 48px -20px rgba(0,0,0,.8),0 0 0 1px rgba(255,255,255,.18)}
-.cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top left;transition:opacity .35s}
+.cover>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top left;transition:opacity .35s}
 .cover iframe{position:absolute;left:0;top:0;width:960px;height:600px;border:0;transform-origin:0 0;pointer-events:none;opacity:0;transition:opacity .35s}
-.cover.live iframe{opacity:1}.cover.live img{opacity:0}
+.cover.live iframe{opacity:1}.cover.live>img{opacity:0}
 .meta{display:flex;align-items:center;gap:8px;margin-top:14px}
 .meta h3{font-size:16px;font-weight:600;letter-spacing:-.01em;line-height:1.3}
 .gl{--gs:color-mix(in srgb,var(--gb) 55%,#fff);--gk:color-mix(in srgb,var(--gb) 20%,#0e0d14);position:relative;flex:none;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;overflow:hidden;
@@ -74,29 +74,23 @@ main{padding:32px 32px 120px}
 .meta .tg span{font-size:11.5px;line-height:1;padding:5px 8px;border-radius:99px;color:var(--mut);box-shadow:inset 0 0 0 1px var(--line)}
 .line{margin-top:6px;font-size:13.5px;line-height:1.65;color:var(--ink2)}
 
-/* 紧凑卡（方法 / 规范 / 参考 / 工具） */
-.grid.sm{gap:12px;grid-template-columns:repeat(auto-fill,minmax(380px,1fr))}
-.mini{position:relative;display:flex;gap:16px;padding:18px 18px 18px 20px;border-radius:12px;background:rgba(255,255,255,.028);box-shadow:inset 0 0 0 1px var(--line);overflow:hidden;transition:background .25s,box-shadow .25s,transform .35s var(--ease)}
-.mini::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:0 3px 3px 0;background:var(--tc)}
-.mini:hover,.mini:focus-visible{background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);transform:translateY(-2px)}
-.mini .th{flex:none;width:132px;aspect-ratio:16/10;border-radius:8px;overflow:hidden;background:#0c0b12;box-shadow:0 0 0 1px rgba(255,255,255,.08)}
-.mini .th img{width:100%;height:100%;object-fit:cover;object-position:top left;display:block}
-.mini .bd{flex:1;min-width:0;display:flex;flex-direction:column}
-.mini .hd{display:flex;align-items:center;gap:8px}
-.mini h3{font-size:16px;font-weight:600;letter-spacing:-.01em;line-height:1.3}
-.mini .line{margin-top:5px;font-size:13px}
-.mini .do{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:12.5px;line-height:1.6;color:var(--mut);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.mini .do b{color:var(--ink2);font-weight:500;margin-right:6px}
-.mini .ext{margin-left:auto;font-size:12px;color:var(--mut);padding:2px 8px;border-radius:99px;box-shadow:inset 0 0 0 1px var(--line);white-space:nowrap}
-.mini .ext:hover{color:var(--ink);box-shadow:inset 0 0 0 1px rgba(255,255,255,.3)}
-/* 方法卡：讲法链路 + 推荐样式 */
-.flow{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px 4px;align-items:center;font-size:12.5px;color:var(--ink2)}
-.flow span{padding:3px 9px;border-radius:6px;background:rgba(185,168,255,.10)}
+/* 文字海报封面（没有自己演示的条目） */
+.poster{display:flex;flex-direction:column;padding:22px 24px 20px;background:radial-gradient(90% 80% at 0% 0%,color-mix(in srgb,var(--pc) 22%,transparent),transparent 70%),radial-gradient(60% 60% at 100% 100%,color-mix(in srgb,var(--pc) 10%,transparent),transparent 70%),#14131b;background-image:radial-gradient(90% 80% at 0% 0%,color-mix(in srgb,var(--pc) 22%,transparent),transparent 70%),radial-gradient(60% 60% at 100% 100%,color-mix(in srgb,var(--pc) 10%,transparent),transparent 70%),radial-gradient(rgba(255,255,255,.05) 1px,transparent 1px);background-size:auto,auto,18px 18px}
+.poster .pt{display:flex;align-items:center;gap:10px}
+.poster .pk{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:color-mix(in srgb,var(--pc) 70%,#fff)}
+.poster .ext{margin-left:auto;font-size:12px;color:var(--ink2);padding:4px 10px;border-radius:99px;background:rgba(0,0,0,.25);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
+.poster .ext:hover{color:var(--ink);box-shadow:inset 0 0 0 1px rgba(255,255,255,.3)}
+.poster .pq{margin-top:auto;font-family:var(--serif);font-size:clamp(20px,1.7vw,26px);font-weight:900;line-height:1.4;color:var(--ink);text-wrap:balance;max-width:92%}
+.poster .pf{margin-top:auto;padding-top:14px;display:flex;flex-direction:column;gap:12px}
+.poster .do{font-size:12.5px;line-height:1.6;color:var(--ink2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.poster .do b{color:var(--ink);font-weight:500;margin-right:6px}
+.flow{display:flex;flex-wrap:wrap;gap:6px 4px;align-items:center;font-size:12px;color:var(--ink2)}
+.flow span{padding:3px 9px;border-radius:6px;background:rgba(255,255,255,.07)}
 .flow em{font-style:normal;color:var(--mut);font-size:11px}
-.rec{margin-top:12px;display:flex;gap:8px;align-items:center}
-.rec small{font-size:11.5px;color:var(--mut);margin-right:2px}
-.rec button{width:62px;aspect-ratio:16/10;border-radius:5px;overflow:hidden;box-shadow:0 0 0 1px rgba(255,255,255,.12);transition:transform .2s,box-shadow .2s}
-.rec button:hover{transform:translateY(-2px);box-shadow:0 0 0 1.5px var(--tc)}
+.rec{display:flex;gap:8px}
+.rec button{width:64px;aspect-ratio:16/10;border-radius:5px;overflow:hidden;box-shadow:0 0 0 1px rgba(255,255,255,.14);transition:transform .2s,box-shadow .2s}
+.rec img{width:100%;height:100%;object-fit:cover;object-position:top left;display:block}
+.rec button:hover{transform:translateY(-2px);box-shadow:0 0 0 1.5px var(--pc)}
 .rec img{width:100%;height:100%;object-fit:cover;object-position:top left;display:block}
 
 /* 滚动加载：进入时淡入 */
@@ -232,24 +226,24 @@ main{padding:32px 32px 120px}
   const glyph = p => window.iconHTML(p, TYPES[p.category].c);
   function cardHTML(p) {
     const tc = TYPES[p.category].c, attrs = `data-id="${esc(p.id)}" tabindex="0" role="link" style="--tc:${tc}"`;
-    if (p.category === '样式') return `
-      <div class="card rv" ${attrs} data-demo="${esc(p.demo || '')}">
-        <div class="cover">${p.demo ? `<img src="covers/${esc(base(p.demo))}.jpg" alt="" loading="lazy">` : ''}</div>
-        <div class="meta">${glyph(p)}<h3>${esc(p.title)}</h3><div class="tg">${(p.tags || []).slice(0, 2).map(x => `<span>${esc(x)}</span>`).join('')}</div></div>
+    const tags = `<div class="tg">${(p.tags || []).slice(0, 2).map(x => `<span>${esc(x)}</span>`).join('')}</div>`;
+    const meta = `<div class="meta">${glyph(p)}<h3>${esc(p.title)}</h3>${tags}</div>`;
+    if (owns(p)) return `
+      <div class="card rv" ${attrs} data-demo="${esc(p.demo)}">
+        <div class="cover"><img src="covers/${esc(base(p.demo))}.jpg" alt="" loading="lazy"></div>${meta}
       </div>`;
+    // 没有自己演示的条目：同样的卡片，封面换成“文字海报”
     const flow = p.category === '方法' && flowOf(p);
     const recs = (p.related || []).map(id => BY[id]).filter(r => r && r.demo && owns(r)).slice(0, 4);
-    const body = flow
-      ? `<div class="flow">${flow.map(s => `<span>${esc(s)}</span>`).join('<em>→</em>')}</div>
-         ${recs.length ? `<div class="rec"><small>推荐</small>${recs.map(r => `<button type="button" data-go="${esc(r.id)}" title="${esc(r.title)}"><img src="covers/${esc(base(r.demo))}.jpg" alt="${esc(r.title)}" loading="lazy"></button>`).join('')}</div>` : ''}`
+    const foot = flow ? `<div class="flow">${flow.map(s => `<span>${esc(s)}</span>`).join('<em>→</em>')}</div>`
       : ((p.how || [])[0] ? `<p class="do"><b>做法</b>${esc(p.how[0])}</p>` : '');
-    const th = owns(p) ? `<div class="th"><img src="covers/${esc(base(p.demo))}.jpg" alt="" loading="lazy"></div>` : '';
     return `
-      <div class="mini rv" ${attrs}>${th}
-        <div class="bd">
-          <div class="hd">${glyph(p)}<h3>${esc(p.title)}</h3>${p.url ? `<a class="ext" href="${esc(p.url)}" target="_blank" rel="noopener" data-ext>原站 ↗</a>` : ''}</div>
-          <p class="line">${esc(p.card || p.intent)}</p>${body}
-        </div>
+      <div class="card rv" ${attrs}>
+        <div class="cover poster" style="--pc:${window.iconColor(p, tc)}">
+          <div class="pt"><span class="pk">${esc(p.category)}</span>${p.url ? `<a class="ext" href="${esc(p.url)}" target="_blank" rel="noopener" data-ext>原站 ↗</a>` : ''}</div>
+          <p class="pq">${esc(p.card || p.intent)}</p>
+          <div class="pf">${foot}${recs.length ? `<div class="rec">${recs.map(r => `<button type="button" data-go="${esc(r.id)}" title="${esc(r.title)}"><img src="covers/${esc(base(r.demo))}.jpg" alt="${esc(r.title)}" loading="lazy"></button>`).join('')}</div>` : ''}</div>
+        </div>${meta}
       </div>`;
   }
 
@@ -273,13 +267,13 @@ main{padding:32px 32px 120px}
         lastSec = p.category;
         const n = P.filter(x => x.category === lastSec).length, t = TYPES[lastSec];
         const sec = document.createElement('section'); sec.className = 'sec'; sec.style.setProperty('--tc', t.c);
-        sec.innerHTML = `<div class="grid${lastSec === '样式' ? '' : ' sm'}"></div>`;   // 不加分段标题，类型看卡片上的色条和顶部筛选
+        sec.innerHTML = `<div class="grid"></div>`;   // 不加分段标题，类型看卡片上的色条和顶部筛选
         list.appendChild(sec); lastGrid = sec.lastElementChild;
       }
       lastGrid.insertAdjacentHTML('beforeend', cardHTML(p));
       const el = lastGrid.lastElementChild;
       rvio.observe(el);
-      if (el.classList.contains('card') && live(p.demo)) bind(el);
+      if (el.dataset.demo && live(p.demo)) bind(el);
     });
     // 一屏还没填满就继续补
     if (queue.length && $('more').getBoundingClientRect().top < innerHeight + 600) requestAnimationFrame(more);
