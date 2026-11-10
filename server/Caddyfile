@@ -1,7 +1,23 @@
-# Caddy 会自动申请和续期 HTTPS 证书（要求域名已解析到本机、80/443 端口已开放）
+# Caddy：自动 HTTPS；经验库网页直接从仓库副本提供，/e /mcp /admin /health 转给 app
+# route 里的指令按书写顺序执行
 {$DOMAIN} {
 	encode zstd gzip
-	reverse_proxy app:8787
+
+	route {
+		# 服务端代码（含 .env 密钥）、git 目录、隐藏文件一律不对外
+		@private path /server /server/* /.git /.git/* /.*
+		respond @private 404
+
+		@app path /e /mcp /health /admin /admin/*
+		reverse_proxy @app app:8787
+
+		header Cache-Control "public, max-age=300"
+		root * /site
+		file_server {
+			hide .git .env server node_modules
+		}
+	}
+
 	log {
 		output stdout
 		format console

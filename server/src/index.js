@@ -40,15 +40,16 @@ const recent = new Map();      // 去重：同一访客短时间内重复的浏�
 const perIp = new Map();       // 防刷：每个 IP 每分钟最多 120 条
 setInterval(() => { const t = Date.now(); for (const [k, v] of recent) if (t - v > 60e3) recent.delete(k); perIp.clear(); }, 60e3).unref();
 
+const originOk = o => config.allowedOrigins.includes(o) || o === config.publicUrl;   // 本域名（网页和服务同域）总是允许
 function cors(req) {
   const o = req.headers.origin;
-  return o && config.allowedOrigins.includes(o) ? { 'Access-Control-Allow-Origin': o, 'Vary': 'Origin', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' } : {};
+  return o && originOk(o) ? { 'Access-Control-Allow-Origin': o, 'Vary': 'Origin', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' } : {};
 }
 async function track(req, res) {
   const h = cors(req);
   if (req.method === 'OPTIONS') return send(res, 204, '', h);
   const origin = req.headers.origin;
-  if (origin && !config.allowedOrigins.includes(origin)) return send(res, 403, 'origin', h);
+  if (origin && !originOk(origin)) return send(res, 403, 'origin', h);
   const iph = ipHash(req);
   const n = (perIp.get(iph) || 0) + 1; perIp.set(iph, n);
   if (n > 120) return send(res, 429, 'slow down', h);

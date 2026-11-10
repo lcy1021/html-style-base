@@ -1,5 +1,5 @@
 # 用法：在 server/ 目录下执行  docker compose up -d --build
-# 三个容器：app（埋点 / MCP / 后台）、caddy（HTTPS）、sync（每 5 分钟拉一次仓库内容）
+# 三个容器：app（埋点 / MCP / 后台）、caddy（HTTPS + 经验库网页）、sync（每 5 分钟拉一次仓库内容）
 services:
   app:
     build: .
@@ -20,6 +20,7 @@ services:
     ports: ["80:80", "443:443", "443:443/udp"]
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ..:/site:ro              # 经验库网页（Caddy 直接提供静态文件）
       - caddy_data:/data
       - caddy_config:/config
     depends_on: [app]

@@ -5,7 +5,8 @@
  * - 统计服务地址改这里的 ENDPOINT；设为空字符串即关闭统计。
  */
 (() => {
-  const ENDPOINT = window.HSB_ENDPOINT ?? 'https://fineuedesign.com/e';
+  const HOST = 'fineuedesign.com';     // 统计服务所在域名；网页本身就在这个域名上时走同域 /e
+  const ENDPOINT = window.HSB_ENDPOINT ?? (location.hostname === HOST ? '/e' : `https://${HOST}/e`);
   const off = !ENDPOINT || location.protocol === 'file:' || navigator.doNotTrack === '1';
   let v = '';
   try { v = localStorage.getItem('hsb_v') || ''; if (!/^[a-z0-9]{16}$/.test(v)) { v = Array.from(crypto.getRandomValues(new Uint8Array(8)), b => b.toString(16).padStart(2, '0')).join(''); localStorage.setItem('hsb_v', v); } } catch (e) { v = ''; }

@@ -8,7 +8,7 @@
 | `/mcp` | 远程 MCP（Streamable HTTP，无状态），同学用个人 token 接入 |
 | `/admin` | 数据后台，只有管理员能登录（GitHub 白名单或独立密码） |
 | `/health` | 健康检查 |
-| `/` | 跳转到经验库网页 |
+| 其他路径 | 经验库网页本身（Caddy 直接从仓库副本提供，`server/`、`.git` 和隐藏文件不对外） |
 
 技术：Node 22 内置 SQLite（`node:sqlite`），没有需要编译的依赖；Caddy 自动 HTTPS；数据库每天自动备份到 `data/backup/`，保留 14 天。
 

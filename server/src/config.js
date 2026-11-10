@@ -11,7 +11,7 @@ export const config = {
   // 数据库与备份目录
   dataDir: path.resolve(env.DATA_DIR || '/data'),
   // 经验库网页地址（MCP 返回的链接、访问根路径时跳转）
-  siteUrl: (env.SITE_URL || 'https://lcy1021.github.io/html-style-base/').replace(/\/?$/, '/'),
+  siteUrl: (env.SITE_URL || (env.DOMAIN ? `https://${env.DOMAIN}/` : 'https://lcy1021.github.io/html-style-base/')).replace(/\/?$/, '/'),
   // 允许发送埋点的网页来源
   allowedOrigins: list(env.ALLOWED_ORIGINS || 'https://lcy1021.github.io,http://localhost:8000,http://127.0.0.1:8000'),
   // 后台登录：GitHub OAuth（推荐）或独立密码（备用）
