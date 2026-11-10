@@ -1,0 +1,35 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>可玩原型</title><link rel="stylesheet" href="demo.css">
+<style>
+.task{position:absolute;left:34px;top:130px;width:30%;font-size:15px;line-height:1.8}
+.task b{display:block;font-size:20px;font-weight:500;margin-bottom:8px}
+.cnt{display:flex;gap:22px;margin-top:20px}.cnt div{font-size:12px;color:var(--mut)}.cnt span{display:block;font-size:30px;color:var(--fg);font-variant-numeric:tabular-nums}
+.res{margin-top:18px;padding:12px 14px;border-radius:10px;background:rgba(90,208,179,.12);color:var(--teal);opacity:0;transition:.4s}.res.on{opacity:1}
+.ph{position:absolute;right:12%;top:110px;width:300px;height:calc(100% - 200px);background:#fff;color:#1d2129;border-radius:28px;border:8px solid #2b2838;padding:16px 14px;overflow:hidden;font-size:14px}
+.ph h5{font-size:14px;margin-bottom:10px;display:flex;gap:8px;align-items:center}
+.ph button{all:unset;cursor:pointer;display:block;width:100%;box-sizing:border-box;padding:12px;border-bottom:1px solid #f2f3f5}
+.ph button:hover{background:#f7f8fa}.ph .bk{width:auto;border:0;padding:2px 8px;color:#5b4bff}
+.ph .pg{display:none}.ph .pg.on{display:block}
+.hint{position:absolute;inset:auto 0 0;padding:10px;text-align:center;font-size:12px;color:#86909c}
+</style></head>
+<body data-steps="2" data-caps="请一位听众上来：找到“订单 0042”，看完回到列表第 3 页|对比：返回后停在原位，点击数少一半">
+<div class="stage"><p class="eb">示例 · 去业务化</p><h1>别讲了，<em>请你亲手点一遍。</em></h1></div>
+<div class="task"><b>任务：看完 0042 后，回到原来的位置。</b>先用“现状”试一遍，再切换到“改版后”。
+ <div class="cnt"><div><span id="ck">0</span>点击次数</div><div><span id="md">现状</span>版本</div></div>
+ <div class="res" id="rs"></div></div>
+<div class="ph">
+ <div class="pg on" id="list"><h5>订单列表 · 第 <span id="pgn">3</span> 页</h5><div id="items"></div></div>
+ <div class="pg" id="det"><h5><button class="bk" id="bk">‹ 返回</button>订单 0042</h5><p style="padding:12px;color:#4e5969">详情内容……</p></div>
+ <div class="hint">可以直接点</div>
+</div>
+<p class="note">内容为示意</p>
+<script src="demo.js"></script>
+<script>
+let clicks=0,ver=0,page=3,seen=false;const show=id=>{list.classList.toggle('on',id==='list');det.classList.toggle('on',id==='det')};
+const hit=()=>{clicks++;ck.textContent=clicks};
+function done(){if(seen&&page===3&&list.classList.contains('on')){rs.classList.add('on');rs.textContent=ver===0?`回到第 3 页，一共点了 ${clicks} 次。`:`直接回到原位，一共点了 ${clicks} 次。`}}
+function draw(){pgn.textContent=page;items.innerHTML=Array.from({length:6},(_,i)=>{const n=String((page-1)*6+i+30).padStart(4,'0');return `<button data-n="${n}">订单 ${n}</button>`}).join('')+(page<3?'<button id="nx">下一页 ›</button>':'');
+ items.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{hit();if(b.dataset.n==='0042'){seen=true;show('det')}});
+ const nx=document.getElementById('nx');if(nx)nx.onclick=()=>{hit();page++;draw();done()};}
+bk.onclick=()=>{hit();if(ver===0)page=1;show('list');draw();done();};
+window.onStep=k=>{ver=k;clicks=0;seen=false;ck.textContent=0;md.textContent=k?'改版后':'现状';page=3;rs.classList.remove('on');show('list');draw();};
+</script></body></html>

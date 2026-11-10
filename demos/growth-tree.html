@@ -1,0 +1,24 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>需求生长图</title><link rel="stylesheet" href="demo.css">
+<style>
+svg{position:absolute;left:34px;right:34px;top:120px;width:calc(100% - 68px);height:calc(100% - 200px)}
+.br{fill:none;stroke:rgba(185,168,255,.6);stroke-width:2;stroke-dasharray:400;stroke-dashoffset:400;transition:stroke-dashoffset .9s var(--ease),stroke .4s}
+body.s1 .br{stroke-dashoffset:0}
+.nd rect{fill:#1d1a28;stroke:rgba(185,168,255,.5);rx:10;transition:.4s}.nd text{fill:var(--fg);font-size:14px;text-anchor:middle;dominant-baseline:middle}
+.nd{opacity:0;transition:opacity .5s .4s}body.s1 .nd{opacity:1}.nd.root{opacity:1}
+.nd .mk{font-size:11px;opacity:0;transition:.3s}
+body.s2 .cut rect{stroke:var(--red);fill:rgba(255,107,90,.08)}body.s2 .cut text.t{text-decoration:line-through;fill:var(--mut)}body.s2 .cut .mk{opacity:1;fill:var(--red)}
+body.s3 .later rect{stroke:var(--mut);stroke-dasharray:4 4}body.s3 .later .mk{opacity:1;fill:var(--mut)}
+body.s4 .mvp rect{stroke:var(--teal);fill:rgba(90,208,179,.12)}body.s4 .mvp .mk{opacity:1;fill:var(--teal)}
+</style></head>
+<body data-steps="5" data-caps="从一个诉求出发|想法一路长出分支|砍掉：不服务这个任务的|延后：有价值但不是现在|剩下的就是 MVP">
+<div class="stage"><p class="eb">示例 · 去业务化</p><h1>先让想法长出来，<em>再决定剪掉哪些。</em></h1></div>
+<svg viewBox="0 0 1000 420" preserveAspectRatio="xMidYMid meet" id="sv"></svg>
+<p class="note">内容为示意</p>
+<script src="demo.js"></script>
+<script>
+const R=[500,40,'让各部门拿到自己的报表'],N=[[150,180,'按部门拆分','mvp'],[380,180,'自动命名','mvp'],[620,180,'定时发送','later'],[850,180,'在线批注','cut'],[150,330,'打包下载','mvp'],[380,330,'自定义模板','later'],[620,330,'邮件提醒','later'],[850,330,'AI 摘要','cut']];
+const mk={mvp:'MVP',later:'延后',cut:'砍掉'};
+sv.innerHTML=N.map(([x,y],i)=>{const [px,py]=y>200?[N[i-4][0],N[i-4][1]+20]:[R[0],R[1]+20];return `<path class="br" d="M${px} ${py} C ${px} ${(py+y)/2}, ${x} ${(py+y)/2}, ${x} ${y-20}"/>`}).join('')
++`<g class="nd root"><rect x="${R[0]-130}" y="${R[1]-20}" width="260" height="40"/><text class="t" x="${R[0]}" y="${R[1]}">${R[2]}</text></g>`
++N.map(([x,y,t,c])=>`<g class="nd ${c}"><rect x="${x-80}" y="${y-20}" width="160" height="40"/><text class="t" x="${x}" y="${y}">${t}</text><text class="mk" x="${x}" y="${y+34}">${mk[c]}</text></g>`).join('');
+</script></body></html>

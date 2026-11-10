@@ -38,7 +38,7 @@ main{max-width:1240px;margin:0 auto;padding:26px 32px 80px}
 /* 详情 */
 .dlg{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.6);display:none}
 .dlg.on{display:block}
-.panel{position:absolute;inset:3vh 3vw;border-radius:18px;background:#14121c;border:1px solid var(--line);display:grid;grid-template-columns:minmax(0,1.5fr) minmax(320px,1fr);overflow:hidden}
+.panel{position:absolute;inset:3vh 3vw;border-radius:18px;background:#14121c;border:1px solid var(--line);display:grid;grid-template-columns:minmax(0,1.45fr) minmax(400px,1fr);overflow:hidden}
 .pv{position:relative;background:#0c0b12}
 .pv iframe{width:100%;height:100%;border:0}
 .pv .none{position:absolute;inset:0;display:grid;place-items:center;color:var(--mut)}
@@ -55,6 +55,25 @@ main{max-width:1240px;margin:0 auto;padding:26px 32px 80px}
 .x{all:unset;cursor:pointer;position:absolute;right:14px;top:12px;z-index:2;padding:6px 12px;border-radius:99px;background:rgba(255,255,255,.1);font-size:13px}
 .open{display:inline-block;margin-top:16px;font-size:13px}
 footer{max-width:1240px;margin:0 auto;padding:0 32px 60px;color:var(--mut);font-size:13px;line-height:1.8}
+.tabs{display:flex;gap:4px;margin:-6px 0 18px;border-bottom:1px solid var(--line)}
+.tab{all:unset;cursor:pointer;padding:9px 14px;font-size:13px;color:var(--mut);border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab[aria-selected="true"]{color:var(--fg);border-color:var(--amber)}
+.mdbar{display:flex;gap:8px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.mdbar button,.mdbar a{all:unset;cursor:pointer;font-size:12px;padding:5px 11px;border-radius:99px;border:1px solid var(--line);color:var(--fg)}
+.mdbar button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+.md{font-size:13.5px;line-height:1.75;color:#d9d6e6}
+.md h1{font-size:20px;font-weight:600;margin:0 0 10px;color:var(--fg)}.md h2{font-size:15px;margin:22px 0 8px;color:var(--fg);padding-top:14px;border-top:1px solid var(--line)}.md h3{font-size:13px;margin:14px 0 6px;color:var(--amber)}
+.md p,.md ul,.md ol,.md blockquote,.md pre,.md table{margin:0 0 10px}.md ul,.md ol{padding-left:18px}.md li{margin:2px 0}
+.md blockquote{border-left:3px solid var(--violet);padding:4px 12px;color:var(--fg);background:rgba(185,168,255,.06)}
+.md code{font:12px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px}
+.md pre{background:#0b0a10;border:1px solid var(--line);border-radius:10px;padding:12px;overflow:auto}.md pre code{background:none;padding:0;white-space:pre}
+.md table{border-collapse:collapse;width:100%;font-size:12px;display:block;overflow:auto}.md th,.md td{border:1px solid var(--line);padding:5px 8px;text-align:left;vertical-align:top}.md th{color:var(--mut);font-weight:500}
+.md .sw{display:inline-block;width:11px;height:11px;border-radius:3px;vertical-align:-1px;margin-right:6px;border:1px solid rgba(255,255,255,.25)}
+.md hr{border:0;border-top:1px solid var(--line);margin:16px 0}.md a{color:var(--violet)}
+.src{white-space:pre-wrap;font:12px/1.65 ui-monospace,SFMono-Regular,Menlo,monospace;color:#d9d6e6;background:#0b0a10;border:1px solid var(--line);border-radius:10px;padding:14px}
+.rel{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}.rel button{all:unset;cursor:pointer;font-size:12px;padding:4px 10px;border-radius:99px;border:1px solid var(--line);color:var(--fg)}.rel button:hover{border-color:var(--violet)}
+.ext{display:inline-block;margin-top:10px;font-size:13px;color:var(--amber)}
+.card .ref{font-size:11px;color:var(--amber);margin-left:6px}
 @media (max-width:860px){.panel{grid-template-columns:1fr;grid-template-rows:45vh 1fr}.info{border-left:0;border-top:1px solid var(--line)}.search{margin-left:0;width:100%}}
 </style>
 </head>
@@ -62,11 +81,11 @@ footer{max-width:1240px;margin:0 auto;padding:0 32px 60px;color:var(--mut);font-
 <header>
   <p class="eb">UED · 设计经验库</p>
   <h1>做 HTML 演示和分享页时，<br><em>先查一下这里。</em></h1>
-  <p>按“想说明什么”找展示形式；每条都有可以直接操作的小样例、适用场景和踩过的坑。样例为去业务化的示意内容，可直接改成自己的案例。</p>
+  <p>先按案例类型（任务还原、证据纠偏、路径与状态、方案取舍、数据发现）找讲法，再挑展示形式。每条都有可操作的样例、做法、踩过的坑，以及一份从样例实测出来的 DESIGN.md，可以直接交给 AI 复用。样例内容都已去业务化。</p>
 </header>
 <div class="tools"><div class="in" id="tools"><input class="search" id="q" type="search" placeholder="搜索：层级、对比、反例、过渡…" aria-label="搜索经验"></div></div>
 <main id="main"></main>
-<footer>新增经验：在 <code>data/patterns.js</code> 里加一条，并把小样例放进 <code>demos/</code>。说明见仓库 README。</footer>
+<footer>新增经验：在 <code>data/patterns.js</code> 里加一条，样例放进 <code>demos/</code>，再运行 <code>python3 tools/gen_design.py .</code> 生成 DESIGN.md。说明见仓库 README。</footer>
 
 <div class="dlg" id="dlg" role="dialog" aria-modal="true" aria-labelledby="dt">
   <div class="panel">
@@ -77,9 +96,10 @@ footer{max-width:1240px;margin:0 auto;padding:0 32px 60px;color:var(--mut);font-
 </div>
 
 <script src="data/patterns.js"></script>
+<script src="data/designs.js"></script>
 <script>
 (() => {
-  const P = window.PATTERNS || [], ORDER = ['案例展示', '页面过渡', '文字布局', '讲法', '工程与交付'];
+  const P = window.PATTERNS || [], ORDER = ['案例场景', '案例展示', '页面过渡', '文字布局', '讲法', '外部参考', '工程与交付'];
   const cats = ORDER.filter(c => P.some(p => p.category === c)).concat([...new Set(P.map(p => p.category))].filter(c => !ORDER.includes(c)));
   const tools = document.getElementById('tools'), q = document.getElementById('q'), main = document.getElementById('main');
   let cur = '全部';
@@ -102,20 +122,50 @@ footer{max-width:1240px;margin:0 auto;padding:0 32px 60px;color:var(--mut);font-
     main.innerHTML = cats.filter(c => list.some(p => p.category === c)).map(c => `<section class="sec"><h2>${esc(c)}</h2><div class="grid">${
       list.filter(p => p.category === c).map(p => `<button class="card" type="button" data-id="${esc(p.id)}">
         <div class="thumb${p.demo ? '' : ' none'}">${p.demo ? `<iframe src="${esc(p.demo)}" tabindex="-1" loading="lazy" title=""></iframe>` : '文字经验'}</div>
-        <div class="cb"><small>${esc(p.intent)}</small><h3>${esc(p.title)}</h3><p>${esc(p.summary)}</p></div></button>`).join('')
+        <div class="cb"><small>${esc(p.intent)}</small><h3>${esc(p.title)}${p.url ? '<span class="ref">外部参考</span>' : ''}</h3><p>${esc(p.summary)}</p></div></button>`).join('')
     }</div></section>`).join('');
     main.querySelectorAll('.card').forEach(c => c.onclick = () => open(c.dataset.id));
   }
   const dlg = document.getElementById('dlg'), pv = document.getElementById('pv'), info = document.getElementById('info');
   const li = a => (a && a.length) ? `<ul>${a.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : '<ul><li>—</li></ul>';
+  const inl = t => esc(t).replace(/`([^`]+)`/g, (m, c) => { const h = c.match(/^#[0-9A-F]{6}/i); return `${h ? `<span class="sw" style="background:${h[0]}"></span>` : ''}<code>${c}</code>`; })
+    .replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>').replace(/&lt;(https?:[^&]+)&gt;/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+  function md(src) {
+    const L = src.split('\n'), out = []; let i = 0;
+    while (i < L.length) {
+      const l = L[i];
+      if (/^```/.test(l)) { const b = []; i++; while (i < L.length && !/^```/.test(L[i])) b.push(L[i++]); i++; out.push(`<pre><code>${esc(b.join('\n'))}</code></pre>`); continue; }
+      const h = l.match(/^(#{1,3}) (.*)/); if (h) { out.push(`<h${h[1].length}>${inl(h[2])}</h${h[1].length}>`); i++; continue; }
+      if (/^---\s*$/.test(l)) { out.push('<hr>'); i++; continue; }
+      if (/^\|/.test(l)) { const rows = []; while (i < L.length && /^\|/.test(L[i])) rows.push(L[i++]); const cells = r => r.replace(/^\||\|$/g, '').split('|').map(c => c.trim());
+        out.push('<table><thead><tr>' + cells(rows[0]).map(c => `<th>${inl(c)}</th>`).join('') + '</tr></thead><tbody>' + rows.slice(2).map(r => '<tr>' + cells(r).map(c => `<td>${inl(c)}</td>`).join('') + '</tr>').join('') + '</tbody></table>'); continue; }
+      if (/^> /.test(l)) { out.push(`<blockquote>${inl(l.slice(2))}</blockquote>`); i++; continue; }
+      if (/^\s*(- |\d+\. )/.test(l)) { const ord = /^\d/.test(l.trim()); const it = []; while (i < L.length && /^\s*(- |\d+\. )/.test(L[i])) { const sub = /^\s{2,}/.test(L[i]); it.push(`<li${sub ? ' style="margin-left:16px;list-style:circle"' : ''}>${inl(L[i].replace(/^\s*(- |\d+\. )/, ''))}</li>`); i++; }
+        out.push(ord ? `<ol>${it.join('')}</ol>` : `<ul>${it.join('')}</ul>`); continue; }
+      if (!l.trim()) { i++; continue; }
+      const para = []; while (i < L.length && L[i].trim() && !/^(#|```|\||> |\s*- |\d+\. |---)/.test(L[i])) para.push(L[i++].replace(/\s+$/, '')); out.push(`<p>${para.map(inl).join('<br>')}</p>`);
+    }
+    return out.join('');
+  }
   function open(id, push = true) {
     const p = P.find(x => x.id === id); if (!p) return;
+    const D = (window.DESIGNS || {})[p.id] || '';
     pv.innerHTML = p.demo ? `<iframe src="${esc(p.demo)}" title="${esc(p.title)} 样例"></iframe>` : '<div class="none">这条是文字经验，没有样例</div>';
-    info.innerHTML = `<small>${esc(p.category)}</small><h2 id="dt">${esc(p.title)}</h2><p class="intent">想说明：${esc(p.intent)}</p><p class="sum">${esc(p.summary)}</p>
+    const rel = (p.related || []).map(r => P.find(x => x.id === r)).filter(Boolean);
+    const about = `<small>${esc(p.category)}</small><h2 id="dt">${esc(p.title)}</h2><p class="intent">想说明：${esc(p.intent)}</p><p class="sum">${esc(p.summary)}</p>
       <h4>适合什么时候用</h4>${li(p.when)}<h4>怎么做</h4>${li(p.how)}<h4>踩过的坑</h4><div class="pit">${li(p.pitfalls)}</div>
+      ${rel.length ? `<h4>相关</h4><div class="rel">${rel.map(r => `<button type="button" data-go="${esc(r.id)}">${esc(r.title)}</button>`).join('')}</div>` : ''}
       <div class="tags">${(p.tags || []).map(t => `<span>${esc(t)}</span>`).join('')}</div>
+      ${p.url ? `<a class="ext" href="${esc(p.url)}" target="_blank" rel="noopener">看原始参考 ↗</a><br>` : ''}
       ${p.demo ? `<a class="open" href="${esc(p.demo)}" target="_blank" rel="noopener">在新窗口打开样例 ↗</a>` : ''}
       <p class="meta">来源：${esc(p.source || '—')}<br>收录：${esc(p.added || '—')}</p>`;
+    const design = D ? `<div class="mdbar"><button type="button" data-v="r" aria-pressed="true">渲染</button><button type="button" data-v="s" aria-pressed="false">源码</button><button type="button" data-copy>复制 .md</button><a href="designs/${esc(p.id)}.md" download="${esc(p.id)}.DESIGN.md">下载</a></div><div class="md" id="mdv">${md(D)}</div><pre class="src" id="mds" hidden>${esc(D)}</pre>` : '<p class="sum">暂无 DESIGN.md</p>';
+    info.innerHTML = `<div class="tabs" role="tablist"><button class="tab" role="tab" data-t="a" aria-selected="true">说明</button><button class="tab" role="tab" data-t="d" aria-selected="false">DESIGN.md</button></div><div data-p="a">${about}</div><div data-p="d" hidden>${design}</div>`;
+    info.querySelectorAll('.tab').forEach(t => t.onclick = () => { info.querySelectorAll('.tab').forEach(x => x.setAttribute('aria-selected', String(x === t))); info.querySelectorAll('[data-p]').forEach(x => x.hidden = x.dataset.p !== t.dataset.t); info.scrollTop = 0; });
+    info.querySelectorAll('[data-v]').forEach(b => b.onclick = () => { info.querySelectorAll('[data-v]').forEach(x => x.setAttribute('aria-pressed', String(x === b))); info.querySelector('#mdv').hidden = b.dataset.v !== 'r'; info.querySelector('#mds').hidden = b.dataset.v !== 's'; });
+    const cp = info.querySelector('[data-copy]'); if (cp) cp.onclick = async () => { try { await navigator.clipboard.writeText(D); cp.textContent = '已复制'; } catch (e) { const t = document.createElement('textarea'); t.value = D; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); cp.textContent = '已复制'; } setTimeout(() => cp.textContent = '复制 .md', 1500); };
+    info.querySelectorAll('[data-go]').forEach(b => b.onclick = () => open(b.dataset.go));
+    info.scrollTop = 0;
     dlg.classList.add('on'); document.body.style.overflow = 'hidden';
     if (push) history.replaceState(null, '', '#' + id);
     setTimeout(() => { const f = pv.querySelector('iframe'); f && f.focus(); }, 300);

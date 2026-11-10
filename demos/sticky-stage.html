@@ -1,0 +1,29 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>结构概览 + 固定演示区</title><link rel="stylesheet" href="demo.css">
+<style>
+body{background:#011821;background-image:radial-gradient(rgba(193,232,239,.08) 1px,transparent 1px);background-size:16px 16px}
+.lf{position:absolute;left:34px;top:130px;width:34%}
+.lf div{position:absolute;inset:0 0 auto;opacity:0;transform:translateY(24px)}.lf div.on{opacity:1;transform:none}
+.lf h3{font-size:22px;font-weight:500;color:#c1e8ef;margin-bottom:10px}.lf p{color:rgba(255,255,255,.6);line-height:1.8;font-size:15px}
+.rt{position:absolute;right:34px;top:110px;width:54%;height:calc(100% - 200px);border-radius:10px;background:linear-gradient(160deg,#0f252d,#172c34);border:1px solid rgba(193,232,239,.12);overflow:hidden}
+.md{position:absolute;inset:0;display:grid;place-items:center;opacity:0;transform:scale(.96);transition:.6s var(--ease)}.md.on{opacity:1;transform:none}
+.lay{position:relative;width:300px;height:220px}
+.ly{position:absolute;left:0;width:300px;height:44px;border-radius:8px;border:1px solid rgba(193,232,239,.4);background:rgba(193,232,239,.08);color:#c1e8ef;font-size:13px;display:grid;place-items:center;transform:skewY(-12deg);transition:top .9s var(--ease),opacity .6s}
+.mid{opacity:1}body.s1 .mid{opacity:0}
+.fl{display:flex;gap:10px;align-items:center;color:#c1e8ef;font-size:14px}.fl span{padding:12px 14px;border-radius:8px;background:rgba(193,232,239,.1)}.fl span.hi{background:#c1e8ef;color:#011821}
+</style></head>
+<body data-steps="4" data-caps="顶部先给整体结构|结构收拢：中间环节变少|左边讲第一段，右边固定区换成对应示意|第二段：同一个容器，换一种模型">
+<div class="stage"><p class="eb">参考 · 结构概览 + 分段讲解</p><h1 style="color:#c1e8ef">先看整体关系，<em>再一段段解释。</em></h1></div>
+<div class="lf">
+ <div data-s="0-1"><h3>这份材料经过四层。</h3><p>先把角色和中间环节都摆出来，后面每一段都能在这张图上找到位置。</p></div>
+ <div data-s="2-2"><h3>第一段：谁在录入。</h3><p>左边一句判断，右边只亮与这句有关的对象。</p></div>
+ <div data-s="3"><h3>第二段：谁在使用。</h3><p>演示区位置不动，里面的示意换成更适合的模型。</p></div>
+</div>
+<div class="rt">
+ <div class="md" data-s="0-1"><div class="lay" id="ly"><div class="ly" style="top:0">使用方</div><div class="ly mid" style="top:58px">中转整理</div><div class="ly mid" style="top:116px">二次核对</div><div class="ly" id="bt" style="top:174px">录入方</div></div></div>
+ <div class="md" data-s="2-2"><div class="fl"><span class="hi">录入方</span>→<span>使用方</span></div></div>
+ <div class="md" data-s="3"><div class="fl"><span>录入方</span>→<span class="hi">使用方 · 看汇总</span></div></div>
+</div>
+<p class="note" style="color:rgba(255,255,255,.4)">参考 Column 首页的讲解结构；内容为示意</p>
+<script src="demo.js"></script>
+<script>window.onStep=k=>{bt.style.top=k>=1?'58px':'174px'};</script>
+</body></html>

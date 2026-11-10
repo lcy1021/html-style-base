@@ -1,0 +1,28 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>线索板</title><link rel="stylesheet" href="demo.css">
+<style>
+.board{position:absolute;left:34px;right:34px;top:120px;bottom:76px;background:#2a2118;border-radius:14px;background-image:radial-gradient(rgba(255,255,255,.05) 1px,transparent 1px);background-size:14px 14px}
+.cl{position:absolute;width:210px;background:#fffbe8;color:#2b2b2b;padding:14px;border-radius:4px;font-size:13px;line-height:1.6;box-shadow:0 8px 20px rgba(0,0,0,.4);opacity:0;transform:translateY(16px) rotate(var(--r));transition:.5s var(--ease)}
+.cl.on{opacity:1;transform:rotate(var(--r))}.cl small{display:block;color:#a0662a;font-size:11px;margin-bottom:4px}
+.cl::before{content:"";position:absolute;top:-6px;left:50%;width:12px;height:12px;border-radius:50%;background:#e5483a;margin-left:-6px}
+svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+svg line{stroke:#e5483a;stroke-width:2;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1s}
+body.s3 svg line{stroke-dashoffset:0}
+.stamp{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%) rotate(-6deg) scale(1.6);border:3px solid #e5483a;color:#e5483a;padding:10px 18px;font-size:20px;font-weight:700;border-radius:6px;opacity:0;transition:.4s cubic-bezier(.2,1.6,.4,1);background:rgba(42,33,24,.85)}
+.stamp.on{opacity:1;transform:translate(-50%,-50%) rotate(-6deg) scale(1)}
+</style></head>
+<body data-steps="5" data-caps="一条一条把证据钉上去|第二条证据|第三条证据|红线把证据连起来|盖章：几条证据一起指向的结论">
+<div class="stage"><p class="eb">示例 · 去业务化</p><h1>几条证据，<em>拼出一个结论。</em></h1></div>
+<div class="board" id="bd">
+ <div class="cl" data-s="0" style="--r:-3deg;left:6%;top:10%"><small>反馈</small>“每次导完都要手动改文件名。”</div>
+ <div class="cl" data-s="1" style="--r:2deg;right:8%;top:8%"><small>观察</small>导出后，用户在文件夹里逐个重命名。</div>
+ <div class="cl" data-s="2" style="--r:-1deg;left:36%;bottom:8%"><small>材料</small>收件人按文件名归档，不打开文件。</div>
+ <svg id="sv"></svg>
+ <div class="stamp" data-s="4">问题在命名，不在拆分</div>
+</div>
+<p class="note">内容为示意</p>
+<script src="demo.js"></script>
+<script>
+const cls=[...document.querySelectorAll('.cl')];
+function lines(){const b=bd.getBoundingClientRect();const c=cls.map(e=>{const r=e.getBoundingClientRect();return[r.left-b.left+r.width/2,r.top-b.top+6]});sv.innerHTML=[[0,1],[1,2],[2,0]].map(([a,z])=>`<line pathLength="1" x1="${c[a][0]}" y1="${c[a][1]}" x2="${c[z][0]}" y2="${c[z][1]}"/>`).join('');}
+window.onStep=k=>{if(k===3)lines()};setTimeout(lines,50);addEventListener('resize',lines);
+</script></body></html>

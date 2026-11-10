@@ -1,0 +1,20 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>终端回放</title><link rel="stylesheet" href="demo.css">
+<style>
+.term{position:absolute;left:34px;top:120px;width:55%;bottom:76px;background:#0a0a0f;border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:18px;font:14px/1.75 ui-monospace,SFMono-Regular,Menlo,monospace;overflow:hidden}
+.term .l{white-space:pre-wrap}.term .c{color:#6b7280}.term .p{color:var(--teal)}.term .w{color:var(--amber)}.term .r{color:var(--red)}
+.cur{display:inline-block;width:8px;height:16px;background:var(--fg);vertical-align:middle;animation:bl 1s steps(1) infinite}@keyframes bl{50%{opacity:0}}
+.brd{position:absolute;right:34px;top:130px;width:32%}
+.brd div{padding:12px 14px;border-radius:10px;margin-bottom:10px;font-size:14px;line-height:1.6;opacity:.25;transition:.4s;border:1px solid rgba(255,255,255,.12)}
+.brd div.on{opacity:1}.brd small{display:block;font-size:11px;letter-spacing:.08em}
+.brd .a small{color:var(--teal)}.brd .b small{color:var(--amber)}.brd .c2 small{color:var(--red)}
+</style></head>
+<body data-steps="4" data-caps="一条命令，看工具做了什么|AI 给出的提醒|需要人核实的部分|复盘时的证据">
+<div class="stage"><p class="eb">示例 · 去业务化</p><h1>工具做了什么，<em>哪些还得自己核实。</em></h1></div>
+<div class="term" id="tm"></div>
+<div class="brd"><div class="a" data-s="1"><small>AI 提醒</small>姓名里可能本身带空格。</div><div class="b" data-s="2"><small>待核实</small>真实数据里有多少这种姓名？</div><div class="c2" data-s="3"><small>复盘证据</small>上线后的搜索失败记录。</div></div>
+<script src="demo.js"></script>
+<script>
+const C=[['p','$ 需求速拆 "成员搜索支持空格分隔多个关键词"'],['c','# 先识别：这是实现方式，不是目标'],['w','! 提醒：姓名本身可能含空格，会被误拆'],['c','# 下面这条不能直接当结论'],['w','? 待核实：现有数据里此类姓名占比'],['c','# 上线后回来看'],['r','> 证据：搜索无结果的记录']];
+const cut=[2,3,5,7];let tid;
+window.onStep=k=>{clearInterval(tid);const n=cut[k];tm.innerHTML=C.slice(0,n).map(([c,t])=>`<div class="l ${c}">${t}</div>`).join('')+'<span class="cur"></span>';};
+</script></body></html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>版本时间机器</title><link rel="stylesheet" href="demo.css">
+<style>
+.tl{position:absolute;left:34px;right:34px;bottom:84px;display:flex;align-items:center;gap:16px;font-size:13px;color:var(--mut)}
+.tl input{flex:1;accent-color:var(--violet)}
+.tl span{min-width:72px}
+.vs{position:absolute;left:50%;top:120px;transform:translateX(-50%);width:min(560px,80vw);background:#fff;color:#1d2129;border-radius:14px;padding:20px;box-shadow:0 20px 50px rgba(0,0,0,.4)}
+.vs h4{font-size:15px;margin-bottom:12px;display:flex;justify-content:space-between}.vs h4 small{color:#86909c;font-weight:400}
+.it{display:flex;align-items:center;gap:10px;padding:10px;border-radius:8px;transition:all .6s var(--ease);position:relative;font-size:14px}
+.av{width:28px;height:28px;border-radius:50%;background:#e8e3ff;transition:.6s}
+.it .x{margin-left:auto;font-size:12px;color:#86909c;transition:.4s}
+.chg{position:absolute;right:-12px;top:-8px;font-size:11px;padding:2px 7px;border-radius:99px;background:var(--amber);color:#1d2129;opacity:0;transform:scale(.6);transition:.4s cubic-bezier(.2,1.6,.4,1)}
+.chg.on{opacity:1;transform:none}
+.grp{font-size:12px;color:#86909c;margin:10px 0 4px;max-height:0;overflow:hidden;opacity:0;transition:.5s}.grp.on{max-height:30px;opacity:1}
+.ver{position:absolute;right:34px;top:130px;width:24%;font-size:14px;line-height:1.8;color:var(--mut)}.ver b{display:block;color:var(--fg);font-size:18px;font-weight:500}
+</style></head>
+<body data-steps="3" data-caps="v1：平铺的成员列表|v2：加入头像和已选状态|v3：按部门分组（也可以直接拖时间轴）">
+<div class="stage"><p class="eb">示例 · 去业务化</p><h1>同一个组件，<em>每一版改了什么。</em></h1></div>
+<div class="vs"><h4>选择成员 <small id="vn">v1</small></h4>
+ <div class="grp" id="g1">产品部</div>
+ <div class="it"><div class="av" id="a1"></div>成员 A<span class="x" id="x1"></span><span class="chg" id="c1">头像</span></div>
+ <div class="it"><div class="av"></div>成员 B<span class="x"></span></div>
+ <div class="grp" id="g2">设计部<span class="chg" id="c3" style="right:auto;left:70px;top:-2px">分组</span></div>
+ <div class="it" id="it3"><div class="av"></div>成员 C<span class="x" id="x3"></span><span class="chg" id="c2">已选</span></div>
+</div>
+<div class="ver" id="vt"></div>
+<div class="tl"><span>2024 · v1</span><input type="range" min="0" max="2" step="1" value="0" id="rg" aria-label="版本"><span>2026 · v3</span></div>
+<p class="note">内容为示意</p>
+<script src="demo.js"></script>
+<script>
+const T=[['v1 · 平铺','只有名字，人一多就找不到。'],['v2 · 头像 + 已选','改动标记出现在变化的位置。'],['v3 · 按部门分组','分组标题从上方插入，原有行不跳动。']];
+const av=document.querySelectorAll('.av');
+window.onStep=k=>{rg.value=k;vn.textContent='v'+(k+1);vt.innerHTML=`<b>${T[k][0]}</b>${T[k][1]}`;
+ av.forEach(a=>{a.style.width=a.style.height=k>=1?'28px':'0px';a.style.marginRight=k>=1?'0':'-10px'});
+ x3.textContent=k>=1?'✓ 已选':'';it3.style.background=k>=1?'#f3f1ff':'';
+ c1.classList.toggle('on',k===1);c2.classList.toggle('on',k===1);g1.classList.toggle('on',k>=2);g2.classList.toggle('on',k>=2);c3.classList.toggle('on',k===2);};
+rg.oninput=()=>DEMO.set(+rg.value);
+</script></body></html>

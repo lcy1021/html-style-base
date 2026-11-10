@@ -1,0 +1,31 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>角色镜头</title><link rel="stylesheet" href="demo.css">
+<style>
+.pipe{position:absolute;left:34px;right:34px;top:200px;display:flex;align-items:center;gap:0}
+.nd{flex:1;text-align:center;padding:20px 8px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);font-size:15px;position:relative;transition:.5s}
+.nd small{display:block;font-size:12px;color:var(--mut);margin-top:6px;min-height:18px;transition:.3s}
+.arr{width:34px;text-align:center;color:var(--mut)}
+.lens{position:absolute;inset:0;pointer-events:none;background:var(--lc);clip-path:circle(0% at var(--cx) 40%);transition:clip-path .9s var(--ease);mix-blend-mode:screen;opacity:.16}
+body.on .lens{clip-path:circle(26% at var(--cx) 42%)}
+.nd.hi{border-color:var(--lc);background:color-mix(in srgb,var(--lc) 14%,transparent)}.nd.hi small{color:var(--fg)}
+.who{position:absolute;left:34px;top:130px;display:flex;gap:10px}
+.who button{all:unset;cursor:pointer;padding:8px 16px;border-radius:99px;border:1px solid rgba(255,255,255,.2);font-size:14px}.who button[aria-pressed=true]{background:var(--lc);color:#1d2129;border-color:var(--lc)}
+.say{position:absolute;left:34px;right:34px;bottom:90px;font-size:17px;line-height:1.7;max-width:760px}
+</style></head>
+<body data-steps="3" data-caps="同一条数据链路|镜头切到“开发者”：任务失败、排查上下游|镜头切到“负责人”：稳定、效率、对业务的价值">
+<div class="stage"><p class="eb">示例 · 去业务化</p><h1>同一个界面，<em>两种人看的不是一回事。</em></h1></div>
+<div class="who"><button data-r="0" aria-pressed="false">开发者</button><button data-r="1" aria-pressed="false">负责人</button></div>
+<div class="pipe" id="pp"></div>
+<p class="say" id="say">先把链路摆出来，再换镜头。</p>
+<p class="note">内容为示意</p>
+<script src="demo.js"></script>
+<script>
+const NS=['数据源','同步任务','加工','数据仓库','下游报表'];
+const R=[{c:'#5ad0b3',x:'30%',hi:[1,2],t:['','失败了吗？','哪一步出错？','',''],s:'开发者关心：哪个任务失败、上下游怎么排查。'},{c:'#ffb547',x:'70%',hi:[3,4],t:['','','','整体稳定吗？','业务用上了吗？'],s:'负责人关心：整体是否稳定、投入有没有换来业务价值。'}];
+pp.innerHTML=NS.map((n,i)=>`<div class="nd" data-i="${i}">${n}<small></small></div>`+(i<4?'<div class="arr">→</div>':'')).join('');
+const role=r=>{document.body.classList.toggle('on',r>=0);document.querySelectorAll('.who button').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.r===r)));
+ if(r<0){document.querySelectorAll('.nd').forEach(n=>{n.classList.remove('hi');n.querySelector('small').textContent=''});say.textContent='先把链路摆出来，再换镜头。';return}
+ const o=R[r];document.body.style.setProperty('--lc',o.c);document.body.style.setProperty('--cx',o.x);
+ document.querySelectorAll('.nd').forEach((n,i)=>{n.classList.toggle('hi',o.hi.includes(i));n.querySelector('small').textContent=o.t[i]});say.textContent=o.s;};
+document.querySelectorAll('.who button').forEach(b=>b.onclick=()=>DEMO.set(+b.dataset.r+1));
+window.onStep=k=>role(k-1);
+</script></body></html>

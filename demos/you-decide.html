@@ -1,0 +1,24 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>你来决策</title><link rel="stylesheet" href="demo.css">
+<style>
+.q{position:absolute;left:34px;right:34px;top:130px;display:grid;grid-template-columns:1.1fr 1fr;gap:28px}
+.ctx{background:#fff;color:#1d2129;border-radius:14px;padding:22px;font-size:15px;line-height:1.8}
+.ctx b{color:#5b4bff}
+.opts{display:flex;flex-direction:column;gap:12px}
+.op{all:unset;cursor:pointer;padding:16px 18px;border-radius:12px;border:1px solid rgba(255,255,255,.18);font-size:16px;transition:.3s;position:relative}
+.op:hover{border-color:var(--fg)}.op.sel{border-color:var(--amber);background:rgba(255,181,71,.1)}
+.op.ans::after{content:"最终选择";position:absolute;right:14px;top:50%;transform:translateY(-50%) rotate(-4deg);border:2px solid var(--red);color:var(--red);font-size:13px;padding:2px 8px;border-radius:4px}
+.why{grid-column:1/-1;font-size:15px;line-height:1.8;color:var(--mut);opacity:0;transform:translateY(10px);transition:.5s}.why.on{opacity:1;transform:none}.why b{color:var(--fg)}
+</style></head>
+<body data-steps="3" data-caps="先给条件，请大家选|现场举手 / 点一个选项|揭晓最终选择和理由">
+<div class="stage"><p class="eb">示例 · 去业务化</p><h1>换你来定：<em>这个按钮要改吗？</em></h1></div>
+<div class="q">
+ <div class="ctx">按钮文字最长 8 个字。有人反馈<b>窄屏下会换行</b>。<br>改短到 6 个字能解决，但有一部分已有配置会被截断。</div>
+ <div class="opts"><button class="op" data-o="a">A · 改，统一限制 6 个字</button><button class="op" data-o="b">B · 只在窄屏缩小字号</button><button class="op" data-o="c">C · 先不改，记录下来</button></div>
+ <p class="why" data-s="2"><b>为什么是 C：</b>放到所有用户里看，会换行的场景很少；强行限制会影响更多已有配置。评估之后决定不改，也是一个结论。</p>
+</div>
+<p class="note">内容为示意</p>
+<script src="demo.js"></script>
+<script>
+const ops=[...document.querySelectorAll('.op')];ops.forEach(o=>o.onclick=()=>{ops.forEach(x=>x.classList.toggle('sel',x===o));if(DEMO.get()<1)DEMO.set(1)});
+window.onStep=k=>{ops.forEach(o=>o.classList.toggle('ans',k>=2&&o.dataset.o==='c'));if(k===0)ops.forEach(o=>o.classList.remove('sel'));};
+</script></body></html>

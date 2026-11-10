@@ -1,0 +1,24 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>对话回放</title><link rel="stylesheet" href="demo.css">
+<style>
+.chat{position:absolute;left:34px;top:120px;width:52%;bottom:76px;background:#f2f3f5;color:#1d2129;border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px;overflow:hidden}
+.m{max-width:78%;display:flex;gap:8px;align-items:flex-start}
+.m i{width:30px;height:30px;border-radius:50%;flex:none;font-style:normal;font-size:12px;display:grid;place-items:center;color:#fff}
+.m p{background:#fff;padding:9px 12px;border-radius:10px;font-size:14px;line-height:1.6}
+.m.me{align-self:flex-end;flex-direction:row-reverse}.m.me p{background:#5b4bff;color:#fff}
+.m.key p{box-shadow:0 0 0 2px var(--amber)}
+.m{opacity:0;transform:translateY(12px);transition:.4s var(--ease)}.m.on{opacity:1;transform:none}
+.notes{position:absolute;right:34px;top:130px;width:34%}
+.notes div{padding:12px 14px;border-left:3px solid var(--amber);background:rgba(255,181,71,.08);margin-bottom:12px;font-size:14px;line-height:1.6;opacity:0;transform:translateX(16px);transition:.5s}
+.notes div.on{opacity:1;transform:none}.notes small{color:var(--amber);display:block;font-size:11px}
+</style></head>
+<body data-steps="4" data-caps="群聊逐条回放|追问：拆完之后要做什么|关键句出现，右侧同步记笔记|结论：真正的诉求">
+<div class="stage"><p class="eb">示范 · 不是会议原话</p><h1>需求怎么在对话里<em>被问清楚。</em></h1></div>
+<div class="chat">
+ <div class="m" data-s="0"><i style="background:#f77234">产</i><p>客户要导出时按部门拆文件。</p></div>
+ <div class="m me" data-s="1"><i style="background:#5b4bff">设</i><p>拆完之后，这些文件给谁、要做什么？</p></div>
+ <div class="m key" data-s="2"><i style="background:#f77234">产</i><p>发给各部门负责人核对，他们只认文件名。</p></div>
+ <div class="m me" data-s="3"><i style="background:#5b4bff">设</i><p>那命名规则要跟拆分一起设计。</p></div>
+</div>
+<div class="notes"><div data-s="2"><small>笔记 · 关键条件</small>收件人按文件名识别，不会打开文件确认。</div><div data-s="3"><small>笔记 · 改写后的诉求</small>每个部门拿到“一眼认得出”的文件。</div></div>
+<script src="demo.js"></script>
+</body></html>

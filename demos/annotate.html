@@ -1,0 +1,33 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>标注解读与前后滑块</title><link rel="stylesheet" href="demo.css">
+<style>
+.wrap{position:absolute;left:34px;top:120px;width:56%;height:calc(100% - 210px)}
+.ui{position:absolute;inset:0;border-radius:14px;padding:22px;font-size:14px;overflow:hidden}
+.before{background:#fff;color:#1d2129}.after{background:#f3f1ff;color:#1d2129;clip-path:inset(0 0 0 var(--x,100%))}
+.ui h4{margin-bottom:14px}.ln{height:36px;border-radius:8px;background:#f2f3f5;margin-bottom:10px;display:flex;align-items:center;padding:0 12px;color:#4e5969}
+.after .ln.hi{background:#fff;border:1px solid #5b4bff;color:#1d2129}
+.hot{position:absolute;width:26px;height:26px;border-radius:50%;background:var(--amber);color:#1d2129;font-weight:700;font-size:13px;display:grid;place-items:center;cursor:pointer;opacity:0;transform:scale(.4);transition:.4s var(--ease);box-shadow:0 0 0 6px rgba(255,181,71,.25)}
+.hot.on{opacity:1;transform:none}
+.knob{position:absolute;top:0;bottom:0;left:var(--x,100%);width:2px;background:var(--violet);opacity:0;transition:opacity .3s}
+.knob::after{content:"⇆";position:absolute;top:50%;left:-16px;width:32px;height:32px;margin-top:-16px;border-radius:50%;background:var(--violet);color:#1d2129;display:grid;place-items:center;font-size:14px;cursor:ew-resize}
+body.s2 .knob{opacity:1}
+.side{position:absolute;right:34px;top:130px;width:32%}
+.side li{list-style:none;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.1);color:var(--mut);line-height:1.6;font-size:14px;transition:.3s}
+.side li b{color:var(--amber);margin-right:8px}.side li.cur{color:var(--fg)}
+</style></head>
+<body data-steps="3" data-caps="点出每一处设计的理由|逐个热点讲解（热点也可以直接点）|拖动滑块，看改版前后">
+<div class="stage"><p class="eb">示例 · 去业务化</p><h1>每个细节，<em>都说得出为什么。</em></h1></div>
+<div class="wrap" id="wrap">
+ <div class="ui before"><h4>新建项目 · 改版前</h4><div class="ln">项目名称</div><div class="ln">负责人</div><div class="ln">高级设置（12 项）</div></div>
+ <div class="ui after" id="af"><h4>新建项目 · 改版后</h4><div class="ln hi">项目名称（必填）</div><div class="ln hi">负责人 · 默认是你</div><div class="ln">更多设置 ▸</div></div>
+ <div class="hot" data-s="1" style="left:46%;top:58px">1</div><div class="hot" data-s="1" style="left:52%;top:104px">2</div><div class="hot" data-s="1" style="left:40%;top:150px">3</div>
+ <div class="knob" id="kn"></div>
+</div>
+<ul class="side"><li id="l1"><b>1</b>必填写在标签上，不等提交后才报错。</li><li id="l2"><b>2</b>默认值来自最常见的情况：大多是自己建、自己负责。</li><li id="l3"><b>3</b>低频设置收起，第一次建项目只看到三行。</li></ul>
+<p class="note">内容为示意</p>
+<script src="demo.js"></script>
+<script>
+const W=document.getElementById('wrap');let x=100;const setX=v=>{x=Math.max(0,Math.min(100,v));W.style.setProperty('--x',x+'%');};
+window.onStep=k=>{setX(k>=2?50:100);document.querySelectorAll('.side li').forEach((l,i)=>l.classList.toggle('cur',k>=1));};
+document.querySelectorAll('.hot').forEach((h,i)=>h.onclick=()=>{document.querySelectorAll('.side li').forEach((l,j)=>l.classList.toggle('cur',i===j));});
+let drag=0;kn.onpointerdown=e=>{drag=1;kn.setPointerCapture(e.pointerId)};kn.onpointerup=()=>drag=0;kn.onpointermove=e=>{if(!drag)return;const r=W.getBoundingClientRect();setX((e.clientX-r.left)/r.width*100)};
+</script></body></html>

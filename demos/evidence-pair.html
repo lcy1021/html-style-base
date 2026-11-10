@@ -1,0 +1,29 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>判断与依据并排</title><link rel="stylesheet" href="demo.css">
+<style>
+body.light{--bg:#fcfaf5;background-color:#fcfaf5}
+.eb{color:#c26a00}h1{color:#173300}h1 em{color:#7a5cff}
+.pair{position:absolute;left:34px;right:34px;top:130px;bottom:80px;display:grid;grid-template-columns:1fr 1.1fr;gap:20px}
+.jd,.src{border-radius:16px;padding:22px;font-size:15px;line-height:1.8}
+.jd{background:#e9e3ff;color:#173300}.jd small,.src small{display:block;font-size:11px;letter-spacing:.1em;color:#7a6a9a;margin-bottom:6px}
+.jd .step{opacity:.25;transition:.4s;margin-bottom:12px;padding-left:12px;border-left:3px solid transparent}.jd .step.on{opacity:1;border-color:#7a5cff}
+.src{background:#fff;border:1px solid #e8e2d4;color:#1d2129}
+.msg{padding:10px 12px;border-radius:10px;background:#f6f4ee;margin-bottom:10px}
+mark{background:linear-gradient(transparent 55%,#ffe27a 55%);background-size:0 100%;background-repeat:no-repeat;transition:background-size .8s;color:inherit}
+body.s2 mark{background-size:100% 100%}
+.fix{margin-top:12px;font-weight:600;color:#173300;opacity:0;transition:.4s}.fix.on{opacity:1}
+</style></head>
+<body class="light" data-steps="4" data-caps="左边原来的判断，右边原始材料|材料片段出现|高亮关键差异|修正后的判断">
+<div class="stage"><p class="eb">参考 · 判断与依据并排</p><h1>结论旁边，<em>放上它从哪来。</em></h1></div>
+<div class="pair">
+ <div class="jd"><small>判断</small>
+  <div class="step on">原来的判断：搜索框用空格分隔多个关键词。</div>
+  <div class="step" data-s="2" id="j2">关键差异：有些姓名本身就带空格。</div>
+  <div class="fix" data-s="3">修正后：先整体匹配，再拆分匹配。</div></div>
+ <div class="src"><small>材料片段（去标识）</small>
+  <div class="msg" data-s="1">反馈：“搜‘<mark>欧阳 明</mark>’出来一堆姓欧阳的和叫明的。”</div>
+  <div class="msg" data-s="1">数据：成员姓名字段允许<mark>中间带空格</mark>。</div></div>
+</div>
+<p class="note">参考 SayBriefly 的并排说明；内容为示意</p>
+<script src="demo.js"></script>
+<script>window.onStep=k=>j2.classList.toggle('on',k>=2)</script>
+</body></html>

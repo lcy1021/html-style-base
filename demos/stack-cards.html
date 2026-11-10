@@ -1,0 +1,24 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>叠卡递进</title><link rel="stylesheet" href="demo.css">
+<style>
+body{background:#fce5df;--bg:#fce5df;--fg:#1f2a24;--mut:#6b5d58;background-image:none}
+.eb{color:#db3c8a}h1 em{color:#db3c8a}
+.lf{position:absolute;left:34px;top:150px;width:24%;font-size:15px;line-height:1.8;color:var(--mut)}
+.deck{position:absolute;left:50%;top:110px;width:330px;height:calc(100% - 240px);margin-left:-165px}
+.cd{position:absolute;inset:0;border-radius:24px;padding:28px;color:#fff8f6;display:flex;flex-direction:column;justify-content:space-between;transform:translateY(110%) rotate(var(--r));transition:transform .8s var(--ease);box-shadow:0 18px 40px rgba(0,0,0,.18)}
+.cd.on{transform:translateY(var(--y)) rotate(var(--r))}
+.cd b{font-size:72px;line-height:1;font-weight:800}.cd h3{font-size:24px}.cd p{font-size:14px;line-height:1.7;opacity:.85}
+.rt{position:absolute;right:34px;top:150px;width:22%;font-size:14px;line-height:1.8;color:var(--mut)}
+</style></head>
+<body data-steps="4" data-caps="第一张卡稳定可读|第二张从下面上来，盖住上一张，旧卡留边|第三张|最后一张：整组讲完再离开">
+<div class="stage"><p class="eb">参考 · 叠卡递进</p><h1>每一步建立在上一步上，<em>旧卡留下边缘。</em></h1></div>
+<p class="lf">左边保留这组步骤的总标题，中间只放当前一步。</p>
+<div class="deck">
+ <div class="cd" data-s="0" style="background:#db3c8a;--r:-2deg;--y:0px"><b>01</b><div><h3>补回任务</h3><p>这份诉求在什么工作里出现？</p></div></div>
+ <div class="cd" data-s="1" style="background:#1f4d3a;--r:2deg;--y:14px"><b>02</b><div><h3>补充证据</h3><p>看实际材料，不只听转述。</p></div></div>
+ <div class="cd" data-s="2" style="background:#db3c8a;--r:-1deg;--y:28px"><b>03</b><div><h3>形成判断</h3><p>原来的判断哪里要改？</p></div></div>
+ <div class="cd" data-s="3" style="background:#1f4d3a;--r:1.5deg;--y:42px"><b>04</b><div><h3>确定验证</h3><p>上线后看什么来确认？</p></div></div>
+</div>
+<p class="rt">适合有先后关系的步骤；需要同时比较细节时改用并排视图。</p>
+<p class="note">参考 Agence Foudre 的方法区；内容为示意</p>
+<script src="demo.js"></script>
+</body></html>

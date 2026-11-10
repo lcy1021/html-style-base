@@ -1,0 +1,26 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>原位展开</title><link rel="stylesheet" href="demo.css">
+<style>
+.row{position:absolute;left:34px;right:34px;top:150px;bottom:90px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.cd{all:unset;cursor:pointer;position:relative;border-radius:6px;border:1px solid rgba(255,255,255,.1);padding:20px;display:flex;flex-direction:column;justify-content:space-between;transition:background .4s;overflow:hidden}
+.cd .ic{display:flex;justify-content:space-between;align-items:flex-start}
+.cd svg{width:54px;height:54px}.cd svg *{fill:none;stroke:#cad1b8;stroke-width:1.5;transition:.4s}
+.pm{width:30px;height:30px;border-radius:50%;border:1px solid #cad1b8;display:grid;place-items:center;color:#cad1b8;transition:transform .4s}
+.ov h3{font-size:26px;font-weight:500;color:#cad1b8}.ov p{font-size:16px;color:#e7e9de;margin-top:6px}
+.dt{position:absolute;left:20px;right:20px;bottom:20px}.dt h4{font-size:15px;margin-bottom:8px}.dt p{font-size:19px;line-height:1.45}
+.dt>*{opacity:0;transform:translateY(14px);transition:.4s}
+.cd.open{background:#cad1b8;color:#151719}.cd.open svg *{fill:#151719;stroke:#151719}.cd.open .pm{transform:rotate(180deg);border-color:#151719;color:#151719}
+.cd.open .ov{opacity:0}.cd.open .dt>*{opacity:1;transform:none}.cd.open .dt p{transition-delay:.12s}
+.ov{transition:opacity .25s}
+</style></head>
+<body data-steps="4" data-caps="三项并列：先给名称和一句价值|展开第一项（也可以直接点卡片）|展开第二项，前一项收回|展开第三项">
+<div class="stage"><p class="eb">参考 · 原位展开</p><h1>工具到底帮了什么：<em>先概览，再在原位读解释。</em></h1></div>
+<div class="row" id="rw"></div>
+<p class="note">参考 Moah Studio 的 Ways of Working；内容为示意</p>
+<script src="demo.js"></script>
+<script>
+const D=[['<circle cx="27" cy="27" r="22"/>','防遗漏','把该想的角度摆出来','场景公式提醒检查角色、任务和影响；没有证据的格子留下问题，不用猜测填满。'],['<path d="M5 49 L27 5 L49 49 Z"/>','让判断可以讨论','分歧具体到依据','把覆盖面、影响和投入列出来，讨论具体输入；分数不能代替判断。'],['<rect x="6" y="6" width="42" height="42"/>','把经验留下来','判断方法可以复用','保存讨论依据，下一次评审能接着已有经验继续，而不只留下结论。']];
+rw.innerHTML=D.map(([g,t,s,d],i)=>`<button class="cd" type="button" data-i="${i}" aria-expanded="false"><div class="ic"><svg viewBox="0 0 54 54">${g}</svg><span class="pm">＋</span></div><div class="ov"><h3>${t}</h3><p>${s}</p></div><div class="dt"><h4>${t}</h4><p>${d}</p></div></button>`).join('');
+const cs=[...rw.children];const op=i=>cs.forEach((c,j)=>{c.classList.toggle('open',i===j);c.setAttribute('aria-expanded',String(i===j));c.querySelector('.pm').textContent=i===j?'－':'＋'});
+cs.forEach((c,i)=>c.onclick=()=>DEMO.set(c.classList.contains('open')?0:i+1));
+window.onStep=k=>op(k-1);
+</script></body></html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>权衡模拟器</title><link rel="stylesheet" href="demo.css">
+<style>
+.g{position:absolute;left:34px;top:120px;width:60%;bottom:150px}
+svg{width:100%;height:100%;overflow:visible}
+.ax{stroke:rgba(255,255,255,.25)}.a{fill:none;stroke:var(--teal);stroke-width:3}.b{fill:none;stroke:var(--red);stroke-width:3}
+.cur{stroke:var(--amber);stroke-width:1.5;stroke-dasharray:4 4}
+text{fill:var(--mut);font-size:12px}
+.ctl{position:absolute;left:34px;width:60%;bottom:76px;display:flex;gap:14px;align-items:center;font-size:13px;color:var(--mut)}.ctl input{flex:1;accent-color:var(--amber)}
+.rd{position:absolute;right:34px;top:140px;width:28%;font-size:15px;line-height:1.9}.rd b{font-size:26px;font-weight:500;display:block}.rd .t b{color:var(--teal)}.rd .r b{color:var(--red)}
+</style></head>
+<body data-steps="3" data-caps="两个指标此消彼长|拖动滑块，看平衡点怎么移动|只用在有真实数据的时候">
+<div class="stage"><p class="eb">示意曲线 · 不是真实数据</p><h1>限制越严，<em>换行越少，截断越多。</em></h1></div>
+<div class="g"><svg viewBox="0 0 600 300" preserveAspectRatio="none"><line class="ax" x1="0" y1="300" x2="600" y2="300"/><line class="ax" x1="0" y1="0" x2="0" y2="300"/><path class="a" id="pa"/><path class="b" id="pb"/><line class="cur" id="cu" y1="0" y2="300"/><text x="0" y="318">宽松</text><text x="560" y="318">严格</text></svg></div>
+<div class="ctl">字数上限<input type="range" min="4" max="12" value="8" id="sl" aria-label="字数上限"><span id="sv">8 字</span></div>
+<div class="rd"><div class="t">会换行的场景<b id="va"></b></div><div class="r">被截断的配置<b id="vb"></b></div></div>
+<script src="demo.js"></script>
+<script>
+const fa=x=>300-260*Math.exp(-((x-12)**2)/18),fb=x=>300-260/(1+Math.exp(1.2*(x-6.5)));
+const P=f=>Array.from({length:61},(_,i)=>{const x=12-i*8/60;return `${i?'L':'M'}${i*10} ${f(x).toFixed(1)}`}).join(' ');
+pa.setAttribute('d',P(x=>300-260/(1+Math.exp(-1.1*(x-8)))));pb.setAttribute('d',P(fb));
+function upd(){const v=+sl.value,px=(12-v)/8*600;cu.setAttribute('x1',px);cu.setAttribute('x2',px);sv.textContent=v+' 字';
+ va.textContent=Math.round(100/(1+Math.exp(-1.1*(v-8))))+'%';vb.textContent=Math.round(100/(1+Math.exp(1.2*(v-6.5))))+'%';}
+sl.oninput=upd;window.onStep=k=>{sl.value=[8,6,8][k];upd()};
+</script></body></html>

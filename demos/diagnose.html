@@ -1,0 +1,28 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>诊断仪</title><link rel="stylesheet" href="demo.css">
+<style>
+.sg{position:absolute;left:34px;top:130px;width:42%}
+.sg label{display:block;margin-bottom:18px;font-size:14px}.sg label span{display:flex;justify-content:space-between;color:var(--mut);margin-bottom:6px}.sg label span b{color:var(--fg);font-weight:500}
+.sg input{width:100%;accent-color:var(--amber)}
+.gauge{position:absolute;right:8%;top:150px;width:380px;height:220px}
+.gauge svg{width:100%;height:100%;overflow:visible}
+.arc{fill:none;stroke-width:22}
+.nd{transition:transform .8s cubic-bezier(.3,1.4,.5,1);transform-origin:190px 190px}
+.out{position:absolute;right:8%;top:390px;width:380px;text-align:center;font-size:18px}.out small{display:block;color:var(--mut);font-size:13px;margin-top:6px}
+</style></head>
+<body data-steps="3" data-caps="四个信号，各自拖动|信号都不明：继续分析|信号都清楚：可以推进">
+<div class="stage"><p class="eb">示例 · 去业务化</p><h1>分析到什么程度算够，<em>看几个信号。</em></h1></div>
+<div class="sg" id="sg"></div>
+<div class="gauge"><svg viewBox="0 0 380 210"><path class="arc" d="M30 190 A160 160 0 0 1 110 51" stroke="#ff6b5a"/><path class="arc" d="M110 51 A160 160 0 0 1 270 51" stroke="#ffb547"/><path class="arc" d="M270 51 A160 160 0 0 1 350 190" stroke="#5ad0b3"/><g class="nd" id="nd"><line x1="190" y1="190" x2="190" y2="50" stroke="#f3f1ff" stroke-width="4" stroke-linecap="round"/><circle cx="190" cy="190" r="10" fill="#f3f1ff"/></g></svg></div>
+<div class="out" id="ot"></div>
+<p class="note">内容为示意 · 刻度只帮助讨论，不替代判断</p>
+<script src="demo.js"></script>
+<script>
+const S=['知道这件事服务谁','知道做完怎么算完成','补信息还会改变方案吗（越低越好）','改错的代价'];
+sg.innerHTML=S.map((t,i)=>`<label><span>${t}<b id="v${i}">50</b></span><input type="range" min="0" max="100" value="50" data-i="${i}"></label>`).join('');
+const ins=[...sg.querySelectorAll('input')];
+function upd(){const v=ins.map(i=>+i.value);v.forEach((x,i)=>document.getElementById('v'+i).textContent=x);
+ const sc=(v[0]+v[1]+(100-v[2])+(100-v[3]))/4;nd.style.transform=`rotate(${(sc-50)*1.6}deg)`;
+ ot.innerHTML=sc<38?'继续补信息<small>还有关键未知，先问清楚</small>':sc<64?'带着假设推进<small>写下哪些还没验证</small>':'可以推进<small>再分析，收获也不大了</small>';}
+ins.forEach(i=>i.oninput=upd);
+window.onStep=k=>{const P=[[50,50,50,50],[20,30,80,70],[85,80,15,30]][k];ins.forEach((x,i)=>x.value=P[i]);upd();};
+</script></body></html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>线路图</title><link rel="stylesheet" href="demo.css">
+<style>
+svg.map{position:absolute;left:34px;right:34px;top:150px;width:calc(100% - 68px);height:200px;overflow:visible}
+.ln{fill:none;stroke:var(--teal);stroke-width:6;stroke-linecap:round;stroke-dasharray:1400;stroke-dashoffset:1400;transition:stroke-dashoffset 1.4s var(--ease)}
+body.s1 .ln{stroke-dashoffset:0}
+.st circle{fill:var(--bg);stroke:var(--teal);stroke-width:4;cursor:pointer;transition:.3s}.st.cur circle{fill:var(--amber);stroke:var(--amber)}
+.st text{fill:var(--fg);font-size:14px;text-anchor:middle}
+.tr{fill:#fff;transition:transform 1s var(--ease)}
+.card{position:absolute;left:34px;right:34px;bottom:84px;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.card div{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:16px 18px;font-size:15px;line-height:1.7}
+.card small{display:block;font-size:11px;letter-spacing:.1em;margin-bottom:4px}.card .p small{color:var(--red)}.card .o small{color:var(--teal)}
+</style></head>
+<body data-steps="6" data-caps="先给整条线路|第一站：记录|第二站：汇总|第三站：审阅|第四站：归档（站点也可以直接点）|结论：每一站都对结果提了要求">
+<div class="stage"><p class="eb">示例 · 去业务化</p><h1>一份表格，<em>沿途经过哪些站。</em></h1></div>
+<svg class="map" viewBox="0 0 1000 200" preserveAspectRatio="xMidYMid meet"><path class="ln" d="M60 120 C 220 120 220 60 380 60 S 560 140 700 120 S 880 60 940 80"/><g id="sts"></g><circle class="tr" id="tr" r="9" cx="0" cy="0"/></svg>
+<div class="card"><div class="p"><small>这一站的痛点</small><span id="pp">—</span></div><div class="o"><small>对设计的要求</small><span id="oo">—</span></div></div>
+<p class="note">内容为示意</p>
+<script src="demo.js"></script>
+<script>
+const S=[[60,120,'记录','每天手动记，格式各不相同','字段固定，录入时就校验'],[380,60,'汇总','月底合并时对不上','按月自动汇总，口径一致'],[700,120,'审阅','负责人只看总数','总数和异常放在第一屏'],[940,80,'归档','打印后签字存档','固定版式，留签字位']];
+sts.innerHTML=S.map((s,i)=>`<g class="st" data-i="${i}"><circle cx="${s[0]}" cy="${s[1]}" r="12"/><text x="${s[0]}" y="${s[1]+40}">${s[2]}</text></g>`).join('');
+document.querySelectorAll('.st').forEach(g=>g.onclick=()=>DEMO.set(+g.dataset.i+1));
+window.onStep=k=>{const i=Math.min(k-1,3);document.querySelectorAll('.st').forEach((g,j)=>g.classList.toggle('cur',j===i&&k<5));
+ const s=S[Math.max(i,0)];tr.style.transform=`translate(${s[0]}px,${s[1]}px)`;tr.style.opacity=k>=1?1:0;
+ pp.textContent=k>=1&&k<5?s[3]:(k>=5?'只看“导出一张表”，看不到这些':'—');oo.textContent=k>=1&&k<5?s[4]:(k>=5?'放回整条线路，才知道版式为什么重要':'—');};
+</script></body></html>

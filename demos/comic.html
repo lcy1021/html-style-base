@@ -1,0 +1,22 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>漫画分镜</title><link rel="stylesheet" href="demo.css">
+<style>
+.strip{position:absolute;left:34px;right:34px;top:120px;bottom:80px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.pn{background:#fff;color:#1d2129;border:3px solid #1d2129;border-radius:6px;padding:14px;display:flex;flex-direction:column;justify-content:space-between;opacity:0;transform:scale(.85) rotate(var(--r));transition:.45s cubic-bezier(.2,1.5,.4,1)}
+.pn.on{opacity:1;transform:rotate(var(--r))}
+.pn .sc{flex:1;display:grid;place-items:center;font-size:48px}
+.pn .bub{background:#fff;border:2px solid #1d2129;border-radius:14px;padding:8px 10px;font-size:13px;line-height:1.5;position:relative}
+.pn small{font-size:11px;color:#86909c;margin-bottom:6px}
+.pn.twist{background:#1d2129;color:#fff}.pn.twist .bub{background:var(--amber);color:#1d2129;border-color:var(--amber)}
+.pn.twist small{color:var(--amber)}
+</style></head>
+<body data-steps="4" data-caps="第一格：人物和处境|第二格：遇到卡点|第三格：将就的做法|第四格：结局翻转——真正的问题">
+<div class="stage"><p class="eb">示例 · 去业务化</p><h1>用四格漫画，<em>讲一个用户的周五傍晚。</em></h1></div>
+<div class="strip">
+ <div class="pn" data-s="0" style="--r:-1deg"><small>17:30</small><div class="sc">🧑‍💼</div><div class="bub">今天要把报表发给 12 个部门。</div></div>
+ <div class="pn" data-s="1" style="--r:1deg"><small>17:45</small><div class="sc">📁</div><div class="bub">拆出来 12 个文件，名字全一样……</div></div>
+ <div class="pn" data-s="2" style="--r:-.5deg"><small>18:30</small><div class="sc">⌨️</div><div class="bub">只好一个个打开、改名、再发。</div></div>
+ <div class="pn twist" data-s="3" style="--r:1.2deg"><small>真正的问题</small><div class="sc">💡</div><div class="bub">她要的不是“拆分”，是每个部门一眼认得出的文件。</div></div>
+</div>
+<p class="note">内容为示意</p>
+<script src="demo.js"></script>
+</body></html>

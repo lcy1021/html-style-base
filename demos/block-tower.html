@@ -1,0 +1,25 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>假设积木塔</title><link rel="stylesheet" href="demo.css">
+<style>
+.tw{position:absolute;left:50%;bottom:90px;width:520px;margin-left:-360px;height:360px}
+.bk{all:unset;cursor:pointer;position:absolute;height:52px;border-radius:6px;display:grid;place-items:center;font-size:13px;color:#1d2129;transition:transform .8s cubic-bezier(.5,0,.7,.4),opacity .8s,box-shadow .3s;box-shadow:inset 0 -4px rgba(0,0,0,.15)}
+.bk:hover{box-shadow:inset 0 -4px rgba(0,0,0,.15),0 0 0 3px var(--fg)}
+.bk.fall{transform:translateY(160px) rotate(var(--fr));opacity:.15}
+.bk.pick{box-shadow:0 0 0 3px var(--red)}
+.side{position:absolute;right:34px;top:140px;width:28%;font-size:15px;line-height:1.8;color:var(--mut)}.side b{color:var(--fg);display:block;font-size:18px;font-weight:500}
+</style></head>
+<body data-steps="3" data-caps="方案建立在几层假设上（积木可以直接点）|抽掉底层假设：上面跟着倒|按“倒得多”排序：先验证最底下的">
+<div class="stage"><p class="eb">示例 · 去业务化</p><h1>先验证哪个假设？<em>看它倒了会带走多少。</em></h1></div>
+<div class="tw" id="tw"></div>
+<div class="side" id="sd"><b>点任意一块</b>看依赖它的假设会不会跟着倒。</div>
+<p class="note">内容为示意 · 假设 A–E 为教学示意</p>
+<script src="demo.js"></script>
+<script>
+// [id, 文字, x, 层, 宽, 颜色, 依赖]
+const B=[['A','用户每月都要做这件事',0,0,520,'#ffb547',[]],['B','由一个人完成',0,1,250,'#5ad0b3',['A']],['C','数据已经在系统里',270,1,250,'#b9a8ff',['A']],['D','愿意换掉现有做法',60,2,200,'#4ea1ff',['B']],['E','能接受自动生成',280,2,200,'#ff9bb3',['C']]];
+tw.innerHTML=B.map(([id,t,x,l,w,c],i)=>`<button class="bk" data-id="${id}" style="left:${x}px;bottom:${l*62}px;width:${w}px;background:${c};--fr:${(i%2?1:-1)*(8+i*3)}deg">${id} · ${t}</button>`).join('');
+const dep=id=>{const out=new Set([id]);let ch=1;while(ch){ch=0;B.forEach(b=>{if(!out.has(b[0])&&b[6].some(d=>out.has(d))){out.add(b[0]);ch=1}})}return out};
+function pull(id){const d=dep(id);document.querySelectorAll('.bk').forEach(e=>{e.classList.toggle('fall',d.has(e.dataset.id)&&e.dataset.id!==id);e.classList.toggle('pick',e.dataset.id===id)});sd.innerHTML=`<b>抽掉 ${id}</b>一起倒下 ${d.size-1} 块。`}
+const reset=()=>document.querySelectorAll('.bk').forEach(e=>e.classList.remove('fall','pick'));
+document.querySelectorAll('.bk').forEach(e=>e.onclick=()=>pull(e.dataset.id));
+window.onStep=k=>{reset();if(k===0)sd.innerHTML='<b>点任意一块</b>看依赖它的假设会不会跟着倒。';if(k===1)pull('A');if(k===2)sd.innerHTML='<b>验证顺序</b>'+B.map(b=>[b[0],dep(b[0]).size-1]).sort((a,b)=>b[1]-a[1]).map(([i,n])=>`${i}（带走 ${n}）`).join(' → ');};
+</script></body></html>

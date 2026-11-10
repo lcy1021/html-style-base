@@ -1,0 +1,20 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>声音墙</title><link rel="stylesheet" href="demo.css">
+<style>
+.wall{position:absolute;left:34px;right:34px;top:120px;bottom:76px}
+.v{position:absolute;width:23%;padding:10px 12px;border-radius:10px;background:#fff;color:#1d2129;font-size:13px;line-height:1.5;transition:left .9s var(--ease),top .9s var(--ease),transform .9s var(--ease);box-shadow:0 6px 16px rgba(0,0,0,.3)}
+.v i{font-style:normal;font-size:11px;color:#86909c;display:block}
+.col{position:absolute;top:0;width:23%;font-size:13px;color:var(--amber);letter-spacing:.08em;opacity:0;transition:.5s}body.s1 .col{opacity:1}
+body:not(.s1) .v{animation:fl 6s ease-in-out infinite alternate}@keyframes fl{to{transform:translate(6px,-8px) rotate(var(--r))}}
+</style></head>
+<body data-steps="2" data-caps="先把听到的声音打散铺开|再按“背后想完成的事”归成几列">
+<div class="stage"><p class="eb">示例 · 去业务化</p><h1>先听见所有声音，<em>再看它们在说哪几件事。</em></h1></div>
+<div class="wall" id="wl"></div>
+<p class="note">内容为示意 · 归类依据是“想完成的事”，不是来源</p>
+<script src="demo.js"></script>
+<script>
+const C=['找得到','交得出','看得懂'],V=[['搜不到上周的文件',0],['筛选条件每次都要重设',0],['导出的文件名都一样',1],['发出去还要再改格式',1],['总数和明细对不上',2],['图表太多不知道看哪',2],['想按负责人找',0],['审批人看不懂字段',2]];
+wl.innerHTML=C.map((c,i)=>`<div class="col" style="left:${i*33+1}%">${c}</div>`).join('')+V.map(([t],i)=>`<div class="v" style="--r:${(i%3-1)*2}deg"><i>声音 ${i+1}</i>${t}</div>`).join('');
+const vs=[...document.querySelectorAll('.v')],cnt=[0,0,0];
+const rnd=V.map((_,i)=>[(i*37)%76,(i*53)%70+4]);
+window.onStep=k=>{const c=[0,0,0];vs.forEach((v,i)=>{if(k===0){v.style.left=rnd[i][0]+'%';v.style.top=rnd[i][1]+'%';v.style.transform=`rotate(${(i%3-1)*3}deg)`}else{const col=V[i][1];v.style.left=(col*33+1)+'%';v.style.top=(8+c[col]++*17)+'%';v.style.transform='none'}})};
+</script></body></html>
