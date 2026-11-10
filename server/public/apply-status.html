@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<title>MCP 申请进度 · 设计经验库</title>
+<style>
+:root{color-scheme:dark;--bg:#0c0b12;--panel:#16151d;--line:rgba(255,255,255,.1);--ink:#f3f1ff;--sec:#c3c0cf;--mut:#8d8899;--amber:#ffb547;--good:#5ad08a;--bad:#ff8a8a}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font:14px/1.7 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}
+main{width:min(640px,92vw);margin:0 auto;padding:72px 0 80px}
+.eb{font-size:11px;letter-spacing:.14em;color:var(--amber);text-transform:uppercase}
+.eb a{color:inherit;text-decoration:none}
+h1{margin:8px 0 6px;font-size:26px;font-weight:500}
+.who{margin:0 0 24px;color:var(--mut);font-size:13px}
+.state{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:99px;border:1px solid var(--line);font-size:13px}
+.state i{width:8px;height:8px;border-radius:50%;background:var(--c,var(--mut))}
+p{color:var(--sec)}
+.box{margin-top:20px;padding:18px 20px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+.warn{border-color:rgba(255,181,71,.45);background:rgba(255,181,71,.06)}
+.warn b{color:var(--amber)}
+h3{margin:18px 0 6px;font-size:13px;font-weight:500;color:var(--sec);display:flex;align-items:center;gap:10px}
+pre{margin:0;padding:12px 14px;background:rgba(0,0,0,.35);border-radius:10px;overflow:auto;font:12.5px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--ink);white-space:pre-wrap;word-break:break-all}
+button{height:28px;padding:0 10px;border:1px solid var(--line);border-radius:7px;background:rgba(255,255,255,.06);color:var(--ink);font:inherit;font-size:12px;cursor:pointer}
+button:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+a{color:var(--ink)}
+</style>
+</head>
+<body>
+<main>
+  <div class="eb"><a href="/">HTML Style Base</a> · MCP</div>
+  <h1>MCP 申请进度</h1>
+  <p class="who" id="who">正在查询…</p>
+  <div id="out"></div>
+</main>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const h = (tag, attrs = {}, ...kids) => { const el = document.createElement(tag); for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v); for (const k of kids.flat()) if (k != null) el.append(k instanceof Node ? k : document.createTextNode(String(k))); return el; };
+  let code = decodeURIComponent(location.hash.slice(1));
+  try { if (code) localStorage.setItem('hsb_apply', code); else code = localStorage.getItem('hsb_apply') || ''; } catch (e) {}
+  const state = (text, c) => h('span', { class: 'state', style: `--c:${c}` }, h('i'), text);
+  const copyBtn = text => { const b = h('button', { type: 'button' }, '复制'); b.onclick = () => navigator.clipboard.writeText(text).then(() => { b.textContent = '已复制'; setTimeout(() => b.textContent = '复制', 1200); }); return b; };
+  if (!code) { $('who').textContent = '没有查询码。请用提交申请后得到的链接打开本页。'; return; }
+  fetch('/apply/check', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code }) })
+    .then(r => r.json()).then(r => {
+      if (r.error) { $('who').textContent = r.error; return; }
+      $('who').textContent = `${r.name} · ${r.email} · ${new Date(r.created).toLocaleString('zh-CN', { hour12: false })} 提交`;
+      const out = $('out');
+      const link = location.origin + location.pathname + '#' + code;
+      if (r.status === 'pending') out.append(state('待审核', 'var(--amber)'), h('p', {}, '管理员审核后，再打开这个页面就能领取。请收藏本页，或保存下面的链接：'), h('div', { class: 'box' }, h('h3', {}, '我的查询链接', copyBtn(link)), h('pre', {}, link)));
+      else if (r.status === 'rejected') out.append(state('未通过', 'var(--bad)'), h('p', {}, '这次申请没有通过。如有疑问，请联系经验库管理员。'));
+      else if (r.status === 'issued') out.append(state('已领取', 'var(--good)'), h('p', {}, 'token 已经领取过了，出于安全只显示一次。如果弄丢了，请联系管理员停用旧的，再重新申请。'));
+      else if (r.status === 'issued_now') {
+        const cc = `claude mcp add --transport http style-base ${r.mcp} --header "Authorization: Bearer ${r.token}"`;
+        const js = JSON.stringify({ mcpServers: { 'style-base': { url: r.mcp, headers: { Authorization: `Bearer ${r.token}` } } } }, null, 2);
+        out.append(state('已通过', 'var(--good)'),
+          h('div', { class: 'box warn' }, h('p', { style: 'margin:0' }, h('b', {}, '这些内容只显示这一次。'), '请现在就复制保存；刷新或关闭后无法再次查看。token 是你个人的，不要转发给别人。')),
+          h('div', { class: 'box' },
+            h('h3', {}, '你的 token', copyBtn(r.token)), h('pre', {}, r.token),
+            h('h3', {}, 'Claude Code：在终端执行', copyBtn(cc)), h('pre', {}, cc),
+            h('h3', {}, 'Cursor 等（写进 mcp.json）', copyBtn(js)), h('pre', {}, js)),
+          h('p', {}, '接好后，可以直接对 AI 说：“用经验库推荐一种适合讲改版前后对比的展示形式”。'));
+      }
+    }).catch(() => { $('who').textContent = '网络出错，请稍后刷新重试'; });
+})();
+</script>
+</body>
+</html>

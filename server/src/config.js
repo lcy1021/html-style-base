@@ -26,6 +26,8 @@ export const config = {
   publicUrl: (env.PUBLIC_URL || (env.DOMAIN ? `https://${env.DOMAIN}` : `http://localhost:${env.PORT || 8787}`)).replace(/\/$/, ''),
   // MCP 是否必须带 token（默认必须）
   mcpRequireToken: env.MCP_REQUIRE_TOKEN !== '0',
+  // MCP 申请：只接受这些邮箱后缀（逗号分隔，写在 .env 里，不进公开仓库）
+  applyDomains: list(env.APPLY_EMAIL_DOMAINS).map(s => s.toLowerCase().replace(/^@/, '')),
   backupKeepDays: +(env.BACKUP_KEEP_DAYS || 14),
 };
 

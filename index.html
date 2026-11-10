@@ -131,7 +131,28 @@ main{padding:32px 32px 120px}
 .ovbar{opacity:0;transform:translateY(-8px);transition:opacity .35s .15s,transform .35s .15s var(--ease)}
 .ov.on .ovbar{opacity:1;transform:none}
 
-@media (max-width:860px){.top,.hero,.filters,main{padding-left:20px;padding-right:20px}.hero{grid-template-columns:1fr}.search{width:180px}.grid,.grid.sm{grid-template-columns:1fr}.sech p{display:none}.ovbar{padding:0 12px}.ovpanel{left:8px;right:8px;bottom:8px}.ob kbd{display:none}}
+/* 接入 MCP：按钮 + 申请弹窗 */
+.tr{display:flex;align-items:center;gap:10px}
+.mcpbtn{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 16px;border:1px solid var(--line);border-radius:99px;background:rgba(255,255,255,.04);color:var(--ink);font:inherit;font-size:13px;cursor:pointer;transition:border-color .2s,background .2s}
+.mcpbtn:hover{border-color:rgba(255,255,255,.35);background:rgba(255,255,255,.07)}
+.mcpbtn i{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+.mcpd{margin:auto;width:min(440px,92vw);padding:0;border:1px solid var(--line);border-radius:16px;background:#16151d;color:var(--ink);box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.mcpd::backdrop{background:rgba(8,7,12,.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.mcpd form{padding:26px 26px 24px}
+.mcpd .eb2{font-size:11px;letter-spacing:.14em;color:#ffb547}
+.mcpd h2{margin:6px 0 8px;font-size:20px;font-weight:500}
+.mcpd p{margin:0 0 18px;font-size:13px;line-height:1.75;color:var(--ink2)}
+.mcpd input{width:100%;height:42px;margin:0 0 10px;padding:0 12px;border:1px solid var(--line);border-radius:10px;background:rgba(0,0,0,.25);color:var(--ink);font:inherit;font-size:14px}
+.mcpd input:focus,.mcpd button:focus-visible,.mcpbtn:focus-visible{outline:2px solid #ffb547;outline-offset:2px}
+.mcpd .row{display:flex;gap:8px;justify-content:flex-end;margin-top:6px}
+.mcpd button{height:38px;padding:0 16px;border:1px solid var(--line);border-radius:9px;background:none;color:var(--ink);font:inherit;font-size:13px;cursor:pointer}
+.mcpd button.pri{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.mcpd button:disabled{opacity:.5;cursor:default}
+.mcpd .err{margin:0 0 8px;font-size:12.5px;color:#ffb3b3}
+.mcpd .link{margin:0 0 14px;padding:10px 12px;border-radius:10px;background:rgba(0,0,0,.35);font:12px/1.6 var(--mono);word-break:break-all;color:var(--ink)}
+.mcpd .prev{margin:-6px 0 16px;font-size:12.5px}
+.mcpd .prev a{color:var(--ink2)}
+@media (max-width:860px){.mcpbtn{padding:0 13px}.top,.hero,.filters,main{padding-left:20px;padding-right:20px}.hero{grid-template-columns:1fr}.search{width:180px}.grid,.grid.sm{grid-template-columns:1fr}.sech p{display:none}.ovbar{padding:0 12px}.ovpanel{left:8px;right:8px;bottom:8px}.ob kbd{display:none}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}.rv{opacity:1;transform:none}}
 </style>
 </head>
@@ -139,7 +160,10 @@ main{padding:32px 32px 120px}
 <div class="head">
 <header class="top">
   <a class="brand" href="./"><b>HTML Style Base</b><span>UED · 设计经验库</span></a>
+  <div class="tr">
   <label class="search"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="search" placeholder="搜形式、意图、踩过的坑…" aria-label="搜索"><kbd>/</kbd></label>
+  <button class="mcpbtn" id="mcpBtn" type="button" aria-haspopup="dialog"><i></i>接入 MCP</button>
+  </div>
 </header>
 
 <section class="hero">
@@ -157,6 +181,25 @@ main{padding:32px 32px 120px}
 <nav class="filters" id="filters" aria-label="类型"></nav>
 <main id="list"></main>
 <div id="more"></div>
+
+<dialog class="mcpd" id="mcpd" aria-labelledby="mcpT">
+  <form id="mcpF" method="dialog" novalidate>
+    <div class="eb2">MCP</div>
+    <h2 id="mcpT">申请接入经验库 MCP</h2>
+    <div id="mcpStep1">
+      <p>接入后，Claude Code、Cursor 等 AI 工具可以直接调用经验库：按“想说明什么”推荐展示形式、取 DESIGN.md 和提示词。填公司邮箱提交，管理员审核通过后即可领取。</p>
+      <p class="prev" id="mcpPrev" hidden>你在这台电脑上申请过：<a id="mcpPrevA" href="#" target="_blank" rel="noopener">查看进度 ↗</a></p>
+      <input id="mcpEmail" type="email" placeholder="你的公司邮箱" autocomplete="email" aria-label="公司邮箱" maxlength="80">
+      <p class="err" id="mcpErr" hidden></p>
+      <div class="row"><button type="button" id="mcpCancel">取消</button><button class="pri" type="submit" id="mcpGo">申请</button></div>
+    </div>
+    <div id="mcpStep2" hidden>
+      <p>已提交，等待审核。<b>请保存下面这个查询链接</b>，审核通过后打开它领取 token（只显示一次）。</p>
+      <div class="link" id="mcpLink"></div>
+      <div class="row"><button type="button" id="mcpCopy">复制链接</button><a id="mcpOpen" href="#" target="_blank" rel="noopener"><button type="button" class="pri" tabindex="-1">打开查看进度</button></a></div>
+    </div>
+  </form>
+</dialog>
 
 <div class="ov" id="ov" hidden role="dialog" aria-modal="true" aria-labelledby="ovTitle">
   <div class="ovbg" id="ovbg"></div>
@@ -222,7 +265,41 @@ main{padding:32px 32px 120px}
     sT = setTimeout(() => { lastQ = k; window.HSBTrack && HSBTrack('search', { q: k, h: n, pg: 'home' }); }, 1200);
   }
   window.HSBTrack && HSBTrack('page_view', { pg: 'home' });
+  /* ---------- 接入 MCP：申请 ---------- */
+  {
+    const HOST = 'fineuedesign.com', API = window.HSB_API ?? (location.hostname === HOST ? '' : `https://${HOST}`);
+    const statusUrl = c => `${API || location.origin}/apply/status#${c}`;
+    const d = $('mcpd'), email = $('mcpEmail'), err = $('mcpErr'), go = $('mcpGo');
+    const fail = t => { err.textContent = t; err.hidden = false; };
+    const step = n => { $('mcpStep1').hidden = n !== 1; $('mcpStep2').hidden = n !== 2; };
+    $('mcpBtn').onclick = () => {
+      step(1); err.hidden = true; go.disabled = false;
+      let prev = ''; try { prev = localStorage.getItem('hsb_apply') || ''; } catch (e) {}
+      $('mcpPrev').hidden = !prev; if (prev) $('mcpPrevA').href = statusUrl(prev);
+      d.showModal(); email.focus();
+    };
+    $('mcpCancel').onclick = () => d.close();
+    d.addEventListener('click', e => { if (e.target === d) d.close(); });     // 点空白处关闭
+    $('mcpF').addEventListener('submit', async e => {
+      e.preventDefault();
+      if (!$('mcpStep1').hidden) {
+        const v = email.value.trim();
+        if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)) { email.focus(); return fail('请填写正确的公司邮箱'); }
+        go.disabled = true; err.hidden = true;
+        try {
+          // text/plain 避免跨站预检；服务端按 JSON 解析
+          const r = await fetch(`${API}/apply`, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ email: v }) }).then(r => r.json());
+          if (r.error) { go.disabled = false; return fail(r.error); }
+          try { localStorage.setItem('hsb_apply', r.code); } catch (e) {}
+          const u = statusUrl(r.code);
+          $('mcpLink').textContent = u; $('mcpOpen').href = u; step(2);
+        } catch (x) { go.disabled = false; fail('网络出错，请稍后再试'); }
+      }
+    });
+    $('mcpCopy').onclick = () => navigator.clipboard.writeText($('mcpLink').textContent).then(() => { $('mcpCopy').textContent = '已复制'; setTimeout(() => $('mcpCopy').textContent = '复制链接', 1200); });
+  }
   addEventListener('keydown', e => {
+    if ($('mcpd').open) return;
     if (!$('ov').hidden) return ovKey(e);
     if (e.key === '/' && document.activeElement !== q) { e.preventDefault(); q.focus(); }
     if (e.key === 'Escape') q.blur();

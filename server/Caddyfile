@@ -8,7 +8,7 @@
 		@private path /server /server/* /.git /.git/* /.*
 		respond @private 404
 
-		@app path /e /mcp /health /admin /admin/*
+		@app path /e /mcp /health /admin /admin/* /apply /apply/*
 		reverse_proxy @app app:8787
 
 		header Cache-Control "public, max-age=300"

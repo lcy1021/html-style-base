@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>申请接入 MCP · 设计经验库</title>
+<style>
+:root{color-scheme:dark;--bg:#0c0b12;--panel:#16151d;--line:rgba(255,255,255,.1);--ink:#f3f1ff;--sec:#c3c0cf;--mut:#8d8899;--amber:#ffb547}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font:14px/1.7 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}
+main{width:min(560px,92vw);margin:0 auto;padding:72px 0 80px}
+.eb{font-size:11px;letter-spacing:.14em;color:var(--amber);text-transform:uppercase}
+.eb a{color:inherit;text-decoration:none}
+h1{margin:8px 0 12px;font-size:28px;font-weight:500;letter-spacing:-.01em}
+.lead{margin:0 0 28px;color:var(--sec)}
+.what{margin:0 0 32px;padding:16px 18px;border:1px solid var(--line);border-radius:12px;background:var(--panel);color:var(--sec);font-size:13px}
+.what b{color:var(--ink);font-weight:500}
+.what ol{margin:6px 0 0;padding-left:18px}
+label{display:block;margin:0 0 6px;font-size:13px;color:var(--sec)}
+label small{color:var(--mut)}
+input,textarea{width:100%;margin:0 0 18px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:rgba(0,0,0,.25);color:var(--ink);font:inherit}
+textarea{min-height:84px;resize:vertical}
+input:focus,textarea:focus,button:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+input[aria-invalid=true]{border-color:#ff8a8a}
+.hint{margin:-12px 0 18px;font-size:12px;color:var(--mut)}
+.hint.err{color:#ffb3b3}
+button{height:44px;padding:0 22px;border:0;border-radius:10px;background:var(--ink);color:#111;font:inherit;font-weight:500;cursor:pointer}
+button:disabled{opacity:.5;cursor:default}
+.msg{margin:16px 0 0;padding:10px 12px;border-radius:8px;background:rgba(255,120,120,.12);color:#ffb3b3;font-size:13px}
+.msg[hidden]{display:none}
+.note{margin-top:28px;font-size:12px;color:var(--mut)}
+</style>
+</head>
+<body>
+<main>
+  <div class="eb"><a href="/">HTML Style Base</a> · MCP</div>
+  <h1>申请接入经验库 MCP</h1>
+  <p class="lead">接入后，你的 Claude Code、Cursor 等 AI 工具可以直接用经验库：按“想说明什么”推荐展示形式、取 DESIGN.md 和提示词、看样例源码。</p>
+  <div class="what">
+    <b>怎么申请</b>
+    <ol>
+      <li>用公司邮箱（{{DOMAINS}}）填写下面的表单；</li>
+      <li>提交后会得到一个<b>专属查询链接</b>，请收藏或保存；</li>
+      <li>管理员审核通过后，打开查询链接领取你的 token 和接入配置（<b>只显示一次</b>）。</li>
+    </ol>
+  </div>
+  <form id="f" novalidate>
+    <label for="name">姓名 <small>选填</small></label>
+    <input id="name" name="name" maxlength="30" autocomplete="name">
+    <label for="email">公司邮箱 <small>只接受 {{DOMAINS}}</small></label>
+    <input id="email" name="email" type="email" maxlength="80" autocomplete="email" required aria-describedby="eh">
+    <p class="hint" id="eh">审核时会核对姓名和邮箱是否对应。</p>
+    <label for="reason">打算用来做什么 <small>选填</small></label>
+    <textarea id="reason" name="reason" maxlength="300" placeholder="例如：做需求评审的 HTML 演示页"></textarea>
+    <button id="go" type="submit">提交申请</button>
+    <p class="msg" id="msg" hidden></p>
+  </form>
+  <p class="note">提交的信息只用于审核和统计 MCP 的使用情况。</p>
+</main>
+<script>
+(() => {
+  const DOMAINS = '{{DOMAINS}}'.split(' / ').map(d => d.trim().toLowerCase());
+  const $ = id => document.getElementById(id);
+  const okEmail = v => /^[^@\s]+@[^@\s]+$/.test(v) && DOMAINS.some(d => v.toLowerCase().endsWith(d));
+  $('email').addEventListener('blur', () => {
+    const v = $('email').value.trim(), bad = v && !okEmail(v);
+    $('email').setAttribute('aria-invalid', String(!!bad));
+    $('eh').className = 'hint' + (bad ? ' err' : '');
+    $('eh').textContent = bad ? `只接受 ${DOMAINS.join(' / ')} 邮箱` : '审核时会核对姓名和邮箱是否对应。';
+  });
+  $('f').addEventListener('submit', async e => {
+    e.preventDefault();
+    const name = $('name').value.trim(), email = $('email').value.trim(), reason = $('reason').value.trim();
+    const say = t => { $('msg').textContent = t; $('msg').hidden = false; };
+    if (!okEmail(email)) return $('email').focus(), say(`只接受 ${DOMAINS.join(' / ')} 邮箱`);
+    $('go').disabled = true; $('msg').hidden = true;
+    try {
+      const r = await fetch('/apply', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, email, reason }) }).then(r => r.json());
+      if (r.error) { say(r.error); $('go').disabled = false; return; }
+      try { localStorage.setItem('hsb_apply', r.code); } catch (e) {}
+      location.href = '/apply/status#' + r.code;
+    } catch (err) { say('网络出错，请稍后再试'); $('go').disabled = false; }
+  });
+})();
+</script>
+</body>
+</html>
